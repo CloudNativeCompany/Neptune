@@ -4,8 +4,17 @@
 > Neptune 是一个程序员的分布式系统研发的起点
 
 
-### 整体架构
+### 架构
+
+#### 全局视图
 ![architecture](/docs/img/architecture.png)
+
+#### 启动过程
+![startup](/docs/img/startup.png)
+
+#### 调用过程
+
+
 
 ### 快速使用
 
