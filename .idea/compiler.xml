@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="neptune-example" />
+        <module name="neptune-core" />
+        <module name="neptune-all" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="core" target="8" />
+      <module name="example" target="1.5" />
+      <module name="Neptune" target="8" />
+      <module name="neptune" target="1.8" />
+      <module name="neptune-all" target="1.8" />
+      <module name="neptune-core" target="1.8" />
+      <module name="neptune-example" target="1.8" />
+      <module name="rpc-all" target="8" />
+      <module name="rpc-core" target="8" />
+      <module name="rpc-example" target="1.5" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
