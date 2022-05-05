@@ -12,6 +12,7 @@
         <module>neptune-core</module>
         <module>neptune-all</module>
         <module>neptune-example</module>
+        <module>neptune-transport</module>
     </modules>
 
     <properties>
@@ -20,6 +21,39 @@
         <encoding>UTF-8</encoding>
         <main.user.dir>${user.dir}</main.user.dir>
     </properties>
+
+    <!-- common dependencies -->
+    <dependencies>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.7.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.4</version>
+        </dependency>
+
+    </dependencies>
 
     <dependencyManagement>
 

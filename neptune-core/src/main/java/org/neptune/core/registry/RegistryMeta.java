@@ -13,17 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.example;
+package org.neptune.core.registry;
 
-import org.neptune.core.annotation.RpcService;
+import org.neptune.core.ServiceMeta;
+import org.neptune.transport.UnresolvedAddress;
 
 /**
- * org.neptune.example - ServiceRegistry
+ * org.neptune.core.registry - RegistryMeta
  *
  * @author tony-is-coding
- * @date 2021/12/20 15:37
+ * @date 2021/12/22 12:40
  */
-@RpcService(name = "service")
-public interface Service {
-    String call(String input);
+public class RegistryMeta {
+    protected ServiceMeta serviceMeta;
+    protected UnresolvedAddress address;
+
+    protected RegistryMeta() {
+    }
+
+    public void setAddress(UnresolvedAddress address) {
+        this.address = address;
+    }
+
+    public UnresolvedAddress getAddress() {
+        return address;
+    }
 }

@@ -13,17 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.example;
+package org.neptune.core;
 
-import org.neptune.core.annotation.RpcService;
+import org.neptune.core.registry.ServicePublisher;
+import org.neptune.transport.Acceptor;
+
 
 /**
- * org.neptune.example - ServiceRegistry
+ * org.neptune.core.core - Server
  *
  * @author tony-is-coding
- * @date 2021/12/20 15:37
+ * @date 2021/12/21 18:40
  */
-@RpcService(name = "service")
-public interface Service {
-    String call(String input);
+public interface Server {
+
+    Acceptor acceptor();
+
+    ServicePublisher connectToRegistryServer(String address);
+
+    void publish(ServiceProvider serviceProvider);
+
+    void publish(ServiceProvider... serviceProviders);
+
+    void cancelPublish(ServiceProvider serviceProvider);
+
+    void cancelPublish(ServiceProvider... serviceProviders);
+
+    void start();
+
+    ServiceProvider serviceProvider();
+
+    void shutdownGracefully();
+
+    boolean isRunning();
 }

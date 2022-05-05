@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.example;
+package org.neptune.core;
 
-import org.neptune.core.annotation.RpcService;
+import io.netty.util.concurrent.CompleteFuture;
+
+import java.util.concurrent.CompletionStage;
 
 /**
- * org.neptune.example - ServiceRegistry
+ * org.neptune.core - InvokeFuture
  *
  * @author tony-is-coding
- * @date 2021/12/20 15:37
+ * @date 2021/12/20 16:45
  */
-@RpcService(name = "service")
-public interface Service {
-    String call(String input);
+public interface InvokeFuture<V> extends CompletionStage<V> {
+    V getResult() throws Throwable;
 }

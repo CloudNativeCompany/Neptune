@@ -13,17 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.example;
-
-import org.neptune.core.annotation.RpcService;
+package org.neptune.transport;
 
 /**
- * org.neptune.example - ServiceRegistry
+ * org.neptune.core.core - RequestBody
  *
  * @author tony-is-coding
- * @date 2021/12/20 15:37
+ * @date 2021/12/24 14:03
  */
-@RpcService(name = "service")
-public interface Service {
-    String call(String input);
+public class RequestPayload extends PayloadHolder {
+    private long xid;
+
+    public RequestPayload(long xid) {
+        this.xid = xid;
+    }
+
+    public void setXid(long xid) {
+        this.xid = xid;
+    }
+
+    public long getXid() {
+        return xid;
+    }
 }

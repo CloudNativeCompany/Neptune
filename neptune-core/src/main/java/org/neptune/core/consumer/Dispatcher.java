@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.example;
+package org.neptune.core.consumer;
 
-import org.neptune.core.annotation.RpcService;
+import org.neptune.core.InvokeFuture;
+import org.neptune.core.Request;
 
 /**
- * org.neptune.example - ServiceRegistry
+ * org.neptune.core.consumer - Dispatcher
  *
  * @author tony-is-coding
- * @date 2021/12/20 15:37
+ * @date 2021/12/26 15:08
  */
-@RpcService(name = "service")
-public interface Service {
-    String call(String input);
+public interface Dispatcher {
+    <T> InvokeFuture<T> dispatch(Request request, Class<T> returnType);
 }

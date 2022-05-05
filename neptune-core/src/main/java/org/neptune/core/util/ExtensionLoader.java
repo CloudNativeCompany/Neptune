@@ -15,7 +15,7 @@
  */
 package org.neptune.core.util;
 
-import org.neptune.core.core.annotation.Extension;
+import org.neptune.core.annotation.Extension;
 
 import java.io.BufferedReader;
 import java.io.IOException;

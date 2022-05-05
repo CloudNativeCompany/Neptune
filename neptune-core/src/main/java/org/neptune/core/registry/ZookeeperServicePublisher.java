@@ -13,17 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.example;
-
-import org.neptune.core.annotation.RpcService;
+package org.neptune.core.registry;
 
 /**
- * org.neptune.example - ServiceRegistry
+ * org.neptune.core.registry.impl - ZookeeperServicePublisher
  *
  * @author tony-is-coding
- * @date 2021/12/20 15:37
+ * @date 2021/12/20 14:36
  */
-@RpcService(name = "service")
-public interface Service {
-    String call(String input);
+public class ZookeeperServicePublisher extends ZookeeperRegistry implements ServicePublisher {
+
+
+    @Override
+    public void register(RegistryMeta meta, RegisterListener listener) {
+
+    }
+
+    @Override
+    public void unregister(RegistryMeta meta, RegisterListener listener) {
+
+    }
+
+    @Override
+    public void register(RegistryMeta meta) throws Throwable {
+
+    }
+
+    @Override
+    public void unregister(RegistryMeta meta) throws Throwable {
+
+    }
 }

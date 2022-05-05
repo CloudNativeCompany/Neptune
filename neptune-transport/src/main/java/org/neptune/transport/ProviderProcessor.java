@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.example;
+package org.neptune.transport;
 
-import org.neptune.core.annotation.RpcService;
+import java.nio.channels.Channel;
 
 /**
- * org.neptune.example - ServiceRegistry
+ * org.neptune.core.transportLayer - ProviderProcessor
  *
  * @author tony-is-coding
- * @date 2021/12/20 15:37
+ * @date 2021/12/16 1:10
  */
-@RpcService(name = "service")
-public interface Service {
-    String call(String input);
+public interface ProviderProcessor extends Processor {
+    void handleRequest(Channel channel, Object request) throws Exception;
 }

@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.example;
+package org.neptune.core.annotation;
 
-import org.neptune.core.annotation.RpcService;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * org.neptune.example - ServiceRegistry
- *
+ * org.neptune.core.annotation - RpcServiceImpl
+ *  RPC服务提供实现, 只支持注解在实现类上
  * @author tony-is-coding
- * @date 2021/12/20 15:37
+ * @date 2021/12/22 14:36
  */
-@RpcService(name = "service")
-public interface Service {
-    String call(String input);
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface RpcServiceImpl {
+    String version() default "1.0.0";
 }

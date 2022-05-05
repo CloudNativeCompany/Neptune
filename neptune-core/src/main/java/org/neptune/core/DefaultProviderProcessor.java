@@ -13,17 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.example;
+package org.neptune.core;
 
-import org.neptune.core.annotation.RpcService;
+import org.neptune.transport.ProviderProcessor;
+
+import java.nio.channels.Channel;
 
 /**
- * org.neptune.example - ServiceRegistry
+ * org.neptune.core.core - DefaultProviderProcessor
  *
  * @author tony-is-coding
- * @date 2021/12/20 15:37
+ * @date 2021/12/24 16:07
  */
-@RpcService(name = "service")
-public interface Service {
-    String call(String input);
+public class DefaultProviderProcessor implements ProviderProcessor {
+    @Override
+    public void shutdownGracefully() {
+    }
+
+    @Override
+    public void handleRequest(Channel channel, Object request) throws Exception {
+
+    }
 }

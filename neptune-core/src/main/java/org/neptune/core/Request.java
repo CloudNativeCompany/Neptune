@@ -13,17 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.example;
-
-import org.neptune.core.annotation.RpcService;
+package org.neptune.core;
 
 /**
- * org.neptune.example - ServiceRegistry
+ * org.neptune.core.core - Request
  *
  * @author tony-is-coding
- * @date 2021/12/20 15:37
+ * @date 2021/12/17 18:15
  */
-@RpcService(name = "service")
-public interface Service {
-    String call(String input);
+public class Request {
+
+    private final long invokeId;            //  request-response 关联的唯一事务ID;
+
+    private RequestBody body;               // 请求体,这部分数据需要序列化成协议体打包传输到 server 对端
+
+    public Request(long invokeId) {
+        this.invokeId = invokeId;
+    }
+
+    public long getInvokeId() {
+        return invokeId;
+    }
+
+    public RequestBody getBody() {
+        return body;
+    }
+
+    public void setBody(RequestBody body) {
+        this.body = body;
+    }
 }
+

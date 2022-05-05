@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.example;
-
-import org.neptune.core.annotation.RpcService;
+package org.neptune.core.consumer.lb;
 
 /**
- * org.neptune.example - ServiceRegistry
+ * org.neptune.core.consumer - LoadBalancerFactory
  *
  * @author tony-is-coding
- * @date 2021/12/20 15:37
+ * @date 2021/12/27 16:14
  */
-@RpcService(name = "service")
-public interface Service {
-    String call(String input);
+public class LoadBalancerFactory {
+
+    public static LoadBalancer create(LoadBalancer.LoadBalancerType type){
+        return new RandomLoadBalancer();
+    }
 }

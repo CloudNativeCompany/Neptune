@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.example;
+package org.neptune.transport;
 
-import org.neptune.core.annotation.RpcService;
+import io.netty.channel.ChannelFutureListener;
 
 /**
- * org.neptune.example - ServiceRegistry
+ * org.neptune.core.transportLayer - ConnectFuture
  *
  * @author tony-is-coding
- * @date 2021/12/20 15:37
+ * @date 2021/12/25 15:41
  */
-@RpcService(name = "service")
-public interface Service {
-    String call(String input);
+public interface ConnectFuture {
+    void onConnectCompleted(ChannelFutureListener listener);
 }

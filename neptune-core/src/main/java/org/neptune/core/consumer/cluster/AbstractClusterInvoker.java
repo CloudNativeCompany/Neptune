@@ -13,17 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.example;
+package org.neptune.core.consumer.cluster;
 
-import org.neptune.core.annotation.RpcService;
+import org.neptune.core.InvokeFuture;
+import org.neptune.core.Request;
+import org.neptune.core.consumer.Dispatcher;
+
 
 /**
- * org.neptune.example - ServiceRegistry
+ * org.neptune.core.consumer.cluster - AbstractClusterInvoker
  *
  * @author tony-is-coding
- * @date 2021/12/20 15:37
+ * @date 2021/12/20 18:53
  */
-@RpcService(name = "service")
-public interface Service {
-    String call(String input);
+public abstract class AbstractClusterInvoker implements ClusterInvoker {
+
+
+    protected <T> InvokeFuture<T> invoke0(Dispatcher dispatcher, Request request, Class<T> returnType) throws Throwable {
+        return dispatcher.dispatch(request,returnType);
+    }
 }

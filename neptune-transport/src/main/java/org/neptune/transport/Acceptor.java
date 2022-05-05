@@ -13,17 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.example;
+package org.neptune.transport;
 
-import org.neptune.core.annotation.RpcService;
+import java.net.InetSocketAddress;
 
 /**
- * org.neptune.example - ServiceRegistry
+ * org.neptune.core.transportLayer - Acceptor
+ * 监听器
  *
  * @author tony-is-coding
- * @date 2021/12/20 15:37
+ * @date 2021/12/16 0:22
  */
-@RpcService(name = "service")
-public interface Service {
-    String call(String input);
+//
+public interface Acceptor {
+    int boundPort();
+
+    InetSocketAddress localAddress();
+
+    void start() throws InterruptedException;
+
+    void start(boolean sync) throws InterruptedException;
+
+    // void sync(); // 是否可以像netty一样?
+
+    void shutdownGracefully();
 }

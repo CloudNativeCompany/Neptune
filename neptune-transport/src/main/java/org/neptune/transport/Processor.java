@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.example;
-
-import org.neptune.core.annotation.RpcService;
+package org.neptune.transport;
 
 /**
- * org.neptune.example - ServiceRegistry
+ * org.neptune.core.transportLayer - Processor
  *
  * @author tony-is-coding
- * @date 2021/12/20 15:37
+ * @date 2021/12/16 1:02
  */
-@RpcService(name = "service")
-public interface Service {
-    String call(String input);
+public interface Processor {
+    void shutdownGracefully();
 }

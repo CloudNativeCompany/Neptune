@@ -13,17 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.example;
+package org.neptune.core.consumer.lb;
 
-import org.neptune.core.annotation.RpcService;
+import org.neptune.transport.ConnectionGroup;
+import org.neptune.transport.CowConnectionGroupList;
+
+import java.util.Random;
 
 /**
- * org.neptune.example - ServiceRegistry
+ * org.neptune.core.consumer.lb - RandomLoadBalancer
  *
  * @author tony-is-coding
- * @date 2021/12/20 15:37
+ * @date 2021/12/27 16:19
  */
-@RpcService(name = "service")
-public interface Service {
-    String call(String input);
+public class RandomLoadBalancer implements LoadBalancer {
+    private static final ThreadLocal<Random> random = ThreadLocal.withInitial(Random::new);
+
+    @Override
+    public ConnectionGroup select(CowConnectionGroupList container) {
+        ConnectionGroup[] snapshot = container.snapshot();
+        return snapshot[random.get().nextInt(snapshot.length)];
+    }
+
 }

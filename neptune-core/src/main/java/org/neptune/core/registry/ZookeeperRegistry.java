@@ -13,17 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.example;
+package org.neptune.core.registry;
 
-import org.neptune.core.annotation.RpcService;
+import org.neptune.transport.UnresolvedAddress;
 
 /**
- * org.neptune.example - ServiceRegistry
+ * org.neptune.core.registry.impl - ZookeeperRegistry
  *
  * @author tony-is-coding
- * @date 2021/12/20 15:37
+ * @date 2021/12/20 14:35
  */
-@RpcService(name = "service")
-public interface Service {
-    String call(String input);
+public abstract class ZookeeperRegistry implements Registry {
+    @Override
+    public void connectToRegistryServer(UnresolvedAddress connectString) {
+
+    }
+
+    @Override
+    public void shutdownGracefully() {
+
+    }
 }

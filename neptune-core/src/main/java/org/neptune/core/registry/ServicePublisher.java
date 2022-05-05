@@ -13,17 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.example;
-
-import org.neptune.core.annotation.RpcService;
+package org.neptune.core.registry;
 
 /**
- * org.neptune.example - ServiceRegistry
+ * org.neptune.core.core - ServicePublisher
  *
  * @author tony-is-coding
- * @date 2021/12/20 15:37
+ * @date 2021/12/16 0:07
  */
-@RpcService(name = "service")
-public interface Service {
-    String call(String input);
+public interface ServicePublisher extends Registry {
+
+    void register(RegistryMeta meta, RegisterListener listener);
+
+    void unregister(RegistryMeta meta, RegisterListener listener);
+
+
+    void register(RegistryMeta meta) throws Throwable;
+
+    void unregister(RegistryMeta meta) throws Throwable;
+
+    interface RegisterListener {
+        void onCompleted();
+
+        void onFailure();
+    }
 }

@@ -13,17 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.example;
+package org.neptune.core;
 
-import org.neptune.core.annotation.RpcService;
+import java.io.Serializable;
 
 /**
- * org.neptune.example - ServiceRegistry
+ * org.neptune.core.core - ResponseBody
  *
  * @author tony-is-coding
- * @date 2021/12/20 15:37
+ * @date 2021/12/24 14:24
  */
-@RpcService(name = "service")
-public interface Service {
-    String call(String input);
+public class ResponseBody implements Serializable {
+    private static final long serialVersionUID = -8908295634641380163L;
+
+    Object result;
+
+    public Object getResult() {
+        return result;
+    }
+
+    public void setResult(Object result) {
+        this.result = result;
+    }
 }
