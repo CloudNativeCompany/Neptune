@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.transport;
+package org.neptune.transport.handler.codec;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ReplayingDecoder;
 import io.netty.util.Signal;
+import org.neptune.transport.ProtocolHeader;
+import org.neptune.transport.RequestPayload;
+import org.neptune.transport.ResponsePayload;
 
 import java.util.List;
 

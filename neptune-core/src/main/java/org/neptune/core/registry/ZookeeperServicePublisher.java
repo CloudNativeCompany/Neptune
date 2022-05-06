@@ -15,14 +15,22 @@
  */
 package org.neptune.core.registry;
 
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.state.ConnectionState;
+import org.apache.zookeeper.CreateMode;
+import org.neptune.core.ServiceMeta;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * org.neptune.core.registry.impl - ZookeeperServicePublisher
  *
  * @author tony-is-coding
  * @date 2021/12/20 14:36
  */
-public class ZookeeperServicePublisher extends ZookeeperRegistry implements ServicePublisher {
+public class ZookeeperServicePublisher extends ZookeeperRegistry{
 
+    private static final Logger logger = LoggerFactory.getLogger(ZookeeperServicePublisher.class.getName());
 
     @Override
     public void register(RegistryMeta meta, RegisterListener listener) {
@@ -43,4 +51,47 @@ public class ZookeeperServicePublisher extends ZookeeperRegistry implements Serv
     public void unregister(RegistryMeta meta) throws Throwable {
 
     }
+
+    @Override
+    protected void fireOnReconnectToZk(CuratorFramework client, ConnectionState newState) {
+
+    }
+
+
+    private void doRegister(final RegistryMeta meta) {
+        final ServiceMeta serviceMeta = meta.getServiceMeta();
+        final String directory = getDirectory(serviceMeta);
+
+        try {
+            if (configClient.checkExists().forPath(directory) == null) {
+                configClient.create().creatingParentsIfNeeded().forPath(directory);
+            }
+        } catch (Exception e) {
+            logger.warn("Create parent path failed, directory: {}, {}.", directory, e);
+        }
+
+//        try {
+//            meta.setHost(address);
+//
+//            // The znode will be deleted upon the client's disconnect.
+//            configClient.create().withMode(CreateMode.EPHEMERAL).inBackground((client, event) -> {
+//                if (event.getResultCode() == Code.OK.intValue()) {
+//                    getRegisterMetaMap().put(meta, RegisterState.DONE);
+//                }
+//
+//                logger.info("Register: {} - {}.", meta, event);
+//            }).forPath(
+//                    String.format("%s/%s:%s:%s:%s",
+//                            directory,
+//                            meta.getHost(),
+//                            String.valueOf(meta.getPort()),
+//                            String.valueOf(meta.getWeight()),
+//                            String.valueOf(meta.getConnCount())));
+//        } catch (Exception e) {
+//            if (logger.isWarnEnabled()) {
+//                logger.warn("Create register meta: {} path failed, {}.", meta, stackTrace(e));
+//            }
+//        }
+    }
+
 }

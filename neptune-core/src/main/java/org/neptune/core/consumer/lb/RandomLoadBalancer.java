@@ -15,8 +15,8 @@
  */
 package org.neptune.core.consumer.lb;
 
-import org.neptune.transport.ConnectionGroup;
-import org.neptune.transport.CowConnectionGroupList;
+import org.neptune.transport.connect.ConnectionGroup;
+import org.neptune.transport.connect.CowConnectionGroupList;
 
 import java.util.Random;
 

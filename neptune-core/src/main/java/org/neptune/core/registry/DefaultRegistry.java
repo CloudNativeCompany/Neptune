@@ -15,7 +15,6 @@
  */
 package org.neptune.core.registry;
 
-import org.neptune.transport.UnresolvedAddress;
 
 /**
  * org.neptune.core.registry.impl - DefaultRegistry
@@ -23,9 +22,11 @@ import org.neptune.transport.UnresolvedAddress;
  * @author tony-is-coding
  * @date 2021/12/17 21:40
  */
-public abstract class DefaultRegistry implements Registry {
+public abstract class DefaultRegistry extends AbstractRegistry  {
+
     @Override
-    public void connectToRegistryServer(UnresolvedAddress connectString) {
+    public void connectToRegistryServer(String connectString) {
+
     }
 
     @Override

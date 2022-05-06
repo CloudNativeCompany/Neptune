@@ -13,27 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.transport;
+package org.neptune.transport.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
-import io.netty.util.Signal;
 
 /**
- * org.neptune.core.transportLayer - AcceptorIdleTriggerHandler
+ * org.neptune.core.transportLayer - ConnectorIdleTriggerHandler
  *
  * @author tony-is-coding
  * @date 2021/12/24 18:30
  */
-public class AcceptorIdleTriggerHandler extends ChannelInboundHandlerAdapter {
+public class ConnectorIdleTriggerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent) {
             IdleState state = ((IdleStateEvent) evt).state();
-            if (state == IdleState.READER_IDLE) {
-                throw Signal.valueOf("客户端连接超时...");
+            if (state == IdleState.WRITER_IDLE) {
+                // write heartbeat to server
+                ctx.writeAndFlush("xxxx");  // TODO:发送心跳信息到server端
             }
         } else {
             super.userEventTriggered(ctx, evt);

@@ -25,5 +25,4 @@ public interface UnresolvedAddress {
     int port();
 
     String host();
-
 }

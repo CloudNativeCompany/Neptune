@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.transport;
+package org.neptune.transport.connect;
 
+
+import org.neptune.transport.connect.ConnectionGroup;
 
 import java.util.Arrays;
 import java.util.Objects;

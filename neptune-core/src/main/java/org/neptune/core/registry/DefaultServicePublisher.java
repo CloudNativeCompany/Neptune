@@ -26,7 +26,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @author tony-is-coding
  * @date 2021/12/16 0:16
  */
-public class DefaultServicePublisher extends DefaultRegistry implements ServicePublisher {
+public class DefaultServicePublisher extends DefaultRegistry {
 
     ConcurrentHashMap<String, ServiceProvider> serviceLocal;
 

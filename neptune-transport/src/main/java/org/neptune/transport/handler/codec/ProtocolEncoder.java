@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.transport;
+package org.neptune.transport.handler.codec;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
+import org.neptune.transport.ProtocolHeader;
+import org.neptune.transport.RequestPayload;
+import org.neptune.transport.ResponsePayload;
 
 /**
  * org.neptune.core.transportLayer - ProtocolEncoder
@@ -48,6 +51,7 @@ public class ProtocolEncoder extends MessageToByteEncoder<Object> {
 
     // 预分配buffer大小限制, 按照已知的头大小预分配, body大小此时尚未确认
     // 针对心跳类无消息体消息这样更节省空间
+    @Override
     protected ByteBuf allocateBuffer(ChannelHandlerContext ctx, @SuppressWarnings("unused") Object msg,
                                      boolean preferDirect) throws Exception {
         if (preferDirect) {

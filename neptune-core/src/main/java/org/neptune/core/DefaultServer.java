@@ -47,6 +47,11 @@ public class DefaultServer implements Server {
 
     @Override
     public void publish(ServiceProvider serviceProvider) {
+        try {
+            servicePublisher.register(serviceProvider);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
     }
 
     @Override

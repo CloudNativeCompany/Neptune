@@ -13,18 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.transport;
+package org.neptune.transport.connect;
+
+import org.neptune.core.core.InvokeFuture;
+import io.netty.channel.Channel;
+
+import java.net.SocketAddress;
 
 /**
- * org.neptune.core.core - ConnectionManager
+ * org.neptune.core.transportLayer - Connection
+ * 抽象出来channel对象
+ * 1. 后续可以基于这个对象为channel可选的添加listener
+ * 2. 添加统一的管理入口, 如重连关闭或者其他的;
  *
  * @author tony-is-coding
- * @date 2021/12/25 15:36
+ * @date 2021/12/16 16:57
  */
-public interface ConnectionManager {
-    void cancelReconnectAll();
+public interface Connection extends ConnectFuture {
+    SocketAddress remoteAddress();
 
-    void disconnectAll();
+    boolean needReconnect();
 
-    Connection next();
+    void setReconnect(boolean reconnect);
+    
+    void disconnect();
+
+    Channel channel();
 }

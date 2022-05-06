@@ -21,6 +21,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timer;
 import io.netty.util.concurrent.DefaultThreadFactory;
+import org.neptune.transport.connect.ConnectionGroup;
+import org.neptune.transport.connect.CowConnectionGroupList;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadFactory;

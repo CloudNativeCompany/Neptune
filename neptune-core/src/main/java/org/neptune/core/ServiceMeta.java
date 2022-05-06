@@ -28,16 +28,6 @@ public class ServiceMeta extends Directory implements Serializable {
 
     private static final long serialVersionUID = -8908295634641380163L;
 
-    private int wight;
-
-    public int getWight() {
-        return wight;
-    }
-
-    public void setWight(int wight) {
-        this.wight = wight;
-    }
-
     public ServiceMeta() {
     }
 

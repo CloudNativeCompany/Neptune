@@ -17,6 +17,9 @@ package org.neptune.transport;
 
 
 import org.neptune.core.core.Directory;
+import org.neptune.transport.connect.Connection;
+import org.neptune.transport.connect.ConnectionGroup;
+import org.neptune.transport.connect.CowConnectionGroupList;
 
 /**
  * org.neptune.core.transportLayer - Connector

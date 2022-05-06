@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  * @author tony-is-coding
  * @date 2021/12/16 0:11
  */
-public interface ServiceSubscriber extends Registry {
+public interface ServiceSubscriber extends Registry{
 
     /**
      * List all consumer's info.
@@ -36,7 +36,10 @@ public interface ServiceSubscriber extends Registry {
     /**
      * Subscribe a service from registry server.
      */
-    Watcher subscribe(ServiceMeta serviceMeta, RegistryNotifier notifier);
+    void subscribe(ServiceMeta serviceMeta, RegistryNotifier notifier);
+
+    void unsubscribe(ServiceMeta serviceMeta);
+
 
     enum RegisterState {
         PREPARE,

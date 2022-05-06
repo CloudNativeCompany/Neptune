@@ -16,6 +16,8 @@
 package org.neptune.transport;
 
 import io.netty.channel.*;
+import org.neptune.transport.connect.Connection;
+import org.neptune.transport.handler.codec.ProtocolEncoder;
 
 /**
  * org.neptune.core.transportLayer - NettyRpcConnector
