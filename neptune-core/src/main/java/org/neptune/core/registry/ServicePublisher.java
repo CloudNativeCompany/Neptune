@@ -21,12 +21,11 @@ package org.neptune.core.registry;
  * @author tony-is-coding
  * @date 2021/12/16 0:07
  */
-public interface ServicePublisher extends Registry {
+public interface ServicePublisher  extends Registry{
 
     void register(RegistryMeta meta, RegisterListener listener);
 
     void unregister(RegistryMeta meta, RegisterListener listener);
-
 
     void register(RegistryMeta meta) throws Throwable;
 

@@ -25,7 +25,7 @@ import java.util.Map;
  * @author tony-is-coding
  * @date 2021/12/16 0:16
  */
-public class DefaultServiceSubscriber extends DefaultRegistry implements ServiceSubscriber {
+public class DefaultServiceSubscriber extends DefaultRegistry{
 
     @Override
     public Map<Object, Integer> consumers() {
@@ -33,7 +33,6 @@ public class DefaultServiceSubscriber extends DefaultRegistry implements Service
     }
 
     @Override
-    public Watcher subscribe(ServiceMeta serviceMeta, RegistryNotifier notifier) {
-        return null;
+    public void subscribe(ServiceMeta serviceMeta, RegistryNotifier notifier) {
     }
 }

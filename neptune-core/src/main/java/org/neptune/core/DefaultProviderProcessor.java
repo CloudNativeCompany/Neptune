@@ -15,7 +15,7 @@
  */
 package org.neptune.core;
 
-import org.neptune.transport.ProviderProcessor;
+import org.neptune.transport.processor.ProviderProcessor;
 
 import java.nio.channels.Channel;
 

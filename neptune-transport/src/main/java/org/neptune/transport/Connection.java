@@ -15,7 +15,7 @@
  */
 package org.neptune.transport;
 
-import org.neptune.core.core.InvokeFuture;
+
 import io.netty.channel.Channel;
 
 import java.net.SocketAddress;

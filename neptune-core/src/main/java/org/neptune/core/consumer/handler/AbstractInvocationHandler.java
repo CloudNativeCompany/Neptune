@@ -21,6 +21,7 @@ import org.neptune.core.consumer.cluster.ClusterInvoker;
 import net.bytebuddy.implementation.bind.annotation.AllArguments;
 import net.bytebuddy.implementation.bind.annotation.Origin;
 import net.bytebuddy.implementation.bind.annotation.RuntimeType;
+import org.neptune.core.ServiceMeta;
 
 import java.lang.reflect.Method;
 

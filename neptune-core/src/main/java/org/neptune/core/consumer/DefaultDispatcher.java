@@ -15,13 +15,14 @@
  */
 package org.neptune.core.consumer;
 
+import org.neptune.connect.ServiceConnectionHolder;
 import org.neptune.core.*;
 import org.neptune.core.consumer.lb.LoadBalancer;
 import org.neptune.core.consumer.lb.LoadBalancerFactory;
 import org.neptune.core.factories.SerializerFactory;
 import org.neptune.core.seialize.Serializer;
-import org.neptune.transport.ConnectionGroup;
-import org.neptune.transport.CowConnectionGroupList;
+import org.neptune.transport.Directory;
+import org.neptune.connect.ConnectionGroup;
 import org.neptune.transport.RequestPayload;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -59,7 +60,7 @@ public class DefaultDispatcher implements Dispatcher {
     }
 
     private Channel select(Directory directory) {
-        CowConnectionGroupList groups = client.connector().find(directory);
+        ServiceConnectionHolder groups = new ServiceConnectionHolder(); // TODO: 组化管理
         ConnectionGroup group = loadBalancer.select(groups);
         return group.next().channel();
     }

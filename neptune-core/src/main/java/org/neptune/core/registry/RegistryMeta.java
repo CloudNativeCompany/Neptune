@@ -28,6 +28,15 @@ public class RegistryMeta {
     protected ServiceMeta serviceMeta;
     protected UnresolvedAddress address;
 
+    private int wight;
+
+    public int getWight() {
+        return wight;
+    }
+
+    public void setWight(int wight) {
+        this.wight = wight;
+    }
     protected RegistryMeta() {
     }
 
@@ -37,5 +46,13 @@ public class RegistryMeta {
 
     public UnresolvedAddress getAddress() {
         return address;
+    }
+
+    public ServiceMeta getServiceMeta() {
+        return serviceMeta;
+    }
+
+    public void setServiceMeta(ServiceMeta serviceMeta) {
+        this.serviceMeta = serviceMeta;
     }
 }

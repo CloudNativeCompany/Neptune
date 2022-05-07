@@ -39,11 +39,32 @@
             <artifactId>objenesis</artifactId>
             <version>3.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-framework</artifactId>
+            <version>5.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-recipes</artifactId>
+            <version>5.1.0</version>
+        </dependency>
+
+        <!--   内部依赖     -->
+        <dependency>
+            <groupId>org.neptune</groupId>
+            <artifactId>neptune-common</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.neptune</groupId>
             <artifactId>neptune-transport</artifactId>
-            <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.neptune</groupId>
+            <artifactId>neptune-connect</artifactId>
+        </dependency>
+
     </dependencies>
 
     <properties>

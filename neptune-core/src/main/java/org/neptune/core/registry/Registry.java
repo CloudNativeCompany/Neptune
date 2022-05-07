@@ -15,8 +15,6 @@
  */
 package org.neptune.core.registry;
 
-import org.neptune.transport.UnresolvedAddress;
-
 /**
  * org.neptune.core.core - Registry
  *
@@ -24,7 +22,7 @@ import org.neptune.transport.UnresolvedAddress;
  * @date 2021/12/16 0:07
  */
 public interface Registry {
-    void connectToRegistryServer(UnresolvedAddress connectString);
+    void connectToRegistryServer(String connectString);
 
     void shutdownGracefully();
 

@@ -20,6 +20,11 @@ import org.neptune.core.registry.Registry;
 import org.neptune.core.registry.RegistryMeta;
 import org.neptune.core.registry.ServiceSubscriber;
 import org.neptune.transport.*;
+import org.neptune.connect.ConnectionGroup;
+import org.neptune.transport.connector.Connector;
+import org.neptune.transport.connector.NettyTcpConnector;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * org.neptune.core.core - DefaultClient
@@ -34,7 +39,7 @@ public class DefaultClient implements Client {
 
     public DefaultClient(String appName, Registry.RegistryType type) {
         this.appName = appName;
-        this.connector = new NettyTcpConnector();
+        this.connector = new NettyTcpConnector(new DefaultConsumerProcessor());
         // todo: load service subscriber by Extension
     }
 
@@ -95,8 +100,7 @@ public class DefaultClient implements Client {
 
     @Override
     public ServiceSubscriber connectToRegistryServer(String address) {
-        UnresolvedAddress unresolvedAddress = Support.resolveSocketAddr(address);
-        serviceSubscriber.connectToRegistryServer(unresolvedAddress);
+        serviceSubscriber.connectToRegistryServer(address);
         return serviceSubscriber;
     }
 
@@ -109,20 +113,35 @@ public class DefaultClient implements Client {
 
     private ServiceSubscriber.Watcher watchService0(ServiceMeta serviceMeta) {
         // 将服务加入本地的服务列表?
-        ServiceSubscriber.Watcher watcher = serviceSubscriber.subscribe(serviceMeta, new ServiceSubscriber.RegistryNotifier() {
+        ServiceSubscriber.Watcher watcher = new ServiceSubscriber.Watcher() {
             @Override
-            public void notify(RegistryMeta registryMeta, EventType eventType) {
-                // 创建连接?
-                final UnresolvedAddress address = registryMeta.getAddress();
-                final ConnectionGroup group = connector.group(address);
-                if(eventType == EventType.SERVICE_ADDED){
-                    // TODO: 创建系列的连接
+            public void start() {
+                serviceSubscriber.subscribe(serviceMeta, new ServiceSubscriber.RegistryNotifier() {
+                    @Override
+                    public void notify(RegistryMeta registryMeta, EventType eventType) {
+                        // 创建连接?
+                        final UnresolvedAddress address = registryMeta.getAddress();
+                        final ConnectionGroup group = new ConnectionGroup(); // TODO: group 组化管理
+                        if(eventType == EventType.SERVICE_ADDED){
+                            // TODO: 创建系列的连接
 
-                }else if(eventType == EventType.SERVICE_REMOVED){
+                        }else if(eventType == EventType.SERVICE_REMOVED){
 
-                }
+                        }
+                    }
+                });
             }
-        });
+
+            @Override
+            public void waitForAvailable() {
+
+            }
+
+            @Override
+            public void waitForAvailable(long timeout, TimeUnit timeUnit) {
+
+            }
+        };
         watcher.start();;
         return watcher;
     }
