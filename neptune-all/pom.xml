@@ -14,8 +14,23 @@
     <dependencies>
         <dependency>
             <groupId>org.neptune</groupId>
+            <artifactId>neptune-connect</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.neptune</groupId>
+            <artifactId>neptune-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.neptune</groupId>
             <artifactId>neptune-core</artifactId>
-            <version>1.0.0</version>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.neptune</groupId>
+            <artifactId>neptune-transport</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

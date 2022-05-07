@@ -15,8 +15,8 @@
  */
 package org.neptune.core.consumer.lb;
 
-import org.neptune.transport.connect.ConnectionGroup;
-import org.neptune.transport.connect.CowConnectionGroupList;
+import org.neptune.connect.ConnectionGroup;
+import org.neptune.connect.ServiceConnectionHolder;
 
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 
@@ -33,7 +33,7 @@ public class RoundRobinLoadBalancer implements LoadBalancer {
     private volatile int index = 0;
 
     @Override
-    public ConnectionGroup select(CowConnectionGroupList container) {
+    public ConnectionGroup select(ServiceConnectionHolder container) {
         ConnectionGroup[] snapshot = container.snapshot();
         final int length = snapshot.length;
         if (length == 0) {

@@ -110,7 +110,7 @@
 magic:     (short) 0xbabe 
 sign:      消息标志位, 低地址4位用来表示消息类型request/response/heartbeat等, 高地址4位用来表示序列化类型 
 status:    状态位, 设置请求响应状态 
-invokeId:  消息 id, long 类型, 未来jupiter可能将id限制在48位, 留出高地址的16位作为扩展字段 
+invokeId:  消息 id, long 类型, 未来可能将id限制在48位, 留出高地址的16位作为扩展字段 
 bodySize:  消息体 body 长度, int 类型 
  
 消息体无固定长度 

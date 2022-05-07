@@ -15,7 +15,7 @@
  */
 package org.neptune.core;
 
-import org.neptune.transport.ConsumerProcessor;
+import org.neptune.transport.processor.ConsumerProcessor;
 import org.neptune.transport.ResponsePayload;
 import io.netty.channel.Channel;
 

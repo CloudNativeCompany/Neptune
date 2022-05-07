@@ -24,9 +24,9 @@ import org.neptune.core.consumer.handler.AsyncInvocationHandler;
 import org.neptune.core.consumer.handler.SyncInvocationHandler;
 import org.neptune.core.consumer.lb.LoadBalancer;
 import org.neptune.core.seialize.Serializer;
-import org.neptune.core.util.Requires;
-import org.neptune.core.util.Strings;
-import org.neptune.core.util.ThrowUtil;
+import org.neptune.common.util.Requires;
+import org.neptune.common.util.Strings;
+import org.neptune.common.util.ThrowUtil;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import net.bytebuddy.implementation.MethodDelegation;
@@ -36,7 +36,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
 
-import static org.neptune.core.util.Requires.*;
+import static org.neptune.common.util.Requires.*;
 
 /**
  * org.neptune.core.consumer - ProxyFactory

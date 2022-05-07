@@ -20,7 +20,9 @@ import org.neptune.core.registry.Registry;
 import org.neptune.core.registry.RegistryMeta;
 import org.neptune.core.registry.ServiceSubscriber;
 import org.neptune.transport.*;
-import org.neptune.transport.connect.ConnectionGroup;
+import org.neptune.connect.ConnectionGroup;
+import org.neptune.transport.connector.Connector;
+import org.neptune.transport.connector.NettyTcpConnector;
 
 import java.util.concurrent.TimeUnit;
 
@@ -37,7 +39,7 @@ public class DefaultClient implements Client {
 
     public DefaultClient(String appName, Registry.RegistryType type) {
         this.appName = appName;
-        this.connector = new NettyTcpConnector();
+        this.connector = new NettyTcpConnector(new DefaultConsumerProcessor());
         // todo: load service subscriber by Extension
     }
 
@@ -119,7 +121,7 @@ public class DefaultClient implements Client {
                     public void notify(RegistryMeta registryMeta, EventType eventType) {
                         // 创建连接?
                         final UnresolvedAddress address = registryMeta.getAddress();
-                        final ConnectionGroup group = connector.group(address);
+                        final ConnectionGroup group = new ConnectionGroup(); // TODO: group 组化管理
                         if(eventType == EventType.SERVICE_ADDED){
                             // TODO: 创建系列的连接
 

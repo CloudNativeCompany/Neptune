@@ -17,7 +17,7 @@ package org.neptune.core;
 
 import org.neptune.core.consumer.ProxyFactory;
 import org.neptune.core.registry.ServiceSubscriber;
-import org.neptune.transport.Connector;
+import org.neptune.transport.connector.Connector;
 
 /**
  * org.neptune.core.core - Client

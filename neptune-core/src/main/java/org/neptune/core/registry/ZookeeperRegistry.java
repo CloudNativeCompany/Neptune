@@ -19,13 +19,12 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.retry.ExponentialBackoffRetry;
-import org.neptune.core.Directory;
 import org.neptune.core.ServiceMeta;
-import org.neptune.core.util.SysPropertyUtil;
+import org.neptune.common.util.SysPropertyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.neptune.core.util.Requires.*;
+import static org.neptune.common.util.Requires.*;
 
 /**
  * org.neptune.core.registry.impl - ZookeeperRegistry

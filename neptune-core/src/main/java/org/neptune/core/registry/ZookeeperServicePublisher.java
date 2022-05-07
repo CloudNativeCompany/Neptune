@@ -17,7 +17,6 @@ package org.neptune.core.registry;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.state.ConnectionState;
-import org.apache.zookeeper.CreateMode;
 import org.neptune.core.ServiceMeta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -15,8 +15,8 @@
  */
 package org.neptune.core.consumer.lb;
 
-import org.neptune.transport.connect.ConnectionGroup;
-import org.neptune.transport.connect.CowConnectionGroupList;
+import org.neptune.connect.ConnectionGroup;
+import org.neptune.connect.ServiceConnectionHolder;
 
 /**
  * org.neptune.core.core - LoadBalancer
@@ -30,7 +30,7 @@ public interface LoadBalancer {
         README: 考虑并发管理
      */
 
-    ConnectionGroup select(CowConnectionGroupList container);
+    ConnectionGroup select(ServiceConnectionHolder container);
 
     enum LoadBalancerType{
         RANDOM(1), // 随机法

@@ -16,7 +16,7 @@
 package org.neptune.core;
 
 import org.neptune.core.registry.ServicePublisher;
-import org.neptune.transport.Acceptor;
+import org.neptune.transport.acceptor.Acceptor;
 
 
 /**

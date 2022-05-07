@@ -15,9 +15,9 @@
  */
 package org.neptune.core;
 
+import org.neptune.common.infra.ExtensionLoader;
 import org.neptune.core.registry.ServicePublisher;
-import org.neptune.transport.Acceptor;
-import org.neptune.core.util.ExtensionLoader;
+import org.neptune.transport.acceptor.Acceptor;
 
 
 /**

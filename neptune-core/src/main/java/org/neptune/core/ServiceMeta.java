@@ -15,6 +15,8 @@
  */
 package org.neptune.core;
 
+import org.neptune.transport.Directory;
+
 import java.io.Serializable;
 
 /**
