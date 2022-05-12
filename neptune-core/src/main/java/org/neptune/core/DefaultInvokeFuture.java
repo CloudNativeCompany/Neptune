@@ -70,7 +70,7 @@ public class DefaultInvokeFuture<V> extends CompletableFuture<V> implements Invo
     @SuppressWarnings("unchecked")
     private void doReceived(Response response) {
         final Object result = response.getResult();
-        complete((V) result);
+        complete((V) result); // 完成
     }
 
     public static void received(Channel ch, Response response) {
