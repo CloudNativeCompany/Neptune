@@ -16,7 +16,7 @@
 package org.neptune.rpc;
 
 import org.neptune.common.infra.ExtensionLoader;
-import org.neptune.rpc.registry.ServicePublisher;
+import org.neptune.registry.ServicePublisher;
 import org.neptune.transport.acceptor.Acceptor;
 
 

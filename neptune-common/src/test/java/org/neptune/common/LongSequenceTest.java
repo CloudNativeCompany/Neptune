@@ -1,11 +1,7 @@
 package org.neptune.common;
 
 import org.junit.jupiter.api.Test;
-
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import org.neptune.common.util.LongSequence;
 
 
 /**

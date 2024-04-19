@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.rpc.registry;
+package org.neptune.registry;
 
-import org.neptune.rpc.ServiceMeta;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -39,7 +38,6 @@ public interface ServiceSubscriber extends Registry{
     void subscribe(ServiceMeta serviceMeta, RegistryNotifier notifier);
 
     void unsubscribe(ServiceMeta serviceMeta);
-
 
     enum RegisterState {
         PREPARE,

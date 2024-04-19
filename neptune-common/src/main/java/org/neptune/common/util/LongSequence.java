@@ -1,4 +1,4 @@
-package org.neptune.common;
+package org.neptune.common.util;
 
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 

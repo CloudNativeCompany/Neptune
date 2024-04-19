@@ -16,6 +16,8 @@
 package org.neptune.transport;
 
 
+import org.neptune.common.UnresolvedAddress;
+
 import java.util.concurrent.ConcurrentHashMap;
 
 /**

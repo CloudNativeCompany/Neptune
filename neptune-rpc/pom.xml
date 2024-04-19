@@ -40,11 +40,6 @@
             <version>3.1</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.alibaba.nacos</groupId>
-            <artifactId>nacos-client</artifactId>
-            <version>1.4.1</version>
-        </dependency>
 
         <dependency>
             <groupId>org.apache.curator</groupId>
@@ -62,6 +57,12 @@
             <groupId>org.neptune</groupId>
             <artifactId>neptune-common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.neptune</groupId>
+            <artifactId>neptune-registry</artifactId>
+        </dependency>
+
+
         <dependency>
             <groupId>org.neptune</groupId>
             <artifactId>neptune-transport</artifactId>

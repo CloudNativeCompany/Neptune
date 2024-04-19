@@ -13,16 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.transport;
+package org.neptune.registry;
 
 /**
- * org.neptune.rpc.transportLayer - UnresolvedAddress
+ * org.neptune.rpc.core - ServicePublisher
  *
  * @author tony-is-coding
- * @date 2021/12/25 16:57
+ * @date 2021/12/16 0:07
  */
-public interface UnresolvedAddress {
-    int port();
+public interface ServicePublisher  extends Registry{
 
-    String host();
+    void register(RegistryMeta meta, RegisterListener listener);
+
+    void unregister(RegistryMeta meta, RegisterListener listener);
+
+    void register(RegistryMeta meta) throws Throwable;
+
+    void unregister(RegistryMeta meta) throws Throwable;
+
+    interface RegisterListener {
+        void onCompleted();
+
+        void onFailure();
+    }
 }

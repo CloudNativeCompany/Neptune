@@ -1,4 +1,4 @@
-package org.neptune.rpc.registry;
+package org.neptune.registry;
 
 /**
  * @desc TODO

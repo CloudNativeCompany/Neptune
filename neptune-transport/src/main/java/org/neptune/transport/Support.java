@@ -15,6 +15,9 @@
  */
 package org.neptune.transport;
 
+import org.neptune.common.UnresolvedAddress;
+import org.neptune.common.UnresolvedSocketAddress;
+
 /**
  * org.neptune.rpc.transportLayer - Support
  *

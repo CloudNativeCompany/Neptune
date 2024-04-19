@@ -16,7 +16,7 @@
 package org.neptune.rpc;
 
 import org.neptune.rpc.consumer.ProxyFactory;
-import org.neptune.rpc.registry.ServiceSubscriber;
+import org.neptune.registry.ServiceSubscriber;
 import org.neptune.transport.connector.Connector;
 
 /**

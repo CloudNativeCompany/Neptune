@@ -17,7 +17,7 @@ package org.neptune.transport.connector;
 
 import io.netty.channel.ChannelOutboundHandler;
 import org.neptune.transport.Connection;
-import org.neptune.transport.UnresolvedAddress;
+import org.neptune.common.UnresolvedAddress;
 import org.neptune.transport.processor.ConsumerProcessor;
 import org.neptune.transport.protocol.ProtocolEncoder;
 

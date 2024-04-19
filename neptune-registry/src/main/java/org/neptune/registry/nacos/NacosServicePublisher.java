@@ -1,12 +1,15 @@
-package org.neptune.rpc.registry.nacos;
+package org.neptune.registry.nacos;
 
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
-import org.neptune.rpc.registry.AbstractServicePublisher;
-import org.neptune.rpc.registry.RegistryMeta;
+import org.neptune.registry.AbstractServicePublisher;
+import org.neptune.registry.RegistryMeta;
+import org.neptune.registry.ServiceMeta;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -35,11 +38,21 @@ public class NacosServicePublisher extends AbstractServicePublisher {
     public void register(RegistryMeta meta, RegisterListener listener) {
         try{
             Instance instance = new Instance();
-            String serviceName = meta.getServiceMeta().getAppName();
+            ServiceMeta serviceMeta = meta.getServiceMeta();
+
+            String serviceName = serviceMeta.getAppName();
+            Map<String,String> metadata = new LinkedHashMap<>();
+
+            metadata.put("group", serviceMeta.getGroup());
+            metadata.put("version", serviceMeta.getVersion());
+            metadata.put("appName", serviceMeta.getAppName());
+
             instance.setIp(meta.getAddress().host());
             instance.setPort(meta.getAddress().port());
-            instance.setInstanceId(meta.getServiceMeta().getInstanceId());
+            instance.setInstanceId(meta.toUniqueInstanceId());
             instance.setServiceName(serviceName);
+            instance.setMetadata(metadata);
+
             instance.setWeight(meta.getWight()); // 设置权重
             instance.setHealthy(true);
             // 向 Nacos 注册服务实例
@@ -55,11 +68,20 @@ public class NacosServicePublisher extends AbstractServicePublisher {
     public void unregister(RegistryMeta meta, RegisterListener listener) {
         try{
             Instance instance = new Instance();
-            String serviceName = meta.getServiceMeta().getAppName();
+            ServiceMeta serviceMeta = meta.getServiceMeta();
+
+            String serviceName = serviceMeta.getAppName();
+            Map<String,String> metadata = new LinkedHashMap<>();
+
+            metadata.put("group", serviceMeta.getGroup());
+            metadata.put("version", serviceMeta.getVersion());
+            metadata.put("appName", serviceMeta.getAppName());
+
             instance.setIp(meta.getAddress().host());
             instance.setPort(meta.getAddress().port());
-            instance.setInstanceId(meta.getServiceMeta().getInstanceId());
+            instance.setInstanceId(meta.toUniqueInstanceId());
             instance.setServiceName(serviceName);
+
             instance.setWeight(meta.getWight()); // 设置权重
             instance.setHealthy(false);
             // 向 Nacos 注册服务实例
@@ -98,4 +120,6 @@ public class NacosServicePublisher extends AbstractServicePublisher {
             System.out.println("shut down error");
         }
     }
+
+
 }

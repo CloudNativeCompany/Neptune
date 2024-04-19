@@ -13,21 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.rpc.registry.defaultimpl;
-
-
-import org.neptune.rpc.registry.AbstractRegistry;
-import org.neptune.rpc.registry.RegistryConnectMeta;
+package org.neptune.common;
 
 /**
- * org.neptune.rpc.registry.impl - DefaultRegistry
+ * org.neptune.rpc.transportLayer - UnresolvedAddress
  *
  * @author tony-is-coding
- * @date 2021/12/17 21:40
+ * @date 2021/12/25 16:57
  */
-public abstract class DefaultRegistry extends AbstractRegistry {
+public interface UnresolvedAddress {
+    int port();
 
-    @Override
-    public void shutdownGracefully() {
-    }
+    String host();
 }

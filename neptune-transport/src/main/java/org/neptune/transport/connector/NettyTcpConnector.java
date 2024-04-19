@@ -21,7 +21,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import org.neptune.transport.Connection;
 import org.neptune.transport.NettyConnection;
 import org.neptune.transport.SocketChannelFactoryProvider;
-import org.neptune.transport.UnresolvedAddress;
+import org.neptune.common.UnresolvedAddress;
 import org.neptune.transport.handler.ConnectionWatchDog;
 import org.neptune.transport.handler.ConnectorIdleTriggerHandler;
 import org.neptune.transport.handler.IdleStateChecker;

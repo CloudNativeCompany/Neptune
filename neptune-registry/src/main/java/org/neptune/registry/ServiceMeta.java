@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.rpc;
+package org.neptune.registry;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * org.neptune.rpc.core - ServiceMeta
@@ -26,27 +27,19 @@ import java.io.Serializable;
  */
 public class ServiceMeta implements Serializable {
 
-    protected String appName;
-    private String instanceId;
-    protected String version;
-
     private static final long serialVersionUID = -8908295634641380163L;
+
+    protected String group;     // 这个设计是为了 环境隔离
+    protected String appName;   // 应用名称 appid之类的东西
+    protected String version;   // 服务版本
 
     public ServiceMeta() {
     }
 
-    public ServiceMeta(String appName, String instanceId, String version) {
+    public ServiceMeta(String appName, String version, String group) {
         this.appName = appName;
-        this.instanceId = instanceId;
         this.version = version;
-    }
-
-    public String getInstanceId() {
-        return instanceId;
-    }
-
-    public void setInstanceId(String instanceId) {
-        this.instanceId = instanceId;
+        this.group = group;
     }
 
     public String getAppName() {
@@ -63,5 +56,27 @@ public class ServiceMeta implements Serializable {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ServiceMeta that = (ServiceMeta) o;
+        return Objects.equals(appName, that.appName) &&
+                Objects.equals(version, that.version);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(appName, version);
     }
 }

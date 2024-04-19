@@ -11,5 +11,17 @@
 
     <artifactId>neptune-registry</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.alibaba.nacos</groupId>
+            <artifactId>nacos-client</artifactId>
+            <version>1.4.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.neptune</groupId>
+            <artifactId>neptune-common</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

@@ -54,6 +54,7 @@ public class ProxyFactory<I> {
 
     private String serviceName;
     private String version;
+    private String group;
 
     private Client client;
     private boolean asyncInvoke;
@@ -115,7 +116,7 @@ public class ProxyFactory<I> {
             version = DEFAULT_VERSION;
         }
 
-        ServiceMeta serviceMeta = new ServiceMeta(serviceName, version);
+        ServiceMeta serviceMeta = new ServiceMeta(serviceName, version,group);
         Dispatcher dispatcher = new DefaultDispatcher(loadBalancerType, serializerType, client);
         ClusterInvoker clusterInvoker = ClusterInvokerFactory.create(clusterStrategy);
 

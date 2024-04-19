@@ -13,7 +13,7 @@
 // * See the License for the specific language governing permissions and
 // * limitations under the License.
 // */
-//package org.neptune.rpc.registry.zookeeper;
+//package org.neptune.registry.zookeeper;
 //
 //import org.apache.curator.framework.CuratorFramework;
 //import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -21,7 +21,7 @@
 //import org.apache.curator.retry.ExponentialBackoffRetry;
 //import org.neptune.common.util.SysPropertyUtil;
 //import org.neptune.rpc.ServiceMeta;
-//import org.neptune.rpc.registry.AbstractRegistry;
+//import org.neptune.registry.AbstractRegistry;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 //

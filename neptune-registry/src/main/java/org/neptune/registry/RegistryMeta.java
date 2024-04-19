@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.rpc.registry;
-
-import org.neptune.rpc.ServiceMeta;
-import org.neptune.transport.UnresolvedAddress;
+package org.neptune.registry;
+import org.neptune.common.UnresolvedAddress;
 
 /**
  * org.neptune.rpc.registry - RegistryMeta
@@ -53,5 +51,9 @@ public class RegistryMeta {
 
     public void setServiceMeta(ServiceMeta serviceMeta) {
         this.serviceMeta = serviceMeta;
+    }
+
+    public String toUniqueInstanceId(){
+        return "default";
     }
 }

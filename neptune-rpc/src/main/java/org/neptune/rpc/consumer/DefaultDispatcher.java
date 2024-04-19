@@ -72,7 +72,7 @@ public class DefaultDispatcher implements Dispatcher {
         // 对象序列化
         RequestPayload payload = new RequestPayload(invokeId);
         payload.setBytes(serializer.writeObject(request.getBody()));
-        Channel ch = select(request.getBody().getMetadata());
+        Channel ch = select(null);
 
         DefaultInvokeFuture<T> future = new DefaultInvokeFuture<>(ch, invokeId, returnType);
         ch.writeAndFlush(payload).addListener(

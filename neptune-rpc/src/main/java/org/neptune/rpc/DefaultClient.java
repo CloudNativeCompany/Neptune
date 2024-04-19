@@ -15,11 +15,9 @@
  */
 package org.neptune.rpc;
 
+import org.neptune.common.UnresolvedAddress;
+import org.neptune.registry.*;
 import org.neptune.rpc.consumer.ProxyFactory;
-import org.neptune.rpc.registry.Registry;
-import org.neptune.rpc.registry.RegistryConnectMeta;
-import org.neptune.rpc.registry.RegistryMeta;
-import org.neptune.rpc.registry.ServiceSubscriber;
 import org.neptune.transport.*;
 import org.neptune.transport.connector.Connector;
 import org.neptune.transport.connector.NettyTcpConnector;
@@ -100,19 +98,13 @@ public class DefaultClient implements Client {
 
     @Override
     public ServiceSubscriber connectToRegistryServer(String address) throws Exception {
-        serviceSubscriber.connectToRegistryServer(new RegistryConnectMeta() {
-            @Override
-            public String asConnectString() {
-                return address;
-            }
-        });
-        return serviceSubscriber;
+        return null;
     }
 
     private ServiceMeta parseServiceMeta(Class<?> itf) {
         String serviceName = "ServiceRegistry";
         String version = "1.0.0";
-        return new ServiceMeta(serviceName, version);
+        return new ServiceMeta(serviceName, version,"");
     }
 
     private ServiceSubscriber.Watcher watchService0(ServiceMeta serviceMeta) {

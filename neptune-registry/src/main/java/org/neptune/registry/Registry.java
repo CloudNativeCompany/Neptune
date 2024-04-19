@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.rpc.registry;
+package org.neptune.registry;
 
-import com.alibaba.nacos.api.exception.NacosException;
 
 /**
  * org.neptune.rpc.core - Registry

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.rpc.registry.defaultimpl;
+package org.neptune.registry.defaultimpl;
 
+import org.neptune.registry.RegistryMeta;
 import org.neptune.rpc.ServiceMeta;
-import org.neptune.rpc.registry.RegistryMeta;
 
 import java.util.Map;
 

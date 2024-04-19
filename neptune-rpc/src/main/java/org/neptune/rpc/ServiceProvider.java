@@ -15,9 +15,7 @@
  */
 package org.neptune.rpc;
 
-import org.neptune.rpc.registry.RegistryMeta;
-
-import java.util.concurrent.Executor;
+import org.neptune.registry.RegistryMeta;
 
 /**
  * org.neptune.rpc.registry - ServiceProvider
@@ -26,29 +24,5 @@ import java.util.concurrent.Executor;
  * @date 2021/12/22 11:38
  */
 public class ServiceProvider extends RegistryMeta {
-    Object provider;
-    Class<?> interfaceClass;
-    Executor executor;
-
-    public ServiceProvider serviceMeta(ServiceMeta serviceMeta) {
-        this.serviceMeta = serviceMeta;
-        return this;
-    }
-
-    public ServiceProvider provider(Object provider) {
-        this.provider = provider;
-        return this;
-    }
-
-    public ServiceProvider executor(Executor executor) {
-        this.executor = executor;
-        return this;
-    }
-
-    public ServiceProvider interfaceClass(Class<?> interfaceClass) {
-        this.interfaceClass = interfaceClass;
-        return this;
-    }
-
 
 }
