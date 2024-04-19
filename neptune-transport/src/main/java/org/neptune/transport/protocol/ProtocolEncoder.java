@@ -23,7 +23,7 @@ import org.neptune.transport.RequestPayload;
 import org.neptune.transport.ResponsePayload;
 
 /**
- * org.neptune.core.transportLayer - ProtocolEncoder
+ * org.neptune.rpc.transportLayer - ProtocolEncoder
  *
  * @author tony-is-coding
  * @date 2021/12/22 17:52

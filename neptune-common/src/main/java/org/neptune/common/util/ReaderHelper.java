@@ -54,7 +54,7 @@ public final class ReaderHelper {
         StackTraceElement callStack = stackTrace[2];
         List<StackTraceElement> printTraces = Arrays
                 .stream(stackTrace)
-                .filter(e -> e.toString().startsWith("org.neptune.core"))
+                .filter(e -> e.toString().startsWith("org.neptune.rpc"))
                 .collect(Collectors.toList());
         if (printTraces.size() > 2) {
             printTraces = printTraces.subList(1, Math.min(10, printTraces.size()));

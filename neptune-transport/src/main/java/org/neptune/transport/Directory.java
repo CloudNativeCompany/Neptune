@@ -19,7 +19,7 @@ package org.neptune.transport;
 import org.neptune.common.util.Requires;
 
 /**
- * org.neptune.core.registry - Directory
+ * org.neptune.rpc.registry - Directory
  * 服务查找目录
  *
  * @author tony-is-coding
@@ -29,16 +29,15 @@ public class Directory {
     private transient String directoryCache;
     private final transient ThreadLocal<StringBuilder> stringBuilder = new ThreadLocal<>(); //使用netty fast thread local 代替？
 
-    protected String group;
-    protected String serviceName;
+    protected String appId;
+    private String serviceName;
     protected String version;
 
     public Directory() {
     }
 
-    public Directory(String group, String serviceName, String version) {
-        this.group = Requires.requireNotNull(group, "group");
-        this.serviceName = Requires.requireNotNull(serviceName, "serviceName");
+    public Directory(String serviceName, String version) {
+        this.appId = Requires.requireNotNull(serviceName, "appId");
         this.version = Requires.requireNotNull(version, "version");
     }
 
@@ -58,8 +57,7 @@ public class Directory {
         } else {
             sb.setLength(0);
         }
-        sb.append(group).append('-')
-                .append(serviceName).append('-')
+        sb.append(appId).append('-')
                 .append(version);
         directoryCache = sb.toString();
         return directoryCache;
@@ -72,26 +70,14 @@ public class Directory {
         if (o == null || getClass() != o.getClass()) return false;
 
         Directory metadata = (Directory) o;
-
-        return group.equals(metadata.group)
-                && serviceName.equals(metadata.serviceName)
+        return appId.equals(metadata.appId)
                 && version.equals(metadata.version);
     }
 
     @Override
     public int hashCode() {
-        int result = group.hashCode();
-        result = 31 * result + serviceName.hashCode();
+        int result = appId.hashCode();
         result = 31 * result + version.hashCode();
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Directory{" +
-                "group='" + group + '\'' +
-                ", serviceName='" + serviceName + '\'' +
-                ", version='" + version + '\'' +
-                '}';
     }
 }

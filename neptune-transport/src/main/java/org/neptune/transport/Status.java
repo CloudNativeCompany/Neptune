@@ -16,7 +16,7 @@
 package org.neptune.transport;
 
 /**
- * org.neptune.core.transport - Status
+ * org.neptune.rpc.transport - Status
  *
  * @author tony-is-coding
  * @date 2021/12/28 18:11

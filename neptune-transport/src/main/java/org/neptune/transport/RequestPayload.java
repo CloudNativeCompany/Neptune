@@ -16,7 +16,7 @@
 package org.neptune.transport;
 
 /**
- * org.neptune.core.core - RequestBody
+ * org.neptune.rpc.core - RequestBody
  *
  * @author tony-is-coding
  * @date 2021/12/24 14:03

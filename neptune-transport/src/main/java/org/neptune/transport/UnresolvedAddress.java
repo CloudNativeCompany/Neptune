@@ -16,7 +16,7 @@
 package org.neptune.transport;
 
 /**
- * org.neptune.core.transportLayer - UnresolvedAddress
+ * org.neptune.rpc.transportLayer - UnresolvedAddress
  *
  * @author tony-is-coding
  * @date 2021/12/25 16:57

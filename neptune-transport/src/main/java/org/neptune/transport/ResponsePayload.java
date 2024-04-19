@@ -16,7 +16,7 @@
 package org.neptune.transport;
 
 /**
- * org.neptune.core.transportLayer - ResponsePayload
+ * org.neptune.rpc.transportLayer - ResponsePayload
  *
  * @author tony-is-coding
  * @date 2021/12/24 14:04

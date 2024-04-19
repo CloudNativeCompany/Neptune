@@ -21,7 +21,7 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 
 /**
- * org.neptune.core.transportLayer - ConnectorIdleTriggerHandler
+ * org.neptune.rpc.transportLayer - ConnectorIdleTriggerHandler
  *
  * @author tony-is-coding
  * @date 2021/12/24 18:30

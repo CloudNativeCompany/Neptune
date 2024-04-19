@@ -15,8 +15,8 @@
  */
 package org.neptune.example;
 
-import org.neptune.core.Client;
-import org.neptune.core.DefaultClient;
+import org.neptune.rpc.Client;
+import org.neptune.rpc.DefaultClient;
 
 /**
  * org.neptune.example - AutoClient

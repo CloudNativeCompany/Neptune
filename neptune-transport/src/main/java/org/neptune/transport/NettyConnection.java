@@ -24,7 +24,7 @@ import io.netty.util.AttributeKey;
 import java.net.SocketAddress;
 
 /**
- * org.neptune.core.transportLayer - NettyConnection
+ * org.neptune.rpc.transportLayer - NettyConnection
  *
  * @author tony-is-coding
  * @date 2021/12/16 17:04

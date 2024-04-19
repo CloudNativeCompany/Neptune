@@ -20,7 +20,7 @@ import io.netty.channel.Channel;
 import org.neptune.transport.ResponsePayload;
 
 /**
- * org.neptune.core.transportLayer - ConsumerProcessor
+ * org.neptune.rpc.transportLayer - ConsumerProcessor
  *
  * @author tony-is-coding
  * @date 2021/12/16 1:05

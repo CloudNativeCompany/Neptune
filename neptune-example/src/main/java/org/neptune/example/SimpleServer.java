@@ -15,10 +15,10 @@
  */
 package org.neptune.example;
 
-import org.neptune.core.DefaultServer;
-import org.neptune.core.Server;
-import org.neptune.core.ServiceMeta;
-import org.neptune.core.ServiceProvider;
+import org.neptune.rpc.DefaultServer;
+import org.neptune.rpc.Server;
+import org.neptune.rpc.ServiceMeta;
+import org.neptune.rpc.ServiceProvider;
 
 /**
  * org.neptune.example - SimpleServer

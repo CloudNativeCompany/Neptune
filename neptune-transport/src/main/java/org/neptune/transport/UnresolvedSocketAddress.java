@@ -16,7 +16,7 @@
 package org.neptune.transport;
 
 /**
- * org.neptune.core.transportLayer - UnresolvedSocketAddress
+ * org.neptune.rpc.transportLayer - UnresolvedSocketAddress
  *
  * @author tony-is-coding
  * @date 2021/12/25 17:07

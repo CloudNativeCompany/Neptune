@@ -15,7 +15,7 @@
  */
 package org.neptune.example;
 
-import org.neptune.core.annotation.RpcService;
+import org.neptune.rpc.annotation.RpcService;
 
 /**
  * org.neptune.example - ServiceRegistry

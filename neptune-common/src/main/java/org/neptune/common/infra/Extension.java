@@ -21,7 +21,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * org.neptune.core.annotation - Extension
+ * org.neptune.rpc.annotation - Extension
  *
  * @author tony-is-coding
  * @date 2021/12/22 15:26

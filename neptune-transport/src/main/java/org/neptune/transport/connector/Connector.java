@@ -21,7 +21,7 @@ import org.neptune.transport.UnresolvedAddress;
 import org.neptune.transport.processor.ConsumerProcessor;
 
 /**
- * org.neptune.core.transportLayer - Connector
+ * org.neptune.rpc.transportLayer - Connector
  * 连接器
  *
  * @author tony-is-coding

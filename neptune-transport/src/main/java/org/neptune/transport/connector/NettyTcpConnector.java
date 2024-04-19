@@ -35,7 +35,7 @@ import java.net.SocketAddress;
 import java.util.concurrent.ThreadFactory;
 
 /**
- * org.neptune.core.transportLayer - NettyTcpConnector
+ * org.neptune.rpc.transportLayer - NettyTcpConnector
  * <p>
  * ProtocolEncoder -> IdleStateChecker                                                                           (出方向)
  * Client                                                                                                                                   server

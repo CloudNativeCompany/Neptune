@@ -22,7 +22,7 @@ import org.neptune.transport.processor.ConsumerProcessor;
 import org.neptune.transport.protocol.ProtocolEncoder;
 
 /**
- * org.neptune.core.transportLayer - NettyRpcConnector
+ * org.neptune.rpc.transportLayer - NettyRpcConnector
  *
  * @author tony-is-coding
  * @date 2021/12/24 15:51

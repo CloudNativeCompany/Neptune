@@ -24,7 +24,7 @@ import org.neptune.transport.ResponsePayload;
 import org.neptune.transport.processor.ConsumerProcessor;
 
 /**
- * org.neptune.core.transportLayer - ResponseHandler
+ * org.neptune.rpc.transportLayer - ResponseHandler
  *
  * @author tony-is-coding
  * @date 2021/12/24 16:32

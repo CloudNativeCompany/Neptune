@@ -23,7 +23,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 /**
- * org.neptune.core.util - SysPropertyUtil
+ * org.neptune.rpc.util - SysPropertyUtil
  *
  * @author tony-is-coding
  * @date 2022/5/6 14:58

@@ -18,7 +18,7 @@ package org.neptune.transport;
 import io.netty.channel.ChannelFutureListener;
 
 /**
- * org.neptune.core.transportLayer - ConnectFuture
+ * org.neptune.rpc.transportLayer - ConnectFuture
  *
  * @author tony-is-coding
  * @date 2021/12/25 15:41

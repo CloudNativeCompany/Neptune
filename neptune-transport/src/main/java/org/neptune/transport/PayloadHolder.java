@@ -16,7 +16,7 @@
 package org.neptune.transport;
 
 /**
- * org.neptune.core.core - PayloadHolder
+ * org.neptune.rpc.core - PayloadHolder
  *
  * @author tony-is-coding
  * @date 2021/12/24 13:53

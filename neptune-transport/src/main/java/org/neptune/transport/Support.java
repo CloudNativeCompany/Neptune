@@ -16,7 +16,7 @@
 package org.neptune.transport;
 
 /**
- * org.neptune.core.transportLayer - Support
+ * org.neptune.rpc.transportLayer - Support
  *
  * @author tony-is-coding
  * @date 2021/12/20 15:28
