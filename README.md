@@ -1,10 +1,9 @@
 ## Neptune
-[EN](README-EN.md)
 
 > Neptune 是一个程序员的分布式系统研发的起点
 
 ### 架构
-![architecture](/docs/img/architecture.png)
+![architecture](./docs/img/architecture.png)
 
 
 ### 快速使用
