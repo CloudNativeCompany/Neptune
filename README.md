@@ -1,19 +1,17 @@
 ## Neptune
-[EN](README-EN.md)
 
 > Neptune 是一个程序员的分布式系统研发的起点
 
-### 架构
-![architecture](/docs/img/architecture.png)
-
-
 ### 快速使用
-
+```
+TO BE finished 
+```
 
 ### 文档 & 参考
-#### - [功能完成进度](/docs/project-schedule.md)
-#### - [设计思路](/docs/design.md)
-#### - [参考文档](/docs/design-reference.md)
+- [功能完成进度](./docs/project-schedule.md)
+- [设计文档](./docs/design-reference.md)
+- [系统架构](./docs/design.md)
+- [关于优化的思考](./docs/optimizer-thinking.md)
 
 ### 参与贡献
 1. fork 项目到自己的仓库
