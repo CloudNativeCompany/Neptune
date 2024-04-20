@@ -13,19 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.rpc.consumer;
+package org.neptune.rpc.client;
 
-import org.neptune.rpc.Client;
-import org.neptune.rpc.ServiceMeta;
-import org.neptune.rpc.annotation.RpcService;
-import org.neptune.rpc.consumer.cluster.ClusterInvoker;
-import org.neptune.rpc.consumer.cluster.ClusterInvokerFactory;
-import org.neptune.rpc.consumer.handler.AsyncInvocationHandler;
-import org.neptune.rpc.consumer.handler.SyncInvocationHandler;
-import org.neptune.rpc.consumer.lb.LoadBalancer;
-import org.neptune.rpc.seialize.Serializer;
+import org.neptune.registry.ServiceMeta;
+import org.neptune.rpc.client.cluster.ClusterInvoker;
+import org.neptune.rpc.client.cluster.ClusterInvokerFactory;
+import org.neptune.rpc.client.handler.ByteBuddyInvocationHandlerBridge;
 import org.neptune.common.util.Requires;
-import org.neptune.common.util.Strings;
 import org.neptune.common.util.ThrowUtil;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
@@ -47,33 +41,20 @@ import static org.neptune.common.util.Requires.*;
 
 public class ProxyFactory<I> {
 
-    private static final String DEFAULT_VERSION = "1.0.0";
-
     // 接口类型
     private final Class<I> interfaceClass;
 
-    private String serviceName;
-    private String version;
-    private String group;
-
+    private ServiceMeta serviceMeta;
     private Client client;
-    private boolean asyncInvoke;
+    private FactoryProxy factoryProxy;
 
-    private Serializer.SerializerType serializerType = Serializer.SerializerType.getDefault();
-    private LoadBalancer.LoadBalancerType loadBalancerType = LoadBalancer.LoadBalancerType.getDefault();
-    private ClusterInvoker.ClusterStrategy clusterStrategy = ClusterInvoker.ClusterStrategy.getDefault();
 
     public static <I> ProxyFactory<I> factory(Class<I> interfaceClass) {
         return new ProxyFactory<>(interfaceClass);
     }
 
-    public ProxyFactory<I> serviceName(String serviceName) {
-        this.serviceName = serviceName;
-        return this;
-    }
-
-    public ProxyFactory<I> version(String version) {
-        this.version = version;
+    public ProxyFactory<I> serviceMeta( ServiceMeta serviceMeta) {
+        this.serviceMeta = serviceMeta;
         return this;
     }
 
@@ -82,70 +63,33 @@ public class ProxyFactory<I> {
         return this;
     }
 
-    public ProxyFactory<I> invokeAsync() {
-        this.asyncInvoke = true;
+    public ProxyFactory<I> factoryProxy( FactoryProxy factoryProxy) {
+        this.factoryProxy = factoryProxy;
         return this;
     }
-
-    public ProxyFactory<I> clusterStrategy(ClusterInvoker.ClusterStrategy clusterStrategy) {
-        this.clusterStrategy = clusterStrategy;
-        return this;
-    }
-
 
     public I newInstance() {
         requireNotNull(interfaceClass, "proxy interface  must be assigned");
-        if(serviceName != null){
-            requireTrue(Strings.isNotBlank(serviceName), "serviceName");
-        }
 
-        RpcService annotation = interfaceClass.getAnnotation(RpcService.class);
-        if (annotation != null) {
-            if (serviceName == null) {
-                serviceName = annotation.name();
-            }
-            if(Strings.isBlank(serviceName)){
-                String[] split = interfaceClass.getName().split("\\.");
-                serviceName = split[split.length - 1];
-            }
-        }
-
-        requireNotNull(client, "client");
-
-        if (Strings.isBlank(version)) {
-            version = DEFAULT_VERSION;
-        }
-
-        ServiceMeta serviceMeta = new ServiceMeta(serviceName, version,group);
-        Dispatcher dispatcher = new DefaultDispatcher(loadBalancerType, serializerType, client);
-        ClusterInvoker clusterInvoker = ClusterInvokerFactory.create(clusterStrategy);
-
-        Object handler;
-        if (asyncInvoke) {
-            handler = new AsyncInvocationHandler(
-                    clusterInvoker,
-                    serviceMeta,
-                    client,
-                    dispatcher
-            );
-        } else {
-            handler = new SyncInvocationHandler(
-                    clusterInvoker,
-                    serviceMeta,
-                    client,
-                    dispatcher
-            );
-        }
-
+        Dispatcher dispatcher = new DefaultDispatcher(factoryProxy.getLoadBalancerType(), factoryProxy.getSerializerType(), client);
+        ClusterInvoker clusterInvoker = ClusterInvokerFactory.create(factoryProxy.getClusterStrategy());
+        Object handler = new ByteBuddyInvocationHandlerBridge(
+                clusterInvoker,
+                serviceMeta,
+                client,
+                dispatcher,factoryProxy.isAsyncInvoke()
+        );
         return FactoryDelegate.BYTE_BUDDY.newProxy(interfaceClass, handler);
     }
 
     private ProxyFactory(Class<I> clz) {
         this.interfaceClass = clz;
-        asyncInvoke = false;
     }
 
     private interface FactoryDelegate {
+        // todo: 期望做到和 spring 一样支持动态得选择代理技术
+
+        // todo: finish jdk proxy;
         FactoryDelegate JDK_PROXY = new FactoryDelegate() {
             @Override
             public <T> T newProxy(Class<T> interfaceType, Object handler) {

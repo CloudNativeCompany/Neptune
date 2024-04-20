@@ -15,9 +15,9 @@
  */
 package org.neptune.example;
 
-import org.neptune.rpc.DefaultServer;
-import org.neptune.rpc.Server;
-import org.neptune.rpc.ServiceMeta;
+import org.neptune.rpc.server.DefaultServer;
+import org.neptune.rpc.server.Server;
+import org.neptune.registry.ServiceMeta;
 import org.neptune.rpc.ServiceProvider;
 
 /**
@@ -32,11 +32,11 @@ public class SimpleServer {
         try {
             server = new DefaultServer();
 
-            ServiceProvider provider = server.serviceProvider().
-                    serviceMeta(new ServiceMeta())
-                    .provider(new ServiceImpl())
-                    .interfaceClass(Service.class);
-            server.publish(provider);
+//            ServiceProvider provider = server.serviceProvider().
+//                    serviceMeta(new ServiceMeta())
+//                    .provider(new ServiceImpl())
+//                    .interfaceClass(Service.class);
+//            server.publish(provider);
             server.start();
         } catch (Exception e) {
         } finally {

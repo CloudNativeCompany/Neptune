@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.rpc.consumer.cluster;
+package org.neptune.rpc.client.cluster;
 
 import org.neptune.rpc.InvokeFuture;
 import org.neptune.rpc.Request;
-import org.neptune.rpc.consumer.Dispatcher;
+import org.neptune.rpc.client.Dispatcher;
 
 /**
  * org.neptune.rpc.core - ClusterInvoker

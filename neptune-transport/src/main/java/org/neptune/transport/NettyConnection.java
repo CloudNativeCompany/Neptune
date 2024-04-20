@@ -40,18 +40,8 @@ public class NettyConnection implements Connection {
     private Channel channel;
     private boolean attacked = false;
 
-    /**
-     * now is maybe return a null
-     *
-     * @param channel
-     * @return
-     */
-    public static NettyConnection linkedConnection(Channel channel) {
-        Attribute<NettyConnection> attr = channel.attr(NETTY_CONNECTION_KEY);
-        return attr.get();
-    }
 
-    private void linkTo(Channel channel) {
+    private void attackTo(Channel channel) {
         if (!attacked) {
             attacked = true;
             this.channel = channel;
@@ -70,10 +60,10 @@ public class NettyConnection implements Connection {
         this.remoteAddress = remoteAddress;
         this.reconnect = reconnect;
         if (future.isSuccess()) {
-            linkTo(future.channel());
+            attackTo(future.channel());
         } else {
             future.addListener((ChannelFutureListener) f -> {
-                linkTo(f.channel());
+                attackTo(f.channel());
             });
         }
     }

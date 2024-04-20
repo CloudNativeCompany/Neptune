@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * @desc TODO
+ * @desc
  *
  * @author tony
  * @createDate 2024/4/19 11:34 上午
@@ -44,7 +44,7 @@ public class NacosServicePublisher extends AbstractServicePublisher {
             Map<String,String> metadata = new LinkedHashMap<>();
 
             metadata.put("group", serviceMeta.getGroup());
-            metadata.put("version", serviceMeta.getVersion());
+            metadata.put("version", serviceMeta.getAppVersion());
             metadata.put("appName", serviceMeta.getAppName());
 
             instance.setIp(meta.getAddress().host());
@@ -74,17 +74,14 @@ public class NacosServicePublisher extends AbstractServicePublisher {
             Map<String,String> metadata = new LinkedHashMap<>();
 
             metadata.put("group", serviceMeta.getGroup());
-            metadata.put("version", serviceMeta.getVersion());
+            metadata.put("version", serviceMeta.getAppVersion());
             metadata.put("appName", serviceMeta.getAppName());
 
             instance.setIp(meta.getAddress().host());
             instance.setPort(meta.getAddress().port());
             instance.setInstanceId(meta.toUniqueInstanceId());
             instance.setServiceName(serviceName);
-
-            instance.setWeight(meta.getWight()); // 设置权重
             instance.setHealthy(false);
-            // 向 Nacos 注册服务实例
             namingService.deregisterInstance(serviceName, instance);
             listener.onCompleted();
         }catch (NacosException e){

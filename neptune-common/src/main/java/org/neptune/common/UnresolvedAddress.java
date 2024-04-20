@@ -17,7 +17,7 @@ package org.neptune.common;
 
 /**
  * org.neptune.rpc.transportLayer - UnresolvedAddress
- *
+ * 未明确的地址, 不确定是否真实存在
  * @author tony-is-coding
  * @date 2021/12/25 16:57
  */

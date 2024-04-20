@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.rpc;
+package org.neptune.transport.processor;
 
-import org.neptune.transport.processor.ConsumerProcessor;
 import org.neptune.transport.ResponsePayload;
 import io.netty.channel.Channel;
 
@@ -44,6 +43,8 @@ public class DefaultConsumerProcessor implements ConsumerProcessor {
 
     @Override
     public void handlerResponse(Channel channel, ResponsePayload response) throws Exception {
+        //todo: handle response
+        //
     }
 
 }

@@ -47,31 +47,16 @@ import java.util.concurrent.ThreadFactory;
 public class NettyTcpConnector extends NettyConnector {
 
     private ConsumerProcessor processor;
-    private static final int DEFAULT_CONNECTOR_WORKER_NUM = 10;
+    private static final int DEFAULT_CONNECTOR_WORKER_NUM = 4;
 
     private final ChannelOutboundHandler encoder = new ProtocolEncoder();
     private final ResponseHandler handler = new ResponseHandler();
     private final ChannelInboundHandler connectIdleTriggerHandler = new ConnectorIdleTriggerHandler();
 
-
-
     public NettyTcpConnector(ConsumerProcessor processor) {
         super(DEFAULT_CONNECTOR_WORKER_NUM, false);
         this.processor =  processor;
     }
-
-    public NettyTcpConnector(int workerNum) {
-        super(workerNum, false);
-    }
-
-    public NettyTcpConnector(boolean isNative) {
-        super(DEFAULT_CONNECTOR_WORKER_NUM, isNative);
-    }
-
-    public NettyTcpConnector(int workerNum, boolean isNative) {
-        super(workerNum, isNative);
-    }
-
 
     @Override
     public Connection connect(UnresolvedAddress remoteSocketAddress, boolean async) {
@@ -82,13 +67,6 @@ public class NettyTcpConnector extends NettyConnector {
     public ConsumerProcessor process() {
         return processor;
     }
-
-    @Override
-    public void withProcessor(ConsumerProcessor processor) {
-        this.processor = processor;
-        handler.withProcess(processor);
-    }
-
 
     public Connection connect0(final UnresolvedAddress address, boolean async) {
         setOptions();
@@ -128,7 +106,8 @@ public class NettyTcpConnector extends NettyConnector {
             // todo: throw an runnable exception
             return null;
         }
-        // 这里要将 channel 包装成一个Connection, 目的是为了实现连接的异步创建
+
+        // 这里要将 channel 包装成一个Connection, 目的是为了实现连接的异步创建, 和一些自定义的 继承观测
         return new NettyConnection(future, socketAddress) {
             @Override
             public void setReconnect(boolean reconnect) {

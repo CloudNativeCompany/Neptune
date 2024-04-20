@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.rpc.consumer.handler;
+package org.neptune.rpc.client.handler;
 
-import org.neptune.rpc.Client;
-import org.neptune.rpc.ServiceMeta;
-import org.neptune.rpc.consumer.Dispatcher;
-import org.neptune.rpc.consumer.cluster.ClusterInvoker;
+import org.neptune.registry.ServiceMeta;
+import org.neptune.rpc.client.Client;
+import org.neptune.rpc.client.Dispatcher;
+import org.neptune.rpc.client.cluster.ClusterInvoker;
 import net.bytebuddy.implementation.bind.annotation.AllArguments;
 import net.bytebuddy.implementation.bind.annotation.Origin;
 import net.bytebuddy.implementation.bind.annotation.RuntimeType;
@@ -31,18 +31,21 @@ import java.lang.reflect.Method;
  * @author tony-is-coding
  * @date 2021/12/20 18:01
  */
-public class AsyncInvocationHandler extends AbstractInvocationHandler {
+public class ByteBuddyInvocationHandlerBridge extends AbstractInvocationHandler {
 
-
-    public AsyncInvocationHandler(ClusterInvoker clusterInvoker, ServiceMeta meta, Client client, Dispatcher dispatcher) {
+    public ByteBuddyInvocationHandlerBridge(ClusterInvoker clusterInvoker,
+                                            ServiceMeta meta,
+                                            Client client,
+                                            Dispatcher dispatcher, boolean invokeAsync) {
         this.clusterInvoker = clusterInvoker;
         this.serviceMeta = meta;
         this.client = client;
         this.dispatcher = dispatcher;
+        this.invokeAsync = invokeAsync;
     }
 
     @RuntimeType
     public Object invoke(@Origin Method method, @AllArguments @RuntimeType Object[] args) throws Throwable {
-        return doInvoke(method.getName(), args, method.getReturnType(), true);
+        return doInvoke(method.getName(), args, method.getReturnType());
     }
 }

@@ -15,8 +15,8 @@
  */
 package org.neptune.registry.defaultimpl;
 
-import org.neptune.registry.RegistryMeta;
-import org.neptune.rpc.ServiceMeta;
+import org.neptune.registry.AbstractServiceSubscriber;
+import org.neptune.registry.ServiceMeta;
 
 import java.util.Map;
 
@@ -26,12 +26,7 @@ import java.util.Map;
  * @author tony-is-coding
  * @date 2021/12/16 0:16
  */
-public class DefaultServiceSubscriber extends DefaultRegistry{
-
-    @Override
-    public Map<Object, Integer> consumers() {
-        return null;
-    }
+public class DefaultServiceSubscriber extends AbstractServiceSubscriber {
 
     @Override
     public void subscribe(ServiceMeta serviceMeta, RegistryNotifier notifier) {
@@ -42,23 +37,8 @@ public class DefaultServiceSubscriber extends DefaultRegistry{
 
     }
 
-    @Override
-    public void register(RegistryMeta meta, RegisterListener listener) {
-
-    }
 
     @Override
-    public void unregister(RegistryMeta meta, RegisterListener listener) {
-
-    }
-
-    @Override
-    public void register(RegistryMeta meta) throws Throwable {
-
-    }
-
-    @Override
-    public void unregister(RegistryMeta meta) throws Throwable {
-
+    public void shutdownGracefully() {
     }
 }

@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.rpc.consumer.handler;
+package org.neptune.rpc.client.handler;
 
 import org.neptune.rpc.*;
-import org.neptune.rpc.consumer.Dispatcher;
-import org.neptune.rpc.consumer.cluster.ClusterInvoker;
+import org.neptune.rpc.client.Client;
+import org.neptune.rpc.client.Dispatcher;
+import org.neptune.rpc.client.cluster.ClusterInvoker;
 import net.bytebuddy.implementation.bind.annotation.AllArguments;
 import net.bytebuddy.implementation.bind.annotation.Origin;
 import net.bytebuddy.implementation.bind.annotation.RuntimeType;
-import org.neptune.rpc.ServiceMeta;
+import org.neptune.registry.ServiceMeta;
 
 import java.lang.reflect.Method;
 
@@ -39,12 +40,13 @@ public abstract class AbstractInvocationHandler {
     protected ServiceMeta serviceMeta;
     protected Client client;
     protected Dispatcher dispatcher;
+    protected boolean invokeAsync;
 
-    protected Object doInvoke(String methodName, Object[] args, Class<?> returnType, boolean sync) throws Throwable {
+    protected Object doInvoke(String methodName, Object[] args, Class<?> returnType) throws Throwable {
         Request request = createRequest(methodName, args);
         //执行上下文, 用来在多个执行流中传递
         InvokeFuture<?> resultFuture = clusterInvoker.invoke(dispatcher, request, returnType);
-        if (sync) {
+        if (!invokeAsync) {
             return resultFuture.getResult();
         }
         return resultFuture;
@@ -54,12 +56,9 @@ public abstract class AbstractInvocationHandler {
         RequestBody body = new RequestBody(serviceMeta);
         body.setMethodName(methodName);
         body.setArgs(args);
-        body.setAppName(client.appName());
+        body.setAppName(client.getClientAppName());
         Request request = new Request(10100000L); // TODO: distribute unique ID
         request.setBody(body);
         return request;
     }
-
-    public abstract Object invoke(@Origin Method method, @AllArguments @RuntimeType Object[] args) throws Throwable;
-
 }

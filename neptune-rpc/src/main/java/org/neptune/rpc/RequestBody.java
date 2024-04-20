@@ -15,6 +15,8 @@
  */
 package org.neptune.rpc;
 
+import org.neptune.registry.ServiceMeta;
+
 import java.io.Serializable;
 
 /**

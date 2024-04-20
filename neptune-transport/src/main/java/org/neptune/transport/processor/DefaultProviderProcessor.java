@@ -13,37 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.rpc;
+package org.neptune.transport.processor;
 
-import org.neptune.registry.ServicePublisher;
-import org.neptune.transport.acceptor.Acceptor;
+import org.neptune.transport.processor.ProviderProcessor;
 
+import java.nio.channels.Channel;
 
 /**
- * org.neptune.rpc.core - Server
+ * org.neptune.rpc.core - DefaultProviderProcessor
  *
  * @author tony-is-coding
- * @date 2021/12/21 18:40
+ * @date 2021/12/24 16:07
  */
-public interface Server {
+public class DefaultProviderProcessor implements ProviderProcessor {
+    @Override
+    public void shutdownGracefully() {
+    }
 
-    Acceptor acceptor();
-
-    ServicePublisher connectToRegistryServer(String address);
-
-    void publish(ServiceProvider serviceProvider);
-
-    void publish(ServiceProvider... serviceProviders);
-
-    void cancelPublish(ServiceProvider serviceProvider);
-
-    void cancelPublish(ServiceProvider... serviceProviders);
-
-    void start();
-
-    ServiceProvider serviceProvider();
-
-    void shutdownGracefully();
-
-    boolean isRunning();
+    @Override
+    public void handleRequest(Channel channel, Object request) throws Exception {
+    }
 }

@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.rpc;
+package org.neptune.rpc.client;
 
-import org.neptune.rpc.consumer.ProxyFactory;
+import org.neptune.registry.ServiceMeta;
+import org.neptune.rpc.client.ProxyFactory;
 import org.neptune.registry.ServiceSubscriber;
-import org.neptune.transport.connector.Connector;
 
 /**
  * org.neptune.rpc.core - Client
@@ -27,29 +27,25 @@ import org.neptune.transport.connector.Connector;
  */
 public interface Client {
     /*
-        README
+        README:
          客户端从抽象层面应该理解为一个 配置,工厂 的集合体, 考虑:
             1. 一个连接器,用于创建和管理连接
             2. 代理工厂, 进行class包装
-            3. 连接注册中心的能力, 监听与接受服务发布
+            3. 连接注册中心的能力
      */
-
-    String appName();
+    String getClientAppName();
 
     ServiceSubscriber serviceSubscriber();
 
-    void watchService(Class<?> itf);
-
-    void watchService(Class<?> itf, String version);
-
-    ServiceSubscriber connectToRegistryServer(String address) throws Exception;
-
-    void connectTo(String address);
-
-    Connector connector();
-
-    // 不应该考虑这个会被多次调用
     <T> ProxyFactory<T> proxy(Class<T> clz);
+
+    <T> ProxyFactory<T> proxy( Class<T> clz, ServiceMeta serviceMeta);
+
+    <T> ProxyFactory<T> proxy( Class<T> clz, ServiceMeta serviceMeta, FactoryProxy factoryProxy);
+
+    <T> void  watchForServerAvailable(Class<T> clz);
+
+    void  watchForServerAvailable(ServiceMeta serviceMeta);
 
     void shutdownGracefully();
 }

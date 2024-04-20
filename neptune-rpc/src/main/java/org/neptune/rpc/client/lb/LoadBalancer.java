@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.rpc.consumer.lb;
+package org.neptune.rpc.client.lb;
 
 import org.neptune.transport.ConnectionGroup;
 import org.neptune.transport.ServiceConnectionHolder;

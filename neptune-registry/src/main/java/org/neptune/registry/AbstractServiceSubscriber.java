@@ -4,6 +4,7 @@ import org.neptune.common.util.ConcurrentSet;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -23,9 +24,14 @@ public abstract class AbstractServiceSubscriber implements ServiceSubscriber{
 
     protected void updateServiceList(final ServiceMeta serviceMeta, List<RegistryMeta> serviceProviders){
         synchronized (SERVICE_PROVIDER_MAP){
-            ConcurrentSet<RegistryMeta> registryMetas = SERVICE_PROVIDER_MAP.get(serviceMeta);
+            ConcurrentSet<RegistryMeta> registryMetas = SERVICE_PROVIDER_MAP.getOrDefault(serviceMeta, new ConcurrentSet<>());
             registryMetas.addAll(serviceProviders);
+            SERVICE_PROVIDER_MAP.put(serviceMeta, registryMetas);
         }
+    }
 
+    @Override
+    public Set<RegistryMeta> serviceList(ServiceMeta serviceMeta) {
+        return SERVICE_PROVIDER_MAP.get(serviceMeta);
     }
 }

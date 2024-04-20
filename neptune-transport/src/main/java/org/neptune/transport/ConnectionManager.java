@@ -31,10 +31,10 @@ public class ConnectionManager {
         README: 连接管理器
             1. 服务发布后: 往某一个实例下新增
      */
-    private final ConcurrentHashMap<Directory, ServiceConnectionHolder> serviceConnectionHolders = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, ServiceConnectionHolder> serviceConnectionHolders = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<UnresolvedAddress, ConnectionGroup> addressGroupMap = new ConcurrentHashMap<>();
 
-    public ServiceConnectionHolder find(Directory directory) {
+    public ServiceConnectionHolder find(String directory) {
         return serviceConnectionHolders.get(directory);
     }
 

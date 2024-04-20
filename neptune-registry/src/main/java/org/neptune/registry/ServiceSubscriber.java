@@ -16,7 +16,9 @@
 package org.neptune.registry;
 
 
+import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -38,6 +40,8 @@ public interface ServiceSubscriber extends Registry{
     void subscribe(ServiceMeta serviceMeta, RegistryNotifier notifier);
 
     void unsubscribe(ServiceMeta serviceMeta);
+
+    Set<RegistryMeta> serviceList(ServiceMeta serviceMeta);
 
     enum RegisterState {
         PREPARE,

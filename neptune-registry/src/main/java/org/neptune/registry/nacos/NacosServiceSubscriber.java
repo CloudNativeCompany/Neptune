@@ -5,8 +5,8 @@ import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.listener.NamingEvent;
 import com.alibaba.nacos.api.naming.pojo.Instance;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.neptune.common.UnresolvedAddress;
+import org.neptune.common.UnresolvedSocketAddress;
 import org.neptune.registry.AbstractServiceSubscriber;
 import org.neptune.registry.RegistryMeta;
 import org.neptune.registry.ServiceMeta;
@@ -49,25 +49,24 @@ public class NacosServiceSubscriber extends AbstractServiceSubscriber {
     public void subscribe(ServiceMeta serviceMeta, RegistryNotifier notifier) {
         String serviceName = serviceMeta.getAppName();
         try{
-            List<Instance> allInstances = namingService.getAllInstances(serviceName);
-            try {
-                System.out.println(new ObjectMapper().writeValueAsString(allInstances));
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-
             namingService.subscribe(serviceName, event -> {
+
                 NamingEvent namedEvent = (NamingEvent) event;
+                System.out.println("event trigger: " + event);
                 List<RegistryMeta> registeredMetas = new LinkedList<>();
                 for (Instance instance : namedEvent.getInstances()) {
-                    ServiceMeta s = new ServiceMeta();
-                    s.setAppName(serviceName);
                     RegistryMeta meta = new RegistryMeta();
 
                     ServiceMeta sm = new ServiceMeta();
                     sm.setGroup(instance.getMetadata().get("group"));
-                    sm.setVersion(instance.getMetadata().get("version"));
+                    sm.setAppVersion(instance.getMetadata().get("version"));
                     sm.setAppName(instance.getMetadata().get("appName"));
+
+                    UnresolvedAddress addr = new UnresolvedSocketAddress(instance.getIp(), instance.getPort());
+
+                    meta.setWight((int)instance.getWeight());
+                    meta.setAddress(addr);
+                    meta.setServiceMeta(sm);
 
                     registeredMetas.add(meta);
                 }

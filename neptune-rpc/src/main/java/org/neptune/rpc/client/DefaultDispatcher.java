@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.rpc.consumer;
+package org.neptune.rpc.client;
 
+import org.neptune.common.util.ReaderHelper;
+import org.neptune.registry.ServiceMeta;
 import org.neptune.transport.ServiceConnectionHolder;
 import org.neptune.rpc.*;
-import org.neptune.rpc.consumer.lb.LoadBalancer;
-import org.neptune.rpc.consumer.lb.LoadBalancerFactory;
+import org.neptune.rpc.client.lb.LoadBalancer;
+import org.neptune.rpc.client.lb.LoadBalancerFactory;
 import org.neptune.rpc.factories.SerializerFactory;
 import org.neptune.rpc.seialize.Serializer;
-import org.neptune.transport.Directory;
 import org.neptune.transport.ConnectionGroup;
 import org.neptune.transport.RequestPayload;
 import io.netty.channel.Channel;
@@ -59,7 +60,8 @@ public class DefaultDispatcher implements Dispatcher {
         return send(request, returnType);
     }
 
-    private Channel select(Directory directory) {
+    // 匹配一个目标连接来
+    private Channel select(ServiceMeta serviceMeta) {
         ServiceConnectionHolder groups = new ServiceConnectionHolder(); // TODO: 组化管理
         ConnectionGroup group = loadBalancer.select(groups);
         return group.next().channel();

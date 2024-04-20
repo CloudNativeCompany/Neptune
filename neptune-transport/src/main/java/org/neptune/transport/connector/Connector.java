@@ -33,11 +33,6 @@ public interface Connector {
 
     ConsumerProcessor process();
 
-    void withProcessor(ConsumerProcessor processor);
-
-//    CowConnectionGroupList find(Directory directory);
-//    ConnectionGroup group(UnresolvedAddress address);
-
     void shutdownGracefully();
 
 }

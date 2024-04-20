@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.rpc;
+package org.neptune.rpc.server;
 
 import org.neptune.common.infra.ExtensionLoader;
 import org.neptune.registry.ServicePublisher;
+import org.neptune.rpc.ServiceProvider;
+import org.neptune.rpc.server.Server;
 import org.neptune.transport.acceptor.Acceptor;
 
 

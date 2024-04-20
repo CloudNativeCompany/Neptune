@@ -3,8 +3,6 @@ package org.neptune.registry;
 import org.junit.jupiter.api.Test;
 import org.neptune.common.UnresolvedAddress;
 import org.neptune.common.UnresolvedSocketAddress;
-import org.neptune.registry.ServiceMeta;
-import org.neptune.registry.RegistryMeta;
 import org.neptune.registry.nacos.NacosServicePublisher;
 
 
@@ -17,7 +15,7 @@ class NacosServicePublisherTest {
         );
 
         ServiceMeta serviceMeta = new ServiceMeta();
-        serviceMeta.setVersion("1.0.0");
+        serviceMeta.setAppVersion("1.0.0");
         serviceMeta.setAppName("demo-service");
         serviceMeta.setGroup("default");
 

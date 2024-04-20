@@ -15,12 +15,13 @@
  */
 package org.neptune.registry.defaultimpl;
 
+import org.neptune.registry.AbstractServicePublisher;
 import org.neptune.registry.RegistryMeta;
-import org.neptune.rpc.ServiceMeta;
-import org.neptune.rpc.ServiceProvider;
+import org.neptune.registry.ServiceMeta;
+import org.neptune.registry.ServiceSubscriber;
+
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -29,9 +30,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @author tony-is-coding
  * @date 2021/12/16 0:16
  */
-public class DefaultServicePublisher extends DefaultRegistry {
-
-    ConcurrentHashMap<String, ServiceProvider> serviceLocal;
+public class DefaultServicePublisher extends AbstractServicePublisher {
 
     private final LinkedBlockingQueue<RegistryMeta> queue = new LinkedBlockingQueue<>();
 
@@ -56,17 +55,7 @@ public class DefaultServicePublisher extends DefaultRegistry {
     }
 
     @Override
-    public Map<Object, Integer> consumers() {
-        return null;
-    }
-
-    @Override
-    public void subscribe(ServiceMeta serviceMeta, RegistryNotifier notifier) {
-
-    }
-
-    @Override
-    public void unsubscribe(ServiceMeta serviceMeta) {
+    public void shutdownGracefully() {
 
     }
 }

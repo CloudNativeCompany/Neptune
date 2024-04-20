@@ -29,7 +29,14 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface RpcService {
-    String name() default "";
 
-    String group() default "DEFAULT";
+    String DEFAULT_APP_NAME = "DEFAULT_APP_NAME";
+    String DEFAULT_GROUP = "DEFAULT_GROUP";
+    String DEFAULT_VERSION = "1.0.0-SNAPSHOT";
+
+    String name() default DEFAULT_APP_NAME;
+
+    String group() default DEFAULT_GROUP;
+
+    String version() default DEFAULT_VERSION;
 }

@@ -15,8 +15,11 @@
  */
 package org.neptune.example;
 
-import org.neptune.rpc.Client;
-import org.neptune.rpc.DefaultClient;
+import org.neptune.registry.nacos.NacosServiceSubscriber;
+import org.neptune.rpc.client.Client;
+import org.neptune.rpc.client.DefaultClient;
+import org.neptune.transport.connector.NettyTcpConnector;
+import org.neptune.transport.processor.DefaultConsumerProcessor;
 
 /**
  * org.neptune.example - AutoClient
@@ -26,9 +29,15 @@ import org.neptune.rpc.DefaultClient;
  */
 public class SyncClient {
     public static void main(String[] args) {
-        Client client = new DefaultClient();
-//        client.connectToRegistryServer("127.0.0.1:8080");
-        client.connectTo("127.0.0.1:8080");
+
+        Client client = DefaultClient.builder()
+                .clientAppName("hello-client")
+                .serviceSubscriber(new NacosServiceSubscriber("127.0.0.1", "8848"))
+                .connector(new NettyTcpConnector(new DefaultConsumerProcessor()))
+                .build();
+
+
+
         try{
             Service service = client
                     .proxy(Service.class)

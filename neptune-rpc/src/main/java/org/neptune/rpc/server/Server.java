@@ -13,38 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.registry;
+package org.neptune.rpc.server;
+
+import org.neptune.registry.ServicePublisher;
+import org.neptune.rpc.ServiceProvider;
+import org.neptune.transport.acceptor.Acceptor;
 
 
 /**
- * org.neptune.rpc.core - Registry
+ * org.neptune.rpc.core - Server
  *
  * @author tony-is-coding
- * @date 2021/12/16 0:07
+ * @date 2021/12/21 18:40
  */
-public interface Registry {
+public interface Server {
+
+    Acceptor acceptor();
+
+    ServicePublisher connectToRegistryServer(String address);
+
+    void publish(ServiceProvider serviceProvider);
+
+    void publish(ServiceProvider... serviceProviders);
+
+    void cancelPublish(ServiceProvider serviceProvider);
+
+    void cancelPublish(ServiceProvider... serviceProviders);
+
+    void start();
+
+    ServiceProvider serviceProvider();
 
     void shutdownGracefully();
 
-    enum RegistryType {
-        DEFAULT("default"),
-        NACOS("nacos"),
-        ZOOKEEPER("zookeeper");
-
-        private final String value;
-        RegistryType(String value) {
-            this.value = value;
-        }
-        public String getValue() {
-            return value;
-        }
-        public static RegistryType parse(String name) {
-            for (RegistryType s : values()) {
-                if (s.name().equalsIgnoreCase(name)) {
-                    return s;
-                }
-            }
-            return null;
-        }
-    }
+    boolean isRunning();
 }

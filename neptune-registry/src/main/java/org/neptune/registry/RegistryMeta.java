@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package org.neptune.registry;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.neptune.common.UnresolvedAddress;
 
 /**
@@ -22,6 +25,9 @@ import org.neptune.common.UnresolvedAddress;
  * @author tony-is-coding
  * @date 2021/12/22 12:40
  */
+@ToString
+@Getter
+@Setter
 public class RegistryMeta {
     protected ServiceMeta serviceMeta;
     protected UnresolvedAddress address;

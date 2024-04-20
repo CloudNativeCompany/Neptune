@@ -13,23 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.rpc.consumer.cluster;
+package org.neptune.rpc.client.cluster;
+
 
 import org.neptune.rpc.InvokeFuture;
+import org.neptune.rpc.client.Dispatcher;
 import org.neptune.rpc.Request;
-import org.neptune.rpc.consumer.Dispatcher;
-
 
 /**
- * org.neptune.rpc.consumer.cluster - AbstractClusterInvoker
- *
+ * org.neptune.rpc.core - FailFastClusterInvoker
+ *  集群调度 快速失败
  * @author tony-is-coding
- * @date 2021/12/20 18:53
+ * @date 2021/12/20 17:31
  */
-public abstract class AbstractClusterInvoker implements ClusterInvoker {
+public class FailFastClusterInvoker extends AbstractClusterInvoker {
 
+    public FailFastClusterInvoker() {
 
-    protected <T> InvokeFuture<T> invoke0(Dispatcher dispatcher, Request request, Class<T> returnType) throws Throwable {
-        return dispatcher.dispatch(request,returnType);
+    }
+
+    @Override
+    public <T> InvokeFuture<T> invoke(Dispatcher dispatcher, Request request, Class<T> returnType) throws Throwable {
+        return invoke0(dispatcher,request, returnType); // 快速失败
+    }
+
+    @Override
+    public ClusterStrategy strategy() {
+        return ClusterStrategy.FAIL_FAST;
     }
 }

@@ -13,24 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.rpc;
-
-import org.neptune.transport.processor.ProviderProcessor;
-
-import java.nio.channels.Channel;
+package org.neptune.rpc.client.lb;
 
 /**
- * org.neptune.rpc.core - DefaultProviderProcessor
+ * org.neptune.rpc.consumer - LoadBalancerFactory
  *
  * @author tony-is-coding
- * @date 2021/12/24 16:07
+ * @date 2021/12/27 16:14
  */
-public class DefaultProviderProcessor implements ProviderProcessor {
-    @Override
-    public void shutdownGracefully() {
-    }
+public class LoadBalancerFactory {
 
-    @Override
-    public void handleRequest(Channel channel, Object request) throws Exception {
+    public static LoadBalancer create(LoadBalancer.LoadBalancerType type){
+        return new RandomLoadBalancer();
     }
 }

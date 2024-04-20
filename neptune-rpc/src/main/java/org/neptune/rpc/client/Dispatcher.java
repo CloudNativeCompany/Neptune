@@ -13,26 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.rpc.consumer.lb;
+package org.neptune.rpc.client;
 
-import org.neptune.transport.ConnectionGroup;
-import org.neptune.transport.ServiceConnectionHolder;
-
-import java.util.Random;
+import org.neptune.rpc.InvokeFuture;
+import org.neptune.rpc.Request;
 
 /**
- * org.neptune.rpc.consumer.lb - RandomLoadBalancer
+ * org.neptune.rpc.consumer - Dispatcher
  *
  * @author tony-is-coding
- * @date 2021/12/27 16:19
+ * @date 2021/12/26 15:08
  */
-public class RandomLoadBalancer implements LoadBalancer {
-    private static final ThreadLocal<Random> random = ThreadLocal.withInitial(Random::new);
-
-    @Override
-    public ConnectionGroup select(ServiceConnectionHolder container) {
-        ConnectionGroup[] snapshot = container.snapshot();
-        return snapshot[random.get().nextInt(snapshot.length)];
-    }
-
+public interface Dispatcher {
+    <T> InvokeFuture<T> dispatch(Request request, Class<T> returnType);
 }
