@@ -26,7 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
- * org.neptune.core.util - ExtensionLoader
+ * org.neptune.rpc.util - ExtensionLoader
  *  类似系统提供的ServiceLoader, 并做了一些增强
  *  1. 支持按照名字查找
  *  2. 支持按照权重排序查找

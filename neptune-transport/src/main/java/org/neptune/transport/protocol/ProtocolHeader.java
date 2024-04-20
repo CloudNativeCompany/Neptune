@@ -18,8 +18,8 @@ package org.neptune.transport.protocol;
 import java.io.Serializable;
 
 /**
- * org.neptune.core.transportLayer - ProtocolHeader
- * 一个简单的RPC协议设计, 参考了 https://github.com/fengjiachun/Jupiter 协议设计
+ * org.neptune.rpc.transportLayer - ProtocolHeader
+ * 一个简单的RPC协议设计
  * <p>
  * **************************************************************************************************
  * Protocol

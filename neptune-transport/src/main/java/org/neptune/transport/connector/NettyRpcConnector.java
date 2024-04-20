@@ -17,18 +17,17 @@ package org.neptune.transport.connector;
 
 import io.netty.channel.ChannelOutboundHandler;
 import org.neptune.transport.Connection;
-import org.neptune.transport.UnresolvedAddress;
+import org.neptune.common.UnresolvedAddress;
 import org.neptune.transport.processor.ConsumerProcessor;
 import org.neptune.transport.protocol.ProtocolEncoder;
 
 /**
- * org.neptune.core.transportLayer - NettyRpcConnector
+ * org.neptune.rpc.transportLayer - NettyRpcConnector
  *
  * @author tony-is-coding
  * @date 2021/12/24 15:51
  */
 public abstract class NettyRpcConnector implements Connector {
-
     /*
         说明: 拓展, 委托模式,(这个可以后期考虑)
             抽象层一: 支持多协议类型
@@ -39,7 +38,6 @@ public abstract class NettyRpcConnector implements Connector {
                 1. RPC-Client Connector
                 2. Registry-Client Connector
                 3. ...
-
      */
     NettyConnector delegate;
 
@@ -54,10 +52,6 @@ public abstract class NettyRpcConnector implements Connector {
     @Override
     public ConsumerProcessor process() {
         return null;
-    }
-
-    @Override
-    public void withProcessor(ConsumerProcessor processor) {
     }
 
     @Override

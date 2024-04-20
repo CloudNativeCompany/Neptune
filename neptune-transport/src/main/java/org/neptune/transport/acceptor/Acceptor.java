@@ -18,7 +18,7 @@ package org.neptune.transport.acceptor;
 import java.net.InetSocketAddress;
 
 /**
- * org.neptune.core.transportLayer - Acceptor
+ * org.neptune.rpc.transportLayer - Acceptor
  * 监听器
  *
  * @author tony-is-coding

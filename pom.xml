@@ -9,12 +9,12 @@
     <packaging>pom</packaging>
     <version>1.0.0</version>
     <modules>
-        <module>neptune-core</module>
+        <module>neptune-rpc</module>
         <module>neptune-all</module>
         <module>neptune-example</module>
         <module>neptune-transport</module>
         <module>neptune-common</module>
-        <module>neptune-connect</module>
+        <module>neptune-registry</module>
     </modules>
 
     <properties>
@@ -59,11 +59,7 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.neptune</groupId>
-                <artifactId>neptune-connect</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+
             <dependency>
                 <groupId>org.neptune</groupId>
                 <artifactId>neptune-common</artifactId>
@@ -71,12 +67,18 @@
             </dependency>
             <dependency>
                 <groupId>org.neptune</groupId>
-                <artifactId>neptune-core</artifactId>
+                <artifactId>neptune-rpc</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.neptune</groupId>
                 <artifactId>neptune-transport</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.neptune</groupId>
+                <artifactId>neptune-registry</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

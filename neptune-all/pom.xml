@@ -14,17 +14,12 @@
     <dependencies>
         <dependency>
             <groupId>org.neptune</groupId>
-            <artifactId>neptune-connect</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.neptune</groupId>
             <artifactId>neptune-common</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.neptune</groupId>
-            <artifactId>neptune-core</artifactId>
+            <artifactId>neptune-rpc</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

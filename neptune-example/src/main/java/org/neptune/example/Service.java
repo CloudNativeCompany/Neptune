@@ -15,7 +15,7 @@
  */
 package org.neptune.example;
 
-import org.neptune.core.annotation.RpcService;
+import org.neptune.rpc.annotation.RpcService;
 
 /**
  * org.neptune.example - ServiceRegistry
@@ -23,7 +23,7 @@ import org.neptune.core.annotation.RpcService;
  * @author tony-is-coding
  * @date 2021/12/20 15:37
  */
-@RpcService(name = "service")
+@RpcService(name = "demo-service")
 public interface Service {
     String call(String input);
 }

@@ -16,7 +16,7 @@
 package org.neptune.common.util;
 
 /**
- * org.neptune.core.util - Requires
+ * org.neptune.rpc.util - Requires
  *
  * 一个思想不错的通用检查类, 致力于减少代码行数
  *

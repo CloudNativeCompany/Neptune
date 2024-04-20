@@ -17,11 +17,11 @@ package org.neptune.transport.connector;
 
 
 import org.neptune.transport.Connection;
-import org.neptune.transport.UnresolvedAddress;
+import org.neptune.common.UnresolvedAddress;
 import org.neptune.transport.processor.ConsumerProcessor;
 
 /**
- * org.neptune.core.transportLayer - Connector
+ * org.neptune.rpc.transportLayer - Connector
  * 连接器
  *
  * @author tony-is-coding
@@ -32,11 +32,6 @@ public interface Connector {
     Connection connect(UnresolvedAddress remoteSocketAddress, boolean async);
 
     ConsumerProcessor process();
-
-    void withProcessor(ConsumerProcessor processor);
-
-//    CowConnectionGroupList find(Directory directory);
-//    ConnectionGroup group(UnresolvedAddress address);
 
     void shutdownGracefully();
 

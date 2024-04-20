@@ -27,7 +27,7 @@ import java.util.concurrent.ThreadFactory;
 import static org.neptune.transport.SocketChannelFactoryProvider.SocketType;
 
 /**
- * org.neptune.core.transportLayer - NettyConnector
+ * org.neptune.rpc.transportLayer - NettyConnector
  * 抽象的 netty 连接器
  * 1. 进行 netty bootstrap 初始化能力
  * 2.

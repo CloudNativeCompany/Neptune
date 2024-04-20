@@ -16,7 +16,7 @@
 package org.neptune.common.util;
 
 /**
- * org.neptune.core.util - ThreadLocalHelpers
+ * org.neptune.rpc.util - ThreadLocalHelpers
  *
  * @author tony-is-coding
  * @date 2021/12/17 16:15

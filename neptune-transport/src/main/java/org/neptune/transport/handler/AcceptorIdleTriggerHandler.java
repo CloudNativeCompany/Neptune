@@ -22,7 +22,7 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.Signal;
 
 /**
- * org.neptune.core.transportLayer - AcceptorIdleTriggerHandler
+ * org.neptune.rpc.transportLayer - AcceptorIdleTriggerHandler
  *
  * @author tony-is-coding
  * @date 2021/12/24 18:30

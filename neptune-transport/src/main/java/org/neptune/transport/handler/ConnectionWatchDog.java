@@ -26,7 +26,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
- * org.neptune.core.connectionLayer.handlers - ConnectionWatchDog
+ * org.neptune.rpc.connectionLayer.handlers - ConnectionWatchDog
  *
  * @author tony-is-coding
  * @date 2021/12/15 21:16

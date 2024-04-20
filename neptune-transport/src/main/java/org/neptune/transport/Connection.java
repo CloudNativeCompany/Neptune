@@ -21,7 +21,7 @@ import io.netty.channel.Channel;
 import java.net.SocketAddress;
 
 /**
- * org.neptune.core.transportLayer - Connection
+ * org.neptune.rpc.transportLayer - Connection
  * 抽象出来channel对象
  * 1. 后续可以基于这个对象为channel可选的添加listener
  * 2. 添加统一的管理入口, 如重连关闭或者其他的;

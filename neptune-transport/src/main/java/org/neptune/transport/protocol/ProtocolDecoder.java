@@ -25,7 +25,7 @@ import org.neptune.transport.ResponsePayload;
 import java.util.List;
 
 /**
- * org.neptune.core.transportLayer.handlers - ProtocolDecoder
+ * org.neptune.rpc.transportLayer.handlers - ProtocolDecoder
  * 不可共享, 存在 state的 全局一致性问题
  *
  * @author tony-is-coding

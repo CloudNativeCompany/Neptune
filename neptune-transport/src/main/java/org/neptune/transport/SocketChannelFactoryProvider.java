@@ -26,7 +26,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 /**
- * org.neptune.core.transportLayer - SocketChannelFactoryProvider
+ * org.neptune.rpc.transportLayer - SocketChannelFactoryProvider
  *
  * @author tony-is-coding
  * @date 2021/12/20 14:50
@@ -83,6 +83,5 @@ public class SocketChannelFactoryProvider {
         ACCEPTOR,
         CONNECTOR
     }
-
 
 }
