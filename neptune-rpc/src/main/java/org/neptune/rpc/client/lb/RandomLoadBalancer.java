@@ -15,8 +15,8 @@
  */
 package org.neptune.rpc.client.lb;
 
-import org.neptune.transport.ConnectionGroup;
-import org.neptune.transport.ServiceConnectionHolder;
+import io.netty.channel.Channel;
+import org.neptune.transport.RpcChannelGroup;
 
 import java.util.Random;
 
@@ -30,9 +30,8 @@ public class RandomLoadBalancer implements LoadBalancer {
     private static final ThreadLocal<Random> random = ThreadLocal.withInitial(Random::new);
 
     @Override
-    public ConnectionGroup select(ServiceConnectionHolder container) {
-        ConnectionGroup[] snapshot = container.snapshot();
-        return snapshot[random.get().nextInt(snapshot.length)];
+    public Channel select(RpcChannelGroup container) {
+        return null;
     }
 
 }

@@ -20,6 +20,7 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import org.neptune.transport.Connection;
 import org.neptune.transport.NettyConnection;
+import org.neptune.transport.RpcChannelGroup;
 import org.neptune.transport.SocketChannelFactoryProvider;
 import org.neptune.common.UnresolvedAddress;
 import org.neptune.transport.handler.ConnectionWatchDog;
@@ -32,6 +33,9 @@ import org.neptune.transport.protocol.ProtocolEncoder;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadFactory;
 
 /**
@@ -53,6 +57,11 @@ public class NettyTcpConnector extends NettyConnector {
     private final ResponseHandler handler = new ResponseHandler();
     private final ChannelInboundHandler connectIdleTriggerHandler = new ConnectorIdleTriggerHandler();
 
+    private final ConcurrentHashMap<String, CopyOnWriteArrayList<RpcChannelGroup>>  serviceChannelGroups = new ConcurrentHashMap<>(16);
+
+    /*
+        TODO: 连接断开时自动被移除
+     */
     public NettyTcpConnector(ConsumerProcessor processor) {
         super(DEFAULT_CONNECTOR_WORKER_NUM, false);
         this.processor =  processor;
@@ -70,9 +79,11 @@ public class NettyTcpConnector extends NettyConnector {
 
     public Connection connect0(final UnresolvedAddress address, boolean async) {
         setOptions();
+
         final SocketAddress socketAddress = InetSocketAddress.createUnresolved(address.host(), address.port());
         final Bootstrap bs = bootstrap();
-        //TODO: 考虑后续用组来管理
+
+        // 连接看门狗 -- 断线重连等操作
         final ConnectionWatchDog watchDog = new ConnectionWatchDog(bs, timer, socketAddress) {
             @Override
             public ChannelHandler[] handlers() {
@@ -80,8 +91,7 @@ public class NettyTcpConnector extends NettyConnector {
                         this, // in-1
                         // 这里只需要进行写超时检查
                         new IdleStateChecker(timer, 0, 30, 0), // in - 2
-                        connectIdleTriggerHandler,
-                        // TODO: 空闲处理  in - 3
+                        connectIdleTriggerHandler, // in - 3
                         encoder, // out - 1
                         new ProtocolDecoder(), // in - 4
                         handler // in - 5
@@ -103,8 +113,7 @@ public class NettyTcpConnector extends NettyConnector {
                 future.sync(); //README: 同步的创建
             }
         } catch (Throwable t) {
-            // todo: throw an runnable exception
-            return null;
+            throw new RuntimeException("connect error");
         }
 
         // 这里要将 channel 包装成一个Connection, 目的是为了实现连接的异步创建, 和一些自定义的 继承观测

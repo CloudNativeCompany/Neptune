@@ -15,8 +15,8 @@
  */
 package org.neptune.rpc.client.lb;
 
-import org.neptune.transport.ConnectionGroup;
-import org.neptune.transport.ServiceConnectionHolder;
+import io.netty.channel.Channel;
+import org.neptune.transport.RpcChannelGroup;
 
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 
@@ -33,17 +33,7 @@ public class RoundRobinLoadBalancer implements LoadBalancer {
     private volatile int index = 0;
 
     @Override
-    public ConnectionGroup select(ServiceConnectionHolder container) {
-        ConnectionGroup[] snapshot = container.snapshot();
-        final int length = snapshot.length;
-        if (length == 0) {
-            return null;
-        }
-        if (length == 1) {
-            return snapshot[0];
-        }
-        int nextIndex = UPDATER.getAndIncrement(this);
-        // 不如何完美的轮询机制, 实际的轮询需要考虑
-        return snapshot[nextIndex % length];
+    public Channel select(RpcChannelGroup container) {
+        return null;
     }
 }

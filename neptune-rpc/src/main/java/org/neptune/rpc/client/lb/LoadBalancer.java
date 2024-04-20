@@ -15,8 +15,9 @@
  */
 package org.neptune.rpc.client.lb;
 
-import org.neptune.transport.ConnectionGroup;
-import org.neptune.transport.ServiceConnectionHolder;
+import io.netty.channel.Channel;
+import org.neptune.transport.RpcChannelGroup;
+
 
 /**
  * org.neptune.rpc.core - LoadBalancer
@@ -30,7 +31,7 @@ public interface LoadBalancer {
         README: 考虑并发管理
      */
 
-    ConnectionGroup select(ServiceConnectionHolder container);
+    Channel select(RpcChannelGroup container);
 
     enum LoadBalancerType{
         RANDOM(1), // 随机法

@@ -40,7 +40,6 @@ public abstract class NettyConnector implements Connector {
     // timer, 主要是做超时重连的, 但我认为是任意层面/协议 的重连都需要 timer 计时器
     protected final HashedWheelTimer timer = new HashedWheelTimer(new DefaultThreadFactory("connector.timer", true));
 
-
     // netty
     private final Bootstrap bootstrap;
     private final EventLoopGroup workers;

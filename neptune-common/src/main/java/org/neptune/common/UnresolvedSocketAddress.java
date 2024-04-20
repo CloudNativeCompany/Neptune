@@ -37,6 +37,11 @@ public final class UnresolvedSocketAddress implements UnresolvedAddress {
         this.host = host;
     }
 
+    public static UnresolvedAddress resolveSocketAddr(String address) {
+        String[] strings = address.split(":");
+        return new UnresolvedSocketAddress(strings[0], Integer.parseInt(strings[1]));
+    }
+
     @Override
     public int port() {
         return port;

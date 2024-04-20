@@ -15,19 +15,21 @@
  */
 package org.neptune.transport;
 
+
+import io.netty.channel.Channel;
 import org.neptune.common.UnresolvedAddress;
-import org.neptune.common.UnresolvedSocketAddress;
+
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * org.neptune.rpc.transportLayer - Support
- *
+ * org.neptune.rpc.transportLayer - RpcChannelManager
+ *  针对同一个rpc-服务地址的一组netty socket连接
  * @author tony-is-coding
- * @date 2021/12/20 15:28
+ * @date 2021/12/25 16:32
  */
-public class Support {
-
-    public static UnresolvedAddress resolveSocketAddr(String address) {
-        String[] strings = address.split(":");
-        return new UnresolvedSocketAddress(strings[0], Integer.parseInt(strings[1]));
-    }
+public class RpcChannelGroup {
+    private UnresolvedAddress serviceAddr;
+    private transient volatile CopyOnWriteArrayList<Channel> array; // 通过 volatile 来保障 读-写并发问题
+    final transient ReentrantLock lock = new ReentrantLock();
 }

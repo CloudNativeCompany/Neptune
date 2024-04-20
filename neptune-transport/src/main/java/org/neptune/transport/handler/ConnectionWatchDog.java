@@ -91,6 +91,7 @@ public class ConnectionWatchDog extends ChannelInboundHandlerAdapter {
                 return;
             }
             final ChannelFuture future;
+            // -- 进行重连
             synchronized (bootstrap) {
                 bootstrap.handler(new ChannelInitializer<Channel>() {
                     @Override
@@ -103,7 +104,7 @@ public class ConnectionWatchDog extends ChannelInboundHandlerAdapter {
             future.addListener((ChannelFutureListener) f -> {
                 final boolean succeed = f.isSuccess();
                 if (!succeed) {
-                    // 从头开始再次执行入栈的 channelInactive() 回调
+                    // 从头开始再次执行入栈的 channelInactive() 回调 -- 直到进入到当前的重试重连为止
                     f.channel().pipeline().fireChannelInactive();
                 }
             });

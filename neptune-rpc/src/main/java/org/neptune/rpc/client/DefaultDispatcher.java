@@ -15,15 +15,14 @@
  */
 package org.neptune.rpc.client;
 
-import org.neptune.common.util.ReaderHelper;
 import org.neptune.registry.ServiceMeta;
-import org.neptune.transport.ServiceConnectionHolder;
+import org.neptune.transport.RpcChannelGroup;
 import org.neptune.rpc.*;
 import org.neptune.rpc.client.lb.LoadBalancer;
 import org.neptune.rpc.client.lb.LoadBalancerFactory;
 import org.neptune.rpc.factories.SerializerFactory;
 import org.neptune.rpc.seialize.Serializer;
-import org.neptune.transport.ConnectionGroup;
+
 import org.neptune.transport.RequestPayload;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -62,9 +61,9 @@ public class DefaultDispatcher implements Dispatcher {
 
     // 匹配一个目标连接来
     private Channel select(ServiceMeta serviceMeta) {
-        ServiceConnectionHolder groups = new ServiceConnectionHolder(); // TODO: 组化管理
-        ConnectionGroup group = loadBalancer.select(groups);
-        return group.next().channel();
+        RpcChannelGroup group = new RpcChannelGroup(); // TODO: 组化管理
+        Channel channel = loadBalancer.select(group);
+        return channel;
     }
 
 
