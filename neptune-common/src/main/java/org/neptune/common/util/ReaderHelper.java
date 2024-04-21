@@ -15,6 +15,8 @@
  */
 package org.neptune.common.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -22,6 +24,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+@Slf4j
 public final class ReaderHelper {
     private static final ReaderHelper helper = new ReaderHelper();
     private final AtomicInteger step = new AtomicInteger();
@@ -46,7 +49,7 @@ public final class ReaderHelper {
                 threadInfo.append(" ");
             }
         }
-        System.out.println(threadInfo + outMsg);
+        log.info(threadInfo + outMsg);
     }
 
     public static void formatTrace() {
@@ -60,13 +63,13 @@ public final class ReaderHelper {
             printTraces = printTraces.subList(1, Math.min(10, printTraces.size()));
         }
 
-        System.out.println("打印调用追踪: " + callStack.getClassName() + "." + callStack.getMethodName());
+        log.info("打印调用追踪: " + callStack.getClassName() + "." + callStack.getMethodName());
         String space = "|__";
         for (StackTraceElement traceElement : printTraces) {
-            System.out.println(space + traceElement.toString());
+            log.info(space + traceElement.toString());
             space = "  " + space;
         }
-        System.out.println("\n\n");
+        log.info("\n\n");
     }
 
 }

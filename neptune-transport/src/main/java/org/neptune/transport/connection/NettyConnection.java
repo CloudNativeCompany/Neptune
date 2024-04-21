@@ -19,6 +19,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.util.AttributeKey;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.SocketAddress;
 
@@ -28,6 +29,7 @@ import java.net.SocketAddress;
  * @author tony-is-coding
  * @date 2021/12/16 17:04
  */
+@Slf4j
 public class NettyConnection implements Connection {
 
     private static final AttributeKey<NettyConnection> NETTY_CONNECTION_KEY = AttributeKey.valueOf("netty_connection");
@@ -75,7 +77,7 @@ public class NettyConnection implements Connection {
 
 
     private void attackTo(Channel channel) {
-        System.out.println("connect succeed");
+        log.info("connect succeed");
         // 考虑这个 attack是在两个场景 1. 首次连接 2.重新连接
         if (!attacked) {
             attacked = true;

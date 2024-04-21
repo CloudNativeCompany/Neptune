@@ -4,6 +4,7 @@ import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
+import lombok.extern.slf4j.Slf4j;
 import org.neptune.registry.AbstractServicePublisher;
 import org.neptune.registry.RegistryMeta;
 import org.neptune.registry.ServiceMeta;
@@ -18,6 +19,7 @@ import java.util.Properties;
  * @author tony
  * @createDate 2024/4/19 11:34 上午
  */
+@Slf4j
 public class NacosServicePublisher extends AbstractServicePublisher {
 
 
@@ -114,7 +116,7 @@ public class NacosServicePublisher extends AbstractServicePublisher {
         try{
             namingService.shutDown();
         }catch (Exception e){
-            System.out.println("shut down error");
+            log.info("shut down error");
         }
     }
 

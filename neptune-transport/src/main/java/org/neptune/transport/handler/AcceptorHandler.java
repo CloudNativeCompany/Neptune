@@ -18,6 +18,7 @@ package org.neptune.transport.handler;
 import com.alibaba.fastjson2.JSON;
 import io.netty.channel.*;
 import io.netty.util.ReferenceCountUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.neptune.transport.RequestPayload;
 import org.neptune.transport.Status;
 import org.neptune.transport.processor.ProviderProcessor;
@@ -30,6 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author jiachun.fjc
  */
+@Slf4j
 @ChannelHandler.Sharable
 public class AcceptorHandler extends ChannelInboundHandlerAdapter {
 
@@ -43,7 +45,6 @@ public class AcceptorHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        System.out.println("收到消息: "+ JSON.toJSONString(msg));
         Channel channel = ctx.channel();
 
         if (msg instanceof RequestPayload) {
@@ -88,7 +89,7 @@ public class AcceptorHandler extends ChannelInboundHandlerAdapter {
         Channel ch = ctx.channel();
         if(cause.getStackTrace().length != 0){
             cause.printStackTrace();
-            System.out.println("异常发生, 断开连接处理先");
+            log.info("异常发生, 断开连接处理先");
             ctx.channel().closeFuture().sync();
         }
     }

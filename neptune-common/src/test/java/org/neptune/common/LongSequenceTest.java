@@ -1,5 +1,6 @@
 package org.neptune.common;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.neptune.common.util.LongSequence;
 
@@ -10,6 +11,7 @@ import org.neptune.common.util.LongSequence;
  * @author tony-is-coding
  * @date 2022/5/12 18:40
  */
+@Slf4j
 class LongSequenceTest {
     private static final long ONE_MILLION = 1000000;
     private static final long TEN_MILLION = 10000000;
@@ -22,8 +24,7 @@ class LongSequenceTest {
         for (int i = 0; i < target; i++) {
             seq.next();
         }
-        System.out.println(System.currentTimeMillis() - start);
-        System.out.println(seq.next() == target + 1);
+        log.info(String.valueOf(System.currentTimeMillis() - start));
     }
 
 
@@ -67,9 +68,6 @@ class LongSequenceTest {
         t6.join();
         t7.join();
         t8.join();
-
-        System.out.println(System.currentTimeMillis() - start);
-        System.out.println(seq.next());
     }
 
 

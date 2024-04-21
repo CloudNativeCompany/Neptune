@@ -16,6 +16,7 @@
 package org.neptune.rpc.client;
 
 import com.alibaba.fastjson2.JSON;
+import lombok.extern.slf4j.Slf4j;
 import org.neptune.common.UnresolvedAddress;
 import org.neptune.common.UnresolvedSocketAddress;
 import org.neptune.registry.ServiceMeta;
@@ -35,6 +36,7 @@ import io.netty.channel.ChannelFutureListener;
  * @author tony-is-coding
  * @date 2021/12/26 15:09
  */
+@Slf4j
 public class DefaultDispatcher implements Dispatcher {
     /*
         考虑共用性
@@ -78,21 +80,17 @@ public class DefaultDispatcher implements Dispatcher {
         payload.setSerialTypeCode(serializer.typeCode());
         payload.setBytes(serializer.writeObject(request.getBody()));
         Channel ch = select(request.getBody().getMetadata());
-        System.out.println("start to send message:" + JSON.toJSONString(request));
 
         DefaultInvokeFuture<T> invokeFuture = new DefaultInvokeFuture<>(ch, invokeId, returnType);
         ch.writeAndFlush(payload).addListener(
                 // TODO:加入发送超时监控, writeAndFlush
                 (ChannelFutureListener) cf -> {
                     if (cf.isSuccess()) { // success
-                        System.out.println("send success");
                         invokeFuture.sentSuccess();
                     } else { // fail
-                        System.out.println("send Failure");
                         invokeFuture.sentFailure();
                     }
                 });
-        System.out.println("invoke future is: " + invokeFuture);
         return invokeFuture;
     }
 

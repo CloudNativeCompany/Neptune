@@ -20,6 +20,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
+import lombok.extern.slf4j.Slf4j;
 import org.neptune.transport.RequestPayload;
 import org.neptune.transport.ResponsePayload;
 
@@ -29,7 +30,7 @@ import org.neptune.transport.ResponsePayload;
  * @author tony-is-coding
  * @date 2021/12/22 17:52
  */
-@ChannelHandler.Sharable
+@Slf4j
 public class ProtocolEncoder extends MessageToByteEncoder<Object> {
     /*
         TODO: 这个Handler需要兼容
@@ -39,7 +40,6 @@ public class ProtocolEncoder extends MessageToByteEncoder<Object> {
      */
     @Override
     protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
-        System.out.println("消息编码:" + JSON.toJSONString(msg));
         if (msg instanceof RequestPayload) {
             doEncodeRequest((RequestPayload) msg, out);
         } else if (msg instanceof ResponsePayload) {

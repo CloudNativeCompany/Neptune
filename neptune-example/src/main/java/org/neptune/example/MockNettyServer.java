@@ -12,7 +12,9 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class MockNettyServer {
 
     private int port;
@@ -58,7 +60,7 @@ public class MockNettyServer {
     static class ServerHandler extends SimpleChannelInboundHandler<String> {
         @Override
         public void channelRead0(ChannelHandlerContext ctx, String msg) {
-            System.out.println("Server received: " + msg);
+            log.info("Server received: " + msg);
             ctx.writeAndFlush(msg); // 将接收到的消息发送给发送者
         }
 

@@ -18,10 +18,12 @@ package org.neptune.rpc;
 
 import com.alibaba.fastjson2.JSON;
 import io.netty.channel.Channel;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * org.neptune.rpc.core - DefaultInvokeFuture
@@ -30,6 +32,7 @@ import java.util.concurrent.TimeUnit;
  * @author tony-is-coding
  * @date 2021/12/20 17:56
  */
+@Slf4j
 public class DefaultInvokeFuture<V> extends CompletableFuture<V> implements InvokeFuture<V> {
 
     private static final ConcurrentHashMap<Long, DefaultInvokeFuture<?>> FUTURE_HOLDER = new ConcurrentHashMap<>(16);
@@ -60,24 +63,19 @@ public class DefaultInvokeFuture<V> extends CompletableFuture<V> implements Invo
 
     @Override
     public V result() throws Throwable {
-        return get(1000, TimeUnit.NANOSECONDS);
+        return get(1000, TimeUnit.MILLISECONDS);
     }
-
 
     @SuppressWarnings("unchecked")
     private void doReceived(Response response) {
         final Object result = response.getResult();
         complete((V) result); // 完成
-        System.out.println("invoke future is:" + this);
     }
 
     public static void received(Channel ch, Response response) {
         final long invokeId = response.getInvokeId();
-        System.out.println("invoke id:" + invokeId);
         DefaultInvokeFuture<?> invokeFuture = FUTURE_HOLDER.remove(invokeId);
-        System.out.println("invoke future is: " + invokeFuture);
         if (invokeFuture == null) {
-            System.out.println("invoke future 为空???");
             return;
         }
         // 进行异步通知

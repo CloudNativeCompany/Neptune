@@ -1,5 +1,6 @@
 package org.neptune.registry;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.neptune.registry.nacos.NacosServiceSubscriber;
 
@@ -9,6 +10,7 @@ import org.neptune.registry.nacos.NacosServiceSubscriber;
  * @author tony
  * @createDate 2024/4/19 2:22 下午
  */
+@Slf4j
 public class NacosServiceSubscriberTest {
     @Test
     public void testSubscriber() throws Throwable {
@@ -19,9 +21,8 @@ public class NacosServiceSubscriberTest {
         serviceMeta.setServerName("demo-service");
         serviceMeta.setGroup("default");
         serviceSubscriber.subscribe(serviceMeta, null);
-        System.out.println("完成订阅操作");
+        log.info("完成订阅操作");
 
         Thread.sleep(1000);
-        System.out.println(serviceSubscriber.serviceList(serviceMeta));
     }
 }

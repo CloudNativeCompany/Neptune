@@ -15,6 +15,7 @@
  */
 package org.neptune.rpc.server;
 
+import lombok.extern.slf4j.Slf4j;
 import org.neptune.registry.RegistryMeta;
 import org.neptune.registry.ServiceMeta;
 import org.neptune.registry.ServicePublisher;
@@ -29,6 +30,7 @@ import org.neptune.transport.acceptor.NettyAcceptor;
  * @author tony-is-coding
  * @date 2021/12/22 11:19
  */
+@Slf4j
 public class DefaultServer implements Server {
 
     private Acceptor acceptor;
@@ -73,7 +75,6 @@ public class DefaultServer implements Server {
 
         try{
             servicePublisher.register(registryMeta);
-            System.out.println("publish success");
         }catch (Exception e){
             throw new RuntimeException("registry server error");
         }

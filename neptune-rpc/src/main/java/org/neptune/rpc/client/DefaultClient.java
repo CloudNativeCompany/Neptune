@@ -17,6 +17,7 @@ package org.neptune.rpc.client;
 
 import com.alibaba.fastjson2.JSON;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+import lombok.extern.slf4j.Slf4j;
 import org.neptune.common.UnresolvedAddress;
 import org.neptune.common.util.Strings;
 import org.neptune.registry.*;
@@ -36,6 +37,7 @@ import static org.neptune.common.util.Requires.requireNotNull;
  * @author tony-is-coding
  * @date 2021/12/17 16:51
  */
+@Slf4j
 public class DefaultClient implements Client {
 
     private final static Logger logger = LoggerFactory.getLogger(DefaultClient.class);
@@ -129,16 +131,13 @@ public class DefaultClient implements Client {
                 serviceSubscriber.subscribe(serviceMeta, new ServiceSubscriber.RegistryNotifier() {
                     @Override
                     public void notify(RegistryMeta registryMeta, EventType eventType) {
-                        System.out.println("RegistryNotifier:"  +  JSON.toJSONString(registryMeta) + "; eventType" + eventType);
                         final UnresolvedAddress address = registryMeta.getAddress();
                         if (eventType == EventType.SERVICE_ADDED) {
                             ConnectionGroup group = connector.getAddressConnects(address);
                             group.addConnect(() -> connector.connect(address, false));
-                            System.out.println("成功加入连接");
                         } else if (eventType == EventType.SERVICE_REMOVED) {
                             connector.removeAddressConnects(address);
                         }
-                        // 创建连接后, 将连接放到 连接池管理中
                     }
                 });
             }

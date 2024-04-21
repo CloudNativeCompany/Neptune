@@ -6,6 +6,7 @@ import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.listener.NamingEvent;
 import com.alibaba.nacos.api.naming.pojo.Instance;
+import lombok.extern.slf4j.Slf4j;
 import org.neptune.common.UnresolvedAddress;
 import org.neptune.common.UnresolvedSocketAddress;
 import org.neptune.registry.AbstractServiceSubscriber;
@@ -22,6 +23,7 @@ import java.util.Properties;
  * @author tony
  * @createDate 2024/4/19 12:15 下午
  */
+@Slf4j
 public class NacosServiceSubscriber extends AbstractServiceSubscriber {
 
     NamingService namingService;
@@ -51,9 +53,8 @@ public class NacosServiceSubscriber extends AbstractServiceSubscriber {
         String serviceName = serviceMeta.getServerName();
         try{
             namingService.subscribe(serviceName, event -> {
-
                 NamingEvent namedEvent = (NamingEvent) event;
-                System.out.println("event trigger: " + JSON.toJSONString(event));
+                log.info("event trigger: " + JSON.toJSONString(event));
                 List<RegistryMeta> registeredMetas = new LinkedList<>();
                 for (Instance instance : namedEvent.getInstances()) {
                     RegistryMeta meta = new RegistryMeta();
@@ -70,8 +71,8 @@ public class NacosServiceSubscriber extends AbstractServiceSubscriber {
                     meta.setServiceMeta(sm);
 
                     registeredMetas.add(meta);
+                    // todo: 如何计算是节点的什么事件
                     notifier.notify(meta, RegistryNotifier.EventType.SERVICE_ADDED);
-                    System.out.println("subscribe succeed , send notify");
                 }
                 updateServiceList(serviceMeta, registeredMetas);
             });
