@@ -15,6 +15,7 @@
  */
 package org.neptune.transport.handler;
 
+import com.alibaba.fastjson2.JSON;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.util.Timeout;
@@ -57,6 +58,7 @@ public class ConnectionWatchDog extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("连接开始活跃:" + JSON.toJSONString(ctx.channel().remoteAddress()));
         attempts = 0;
         super.channelActive(ctx);
     }

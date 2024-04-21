@@ -143,7 +143,6 @@ public class IdleStateChecker extends ChannelDuplexHandler {
         return allIdleTimeMillis;
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
         Channel ch = ctx.channel();

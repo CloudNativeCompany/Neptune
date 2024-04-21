@@ -15,11 +15,13 @@
  */
 package org.neptune.rpc.client;
 
+import com.alibaba.fastjson2.JSON;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import org.neptune.common.UnresolvedAddress;
 import org.neptune.common.util.Strings;
 import org.neptune.registry.*;
 import org.neptune.rpc.annotation.RpcService;
+import org.neptune.transport.connection.ConnectionGroup;
 import org.neptune.transport.connector.Connector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +56,10 @@ public class DefaultClient implements Client {
         return clientAppName;
     }
 
+    public Connector getConnector() {
+        return connector;
+    }
+
     @Override
     public ServiceSubscriber serviceSubscriber() {
         return serviceSubscriber;
@@ -72,6 +78,9 @@ public class DefaultClient implements Client {
 
     @Override
     public <T> ProxyFactory<T> proxy(Class<T> clz, ServiceMeta serviceMeta, FactoryProxy factoryProxy) {
+
+        watchForServerAvailable(serviceMeta).waitForAvailable();
+
         return ProxyFactory.factory(clz)
                 .serviceMeta(serviceMeta)
                 .client(this)
@@ -88,13 +97,13 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public <T> void watchForServerAvailable(Class<T> clz) {
-        watchForService0(parseServiceMeta(clz));
+    public <T>  ServiceSubscriber.Watcher watchForServerAvailable(Class<T> clz) {
+        return watchForService0(parseServiceMeta(clz));
     }
 
     @Override
-    public void watchForServerAvailable(ServiceMeta serviceMeta) {
-        watchForService0(serviceMeta);
+    public  ServiceSubscriber.Watcher watchForServerAvailable(ServiceMeta serviceMeta) {
+        return watchForService0(serviceMeta);
     }
 
     private ServiceMeta parseServiceMeta(Class<?> interfaceClass) {
@@ -112,29 +121,36 @@ public class DefaultClient implements Client {
         return new ServiceMeta(appName, appVersion, group);
     }
 
-    private ServiceSubscriber.Watcher watchForService0(ServiceMeta serviceMeta) {
+    // 这里主要是考虑要不要 确保有足够的可用的连接在进行 支持到RPC调用 -- 需要同步的把异常抛出来
+    private ServiceSubscriber.Watcher watchForService0(final ServiceMeta serviceMeta) {
         ServiceSubscriber.Watcher watcher = new ServiceSubscriber.Watcher() {
-
             @Override
             public void start() {
                 serviceSubscriber.subscribe(serviceMeta, new ServiceSubscriber.RegistryNotifier() {
                     @Override
                     public void notify(RegistryMeta registryMeta, EventType eventType) {
+                        System.out.println("RegistryNotifier:"  +  JSON.toJSONString(registryMeta) + "; eventType" + eventType);
                         final UnresolvedAddress address = registryMeta.getAddress();
                         if (eventType == EventType.SERVICE_ADDED) {
+                            ConnectionGroup group = connector.getAddressConnects(address);
+                            group.addConnect(() -> connector.connect(address, false));
+                            System.out.println("成功加入连接");
                         } else if (eventType == EventType.SERVICE_REMOVED) {
+                            connector.removeAddressConnects(address);
                         }
+                        // 创建连接后, 将连接放到 连接池管理中
                     }
                 });
             }
 
             @Override
             public void waitForAvailable() {
+                serviceSubscriber.serviceList(serviceMeta);
             }
 
             @Override
             public void waitForAvailable(long timeout, TimeUnit timeUnit) {
-
+                // TODO: 预留给配置全局超时时间使用的
             }
         };
         watcher.start();

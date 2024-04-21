@@ -45,12 +45,12 @@ public class DefaultServicePublisher extends AbstractServicePublisher {
     }
 
     @Override
-    public void register(RegistryMeta meta) throws Throwable{
+    public void register(RegistryMeta meta) throws Exception{
 
     }
 
     @Override
-    public void unregister(RegistryMeta meta) throws Throwable{
+    public void unregister(RegistryMeta meta) throws Exception{
 
     }
 

@@ -13,24 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.transport.processor;
-
-import org.neptune.transport.processor.ProviderProcessor;
-
-import java.nio.channels.Channel;
+package org.neptune.transport.connection;
 
 /**
- * org.neptune.rpc.core - DefaultProviderProcessor
+ * org.neptune.rpc.transportLayer - ConnectFuture
  *
  * @author tony-is-coding
- * @date 2021/12/24 16:07
+ * @date 2021/12/25 15:41
  */
-public class DefaultProviderProcessor implements ProviderProcessor {
-    @Override
-    public void shutdownGracefully() {
-    }
-
-    @Override
-    public void handleRequest(Channel channel, Object request) throws Exception {
-    }
+public interface ConnectFuture {
+    void onConnectCompleted();
+    void onConnectClosed();
 }

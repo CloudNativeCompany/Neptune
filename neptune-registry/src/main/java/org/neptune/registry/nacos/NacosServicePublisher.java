@@ -40,12 +40,12 @@ public class NacosServicePublisher extends AbstractServicePublisher {
             Instance instance = new Instance();
             ServiceMeta serviceMeta = meta.getServiceMeta();
 
-            String serviceName = serviceMeta.getAppName();
+            String serviceName = serviceMeta.getServerName();
             Map<String,String> metadata = new LinkedHashMap<>();
 
             metadata.put("group", serviceMeta.getGroup());
-            metadata.put("version", serviceMeta.getAppVersion());
-            metadata.put("appName", serviceMeta.getAppName());
+            metadata.put("version", serviceMeta.getServerVersion());
+            metadata.put("appName", serviceMeta.getServerName());
 
             instance.setIp(meta.getAddress().host());
             instance.setPort(meta.getAddress().port());
@@ -70,12 +70,12 @@ public class NacosServicePublisher extends AbstractServicePublisher {
             Instance instance = new Instance();
             ServiceMeta serviceMeta = meta.getServiceMeta();
 
-            String serviceName = serviceMeta.getAppName();
+            String serviceName = serviceMeta.getServerName();
             Map<String,String> metadata = new LinkedHashMap<>();
 
             metadata.put("group", serviceMeta.getGroup());
-            metadata.put("version", serviceMeta.getAppVersion());
-            metadata.put("appName", serviceMeta.getAppName());
+            metadata.put("version", serviceMeta.getServerVersion());
+            metadata.put("appName", serviceMeta.getServerName());
 
             instance.setIp(meta.getAddress().host());
             instance.setPort(meta.getAddress().port());
@@ -100,12 +100,12 @@ public class NacosServicePublisher extends AbstractServicePublisher {
     };
 
     @Override
-    public void register(RegistryMeta meta) throws Throwable {
+    public void register(RegistryMeta meta) throws Exception {
         register(meta,NOP_REGISTER_LISTENER);
     }
 
     @Override
-    public void unregister(RegistryMeta meta) throws Throwable {
+    public void unregister(RegistryMeta meta) throws Exception {
         unregister(meta, NOP_REGISTER_LISTENER);
     }
 

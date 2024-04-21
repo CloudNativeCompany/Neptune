@@ -16,8 +16,12 @@
 package org.neptune.rpc.client.lb;
 
 import io.netty.channel.Channel;
-import org.neptune.transport.RpcChannelGroup;
+import org.neptune.common.UnresolvedAddress;
+import org.neptune.registry.RegistryMeta;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 
 /**
@@ -33,7 +37,7 @@ public class RoundRobinLoadBalancer implements LoadBalancer {
     private volatile int index = 0;
 
     @Override
-    public Channel select(RpcChannelGroup container) {
-        return null;
+    public UnresolvedAddress select(Set<RegistryMeta> registryInstances) {
+        return registryInstances.stream().findFirst().get().getAddress();
     }
 }

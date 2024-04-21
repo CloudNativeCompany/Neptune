@@ -16,7 +16,11 @@
 package org.neptune.rpc.client.lb;
 
 import io.netty.channel.Channel;
-import org.neptune.transport.RpcChannelGroup;
+import org.neptune.common.UnresolvedAddress;
+import org.neptune.registry.RegistryMeta;
+
+import java.util.Collection;
+import java.util.Set;
 
 
 /**
@@ -31,7 +35,7 @@ public interface LoadBalancer {
         README: 考虑并发管理
      */
 
-    Channel select(RpcChannelGroup container);
+    UnresolvedAddress select(Set<RegistryMeta> registryInstances);
 
     enum LoadBalancerType{
         RANDOM(1), // 随机法

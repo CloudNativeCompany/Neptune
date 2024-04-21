@@ -13,10 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.transport.processor;
+package org.neptune.rpc.processor;
 
+import com.alibaba.fastjson2.JSON;
+import org.neptune.rpc.DefaultInvokeFuture;
+import org.neptune.rpc.RequestBody;
+import org.neptune.rpc.Response;
+import org.neptune.rpc.ResponseBody;
+import org.neptune.rpc.factories.SerializerFactory;
+import org.neptune.rpc.seialize.Serializer;
 import org.neptune.transport.ResponsePayload;
 import io.netty.channel.Channel;
+import org.neptune.transport.processor.ConsumerProcessor;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -42,9 +50,12 @@ public class DefaultConsumerProcessor implements ConsumerProcessor {
     }
 
     @Override
-    public void handlerResponse(Channel channel, ResponsePayload response) throws Exception {
-        //todo: handle response
-        //
+    public void handlerResponse(Channel channel, ResponsePayload responsePayload) throws Exception {
+        Serializer serializer = SerializerFactory.getSerializer(Serializer.SerializerType.parse(responsePayload.getSerialTypeCode()));
+        ResponseBody responseBody = serializer.readObject(responsePayload.getBytes(), 0 ,responsePayload.getBytes().length , ResponseBody.class);
+        System.out.println("收到了回复:" + responseBody.getResult());
+        Response response = new Response(responsePayload.getXid(), responseBody);
+        DefaultInvokeFuture.received(channel, response);
     }
 
 }

@@ -27,9 +27,9 @@ public interface ServicePublisher  extends Registry{
 
     void unregister(RegistryMeta meta, RegisterListener listener);
 
-    void register(RegistryMeta meta) throws Throwable;
+    void register(RegistryMeta meta) throws Exception;
 
-    void unregister(RegistryMeta meta) throws Throwable;
+    void unregister(RegistryMeta meta) throws Exception;
 
     interface RegisterListener {
         void onCompleted();

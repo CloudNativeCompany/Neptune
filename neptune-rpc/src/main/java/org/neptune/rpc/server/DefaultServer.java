@@ -15,11 +15,12 @@
  */
 package org.neptune.rpc.server;
 
-import org.neptune.common.infra.ExtensionLoader;
+import org.neptune.registry.RegistryMeta;
+import org.neptune.registry.ServiceMeta;
 import org.neptune.registry.ServicePublisher;
-import org.neptune.rpc.ServiceProvider;
-import org.neptune.rpc.server.Server;
+import org.neptune.rpc.processor.DefaultProviderProcessor;
 import org.neptune.transport.acceptor.Acceptor;
+import org.neptune.transport.acceptor.NettyAcceptor;
 
 
 /**
@@ -30,61 +31,60 @@ import org.neptune.transport.acceptor.Acceptor;
  */
 public class DefaultServer implements Server {
 
-    Acceptor acceptor;
-    ServicePublisher servicePublisher = null;
-    boolean running = false;
+    private Acceptor acceptor;
+    private ServicePublisher servicePublisher = null;
+    int port;
+    private boolean running = false;
+
+    private String group;
+    private String serverName;
+    private String serverVersion;
 
     @Override
     public Acceptor acceptor() {
-        return null;
+        return acceptor;
     }
 
+    private DefaultServer(){}
 
     @Override
-    public ServicePublisher connectToRegistryServer(String address) {
-        // load service publisher
-        servicePublisher = ExtensionLoader.load(ServicePublisher.class).first();
-        return servicePublisher;
-    }
-
-    @Override
-    public void publish(ServiceProvider serviceProvider) {
-        try {
-            servicePublisher.register(serviceProvider);
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
+    public void start() throws InterruptedException {
+        try{
+            running = true;
+            doPublishServer();
+            acceptor.startAsync();
+        }catch (Exception e){
+            shutdownGracefully();
         }
     }
 
-    @Override
-    public void publish(ServiceProvider... serviceProviders) {
 
-    }
+    private void doPublishServer(){
+        RegistryMeta registryMeta = new RegistryMeta();
+        ServiceMeta serviceMeta = new ServiceMeta();
 
-    @Override
-    public void cancelPublish(ServiceProvider serviceProvider) {
+        serviceMeta.setServerName(serverName);
+        serviceMeta.setServerVersion(serverVersion);
+        serviceMeta.setGroup(group);
 
-    }
+        registryMeta.setWight(100);
+        registryMeta.setServiceMeta(serviceMeta);
+        registryMeta.setAddress(acceptor.resolvedAddress());
 
-    @Override
-    public void cancelPublish(ServiceProvider... serviceProviders) {
+        try{
+            servicePublisher.register(registryMeta);
+            System.out.println("publish success");
+        }catch (Exception e){
+            throw new RuntimeException("registry server error");
+        }
 
-    }
-
-    @Override
-    public void start() {
-
-    }
-
-    @Override
-    public ServiceProvider serviceProvider() {
-        ServiceProvider provider = new ServiceProvider();
-        return provider;
     }
 
     @Override
     public void shutdownGracefully() {
+        running = false;
         acceptor.shutdownGracefully();
+        servicePublisher.shutdownGracefully();
     }
 
     @Override
@@ -92,11 +92,62 @@ public class DefaultServer implements Server {
         return running;
     }
 
-    protected void cancelPublishAll() {
-        // cancel all the published service
+    @Override
+    public void addProvider(Class<?> providerClass) {
+
     }
 
-    protected void doPublish(ServiceProvider serviceProvider) {
+    @Override
+    public void addProviders(Class<?>... providerClass) {
+
+    }
+
+    public static DefaultServiceBuilder builder(){
+        return new DefaultServiceBuilder();
+    }
+
+
+    public static class DefaultServiceBuilder {
+        private final DefaultServer innerServer;
+
+        public DefaultServiceBuilder() {
+            innerServer = new DefaultServer();
+            // default config
+            innerServer.serverName = "default-server";
+            innerServer.port = 8001;
+        }
+
+        public DefaultServer.DefaultServiceBuilder serverName(String serverName) {
+            innerServer.serverName = serverName;
+            return this;
+        }
+
+        public DefaultServer.DefaultServiceBuilder servicePublisher(ServicePublisher servicePublisher) {
+            innerServer.servicePublisher = servicePublisher;
+            return this;
+        }
+
+        public DefaultServer.DefaultServiceBuilder port(int port) {
+            innerServer.port = port;
+            return this;
+        }
+
+        public DefaultServer.DefaultServiceBuilder version(String version) {
+            innerServer.serverVersion = version;
+            return this;
+        }
+
+        public DefaultServer.DefaultServiceBuilder group(String group) {
+            innerServer.group = group;
+            return this;
+        }
+
+
+        public DefaultServer build() {
+            innerServer.acceptor = new NettyAcceptor(innerServer.port);
+            innerServer.acceptor.withProcessor(new DefaultProviderProcessor());
+            return innerServer;
+        }
     }
 
 

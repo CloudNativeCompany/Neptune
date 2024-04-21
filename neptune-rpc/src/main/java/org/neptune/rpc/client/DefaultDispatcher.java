@@ -15,8 +15,10 @@
  */
 package org.neptune.rpc.client;
 
+import com.alibaba.fastjson2.JSON;
+import org.neptune.common.UnresolvedAddress;
+import org.neptune.common.UnresolvedSocketAddress;
 import org.neptune.registry.ServiceMeta;
-import org.neptune.transport.RpcChannelGroup;
 import org.neptune.rpc.*;
 import org.neptune.rpc.client.lb.LoadBalancer;
 import org.neptune.rpc.client.lb.LoadBalancerFactory;
@@ -61,9 +63,10 @@ public class DefaultDispatcher implements Dispatcher {
 
     // 匹配一个目标连接来
     private Channel select(ServiceMeta serviceMeta) {
-        RpcChannelGroup group = new RpcChannelGroup(); // TODO: 组化管理
-        Channel channel = loadBalancer.select(group);
-        return channel;
+        //TODO: load balance 是基于registry 的结果做的
+        //TODO: 这一层的抽象还是需要再看看
+        UnresolvedAddress address = loadBalancer.select(client.serviceSubscriber().serviceList(serviceMeta));
+        return client.getConnector().getAddressConnects(address).next().channel();
     }
 
 
@@ -72,20 +75,25 @@ public class DefaultDispatcher implements Dispatcher {
 
         // 对象序列化
         RequestPayload payload = new RequestPayload(invokeId);
+        payload.setSerialTypeCode(serializer.typeCode());
         payload.setBytes(serializer.writeObject(request.getBody()));
-        Channel ch = select(null);
+        Channel ch = select(request.getBody().getMetadata());
+        System.out.println("start to send message:" + JSON.toJSONString(request));
 
-        DefaultInvokeFuture<T> future = new DefaultInvokeFuture<>(ch, invokeId, returnType);
+        DefaultInvokeFuture<T> invokeFuture = new DefaultInvokeFuture<>(ch, invokeId, returnType);
         ch.writeAndFlush(payload).addListener(
                 // TODO:加入发送超时监控, writeAndFlush
                 (ChannelFutureListener) cf -> {
                     if (cf.isSuccess()) { // success
-                        future.sentSuccess();
+                        System.out.println("send success");
+                        invokeFuture.sentSuccess();
                     } else { // fail
-                        future.sentFailure();
+                        System.out.println("send Failure");
+                        invokeFuture.sentFailure();
                     }
                 });
-        return future;
+        System.out.println("invoke future is: " + invokeFuture);
+        return invokeFuture;
     }
 
 }

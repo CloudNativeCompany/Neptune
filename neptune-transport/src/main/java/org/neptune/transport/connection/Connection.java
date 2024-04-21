@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.transport;
+package org.neptune.transport.connection;
 
 
 import io.netty.channel.Channel;
@@ -22,14 +22,15 @@ import java.net.SocketAddress;
 
 /**
  * org.neptune.rpc.transportLayer - Connection
- * 抽象出来channel对象
+ * 对真实的连接进行封装, 可以理解对实际的连接 进行的生命周期管理和截面
  * 1. 后续可以基于这个对象为channel可选的添加listener
- * 2. 添加统一的管理入口, 如重连关闭或者其他的;
+ * 2. 添加统一的管理入口, 如重连关闭设置或者其他的;
  *
  * @author tony-is-coding
  * @date 2021/12/16 16:57
  */
-public interface Connection extends ConnectFuture {
+public interface Connection{
+
     SocketAddress remoteAddress();
 
     boolean needReconnect();
@@ -38,5 +39,9 @@ public interface Connection extends ConnectFuture {
     
     void disconnect();
 
+    void addConnectFuture(ConnectFuture connectFuture);
+
     Channel channel();
+
+    void setChannel(Channel channel);
 }

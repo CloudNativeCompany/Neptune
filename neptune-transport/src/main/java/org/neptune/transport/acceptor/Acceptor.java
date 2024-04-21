@@ -15,7 +15,10 @@
  */
 package org.neptune.transport.acceptor;
 
-import java.net.InetSocketAddress;
+import org.neptune.common.UnresolvedAddress;
+import org.neptune.transport.processor.ProviderProcessor;
+
+import java.net.SocketAddress;
 
 /**
  * org.neptune.rpc.transportLayer - Acceptor
@@ -26,15 +29,18 @@ import java.net.InetSocketAddress;
  */
 //
 public interface Acceptor {
-    int boundPort();
 
-    InetSocketAddress localAddress();
+    UnresolvedAddress resolvedAddress();
 
-    void start() throws InterruptedException;
+    SocketAddress localAddress();
 
-    void start(boolean sync) throws InterruptedException;
+    void startAsync() throws Exception;
+
+    void start(boolean sync) throws Exception;
 
     // void sync(); // 是否可以像netty一样?
 
     void shutdownGracefully();
+
+    void withProcessor(ProviderProcessor processor);
 }

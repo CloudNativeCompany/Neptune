@@ -19,6 +19,8 @@ import org.neptune.registry.ServicePublisher;
 import org.neptune.rpc.ServiceProvider;
 import org.neptune.transport.acceptor.Acceptor;
 
+import java.util.List;
+
 
 /**
  * org.neptune.rpc.core - Server
@@ -30,21 +32,13 @@ public interface Server {
 
     Acceptor acceptor();
 
-    ServicePublisher connectToRegistryServer(String address);
-
-    void publish(ServiceProvider serviceProvider);
-
-    void publish(ServiceProvider... serviceProviders);
-
-    void cancelPublish(ServiceProvider serviceProvider);
-
-    void cancelPublish(ServiceProvider... serviceProviders);
-
-    void start();
-
-    ServiceProvider serviceProvider();
+    void start() throws InterruptedException;
 
     void shutdownGracefully();
 
     boolean isRunning();
+
+    void addProvider(Class<?> providerClass);
+
+    void addProviders(Class<?>... providerClass);
 }

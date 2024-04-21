@@ -59,19 +59,15 @@ public interface Serializer {
             return code;
         }
 
-        public SerializerType parse(String name) {
-            name = name.toLowerCase();
-            switch (name) {
-                case "kryo":
-                    return KRYO;
-                case "proto_stuff":
-                    return PROTO_STUFF;
-                case "java":
-                default:
-                    return JAVA_NATIVE;
-
+        public static SerializerType parse(int code) {
+            for(SerializerType t: SerializerType.values()){
+                if(code == t.code){
+                    return t;
+                }
             }
+            return getDefault();
         }
+
 
         public static SerializerType getDefault(){
             return KRYO;

@@ -15,6 +15,7 @@
  */
 package org.neptune.transport.protocol;
 
+import com.alibaba.fastjson2.JSON;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ReplayingDecoder;
@@ -33,6 +34,8 @@ import java.util.List;
  */
 public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
 
+
+    // 如果handler 被 share 是否存在风险, 需要考量一下
     private final ProtocolHeader header = new ProtocolHeader();
 
     public ProtocolDecoder() {
@@ -69,6 +72,7 @@ public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
             case BODY:
                 switch (header.getMsgType()) {
                     case ProtocolHeader.REQUEST: {
+                        System.out.println("decode request start");
                         int length = checkBodySize(header.getBodySize());
                         byte[] bytes = new byte[length];
                         in.readBytes(bytes);
@@ -77,6 +81,7 @@ public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
                         payload.setBytes(bytes);
                         payload.setSerialTypeCode(header.getSerialTypeCode());
 
+                        System.out.println("decode success:" + JSON.toJSONString(payload));
                         out.add(payload);
                         break;
                     }

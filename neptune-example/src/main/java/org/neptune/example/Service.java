@@ -23,7 +23,7 @@ import org.neptune.rpc.annotation.RpcService;
  * @author tony-is-coding
  * @date 2021/12/20 15:37
  */
-@RpcService(name = "demo-service")
+@RpcService(name = "demo-service", version = "1.0.0", group = "test")
 public interface Service {
     String call(String input);
 }

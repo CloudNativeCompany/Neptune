@@ -15,12 +15,12 @@
  */
 package org.neptune.registry;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * org.neptune.rpc.core - ServiceMeta
@@ -29,24 +29,55 @@ import java.io.Serializable;
  * @author tony-is-coding
  * @date 2021/12/17 16:11
  */
-@EqualsAndHashCode
 @ToString
 @Getter
 @Setter
 public class ServiceMeta implements Serializable {
 
+    private transient String flatStringCache = null;
     private static final long serialVersionUID = -8908295634641380163L;
 
     protected String group;     // 这个设计是为了 环境隔离
-    protected String appName;   // 应用名称 appid之类的东西
-    protected String appVersion;   // 服务版本
+    protected String serverName;   // 应用名称 appid之类的东西
+    protected String serverVersion;   // 服务版本
 
     public ServiceMeta() {
     }
 
-    public ServiceMeta(String appName, String appVersion, String group) {
-        this.appName = appName;
-        this.appVersion = appVersion;
+    public ServiceMeta(String serverName, String serverVersion, String group) {
+        this.serverName = serverName;
+        this.serverVersion = serverVersion;
         this.group = group;
+    }
+
+    public String toFlatString(){
+        if (flatStringCache != null) {
+            return flatStringCache;
+        }
+        StringBuilder buf = new StringBuilder();
+        buf.append(getGroup())
+                .append('-')
+                .append(serverName)
+                .append('-')
+                .append(serverVersion);
+        flatStringCache = buf.toString();
+        return flatStringCache.intern();
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ServiceMeta that = (ServiceMeta) o;
+        return
+                Objects.equals(group, that.group) &&
+                Objects.equals(serverName, that.serverName) &&
+                Objects.equals(serverVersion, that.serverVersion);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(group, serverName, serverVersion);
     }
 }
