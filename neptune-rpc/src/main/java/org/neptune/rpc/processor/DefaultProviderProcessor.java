@@ -18,6 +18,7 @@ package org.neptune.rpc.processor;
 import com.alibaba.fastjson2.JSON;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
+import lombok.extern.slf4j.Slf4j;
 import org.neptune.rpc.RequestBody;
 import org.neptune.rpc.ResponseBody;
 import org.neptune.rpc.factories.SerializerFactory;
@@ -33,6 +34,7 @@ import org.neptune.transport.processor.ProviderProcessor;
  * @author tony-is-coding
  * @date 2021/12/24 16:07
  */
+@Slf4j
 public class DefaultProviderProcessor implements ProviderProcessor {
 
     @Override
@@ -42,10 +44,6 @@ public class DefaultProviderProcessor implements ProviderProcessor {
     @Override
     public void handleRequest(Channel channel, RequestPayload request) throws Exception {
         Serializer serializer = SerializerFactory.getSerializer(Serializer.SerializerType.parse(request.getSerialTypeCode()));
-        RequestBody requestBody = serializer.readObject(request.getBytes(), 0 ,request.getBytes().length , RequestBody.class);
-        System.out.println("进入到了业务端, 远程地址为:" + JSON.toJSONString(channel.remoteAddress()));
-        System.out.println("进入到了业务端, 开始处理请求分发工作:" + JSON.toJSONString(requestBody));
-
         // 直接pong 回去
         ResponseBody responseBody = new ResponseBody();
         responseBody.setResult("this is an result from remote sever!! good day");
@@ -55,19 +53,12 @@ public class DefaultProviderProcessor implements ProviderProcessor {
         payload.setSerialTypeCode(request.getSerialTypeCode());
         payload.setBytes(serializer.writeObject(responseBody));
 
-        System.out.println("业务处理完成, 开始写响应结果...");
         channel.writeAndFlush(payload).addListener(
-                (ChannelFutureListener) cf -> {
-                    if (cf.isSuccess()) { // success
-                        System.out.println("response success");
-                    } else { // fail
-                        System.out.println("response Failure");
-                    }
-                });
+                (ChannelFutureListener) cf -> {});
     }
 
     @Override
     public void handleException(Channel channel, RequestPayload request, Status status, Throwable cause) {
-        System.out.println("错误发生");
+        log.info("错误发生");
     }
 }

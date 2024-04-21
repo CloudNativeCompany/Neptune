@@ -20,6 +20,7 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.neptune.transport.ResponsePayload;
 import org.neptune.transport.processor.ConsumerProcessor;
 
@@ -29,6 +30,7 @@ import org.neptune.transport.processor.ConsumerProcessor;
  * @author tony-is-coding
  * @date 2021/12/24 16:32
  */
+@Slf4j
 @ChannelHandler.Sharable
 public class ResponseHandler extends ChannelInboundHandlerAdapter {
 
@@ -41,7 +43,6 @@ public class ResponseHandler extends ChannelInboundHandlerAdapter {
     // 最后一个channelRead 需要进行显示的 buffer 池化与释放操作
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        System.out.println("ResponseHandler收到响应结果并开始处理：" + msg);
         final Channel channel = ctx.channel();
         if (msg instanceof ResponsePayload) {
             processor.handlerResponse(channel, (ResponsePayload) msg);

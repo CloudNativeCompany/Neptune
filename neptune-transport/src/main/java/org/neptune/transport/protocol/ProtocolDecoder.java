@@ -17,9 +17,11 @@ package org.neptune.transport.protocol;
 
 import com.alibaba.fastjson2.JSON;
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ReplayingDecoder;
 import io.netty.util.Signal;
+import lombok.extern.slf4j.Slf4j;
 import org.neptune.transport.RequestPayload;
 import org.neptune.transport.ResponsePayload;
 
@@ -32,6 +34,7 @@ import java.util.List;
  * @author tony-is-coding
  * @date 2021/12/21 15:43
  */
+@Slf4j
 public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
 
 
@@ -72,7 +75,6 @@ public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
             case BODY:
                 switch (header.getMsgType()) {
                     case ProtocolHeader.REQUEST: {
-                        System.out.println("decode request start");
                         int length = checkBodySize(header.getBodySize());
                         byte[] bytes = new byte[length];
                         in.readBytes(bytes);
@@ -80,8 +82,6 @@ public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
                         RequestPayload payload = new RequestPayload(header.getInvokeId());
                         payload.setBytes(bytes);
                         payload.setSerialTypeCode(header.getSerialTypeCode());
-
-                        System.out.println("decode success:" + JSON.toJSONString(payload));
                         out.add(payload);
                         break;
                     }

@@ -15,6 +15,7 @@
  */
 package org.neptune.rpc.client.handler;
 
+import lombok.extern.slf4j.Slf4j;
 import org.neptune.rpc.*;
 import org.neptune.rpc.client.Client;
 import org.neptune.rpc.client.Dispatcher;
@@ -29,6 +30,7 @@ import org.neptune.registry.ServiceMeta;
  * @author tony-is-coding
  * @date 2021/12/17 17:46
  */
+@Slf4j
 public abstract class AbstractInvocationHandler {
 
     protected ClusterInvoker clusterInvoker; // 集群方案应该是要默认支持的
@@ -41,7 +43,6 @@ public abstract class AbstractInvocationHandler {
         Request request = createRequest(methodName, args);
         //执行上下文, 用来在多个执行流中传递
         InvokeFuture<?> resultFuture = clusterInvoker.invoke(dispatcher, request, returnType);
-        System.out.println("after invoke, todo any thing");
         if (!invokeAsync) {
             return resultFuture.result();
         }

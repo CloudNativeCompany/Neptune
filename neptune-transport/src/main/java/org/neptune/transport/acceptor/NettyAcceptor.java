@@ -9,6 +9,7 @@ import io.netty.util.HashedWheelTimer;
 import io.netty.util.NetUtil;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.internal.SystemPropertyUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.neptune.common.UnresolvedAddress;
 import org.neptune.common.UnresolvedSocketAddress;
 import org.neptune.transport.handler.AcceptorHandler;
@@ -27,6 +28,7 @@ import java.net.SocketAddress;
  * @author tony
  * @createDate 2024/4/21 12:31 下午
  */
+@Slf4j
 public class NettyAcceptor implements Acceptor{
 
 
@@ -88,13 +90,7 @@ public class NettyAcceptor implements Acceptor{
             @Override
             protected void initChannel(Channel ch) throws Exception {
                 ch.pipeline().addLast(
-                        new FlushConsolidationHandler(5, true){
-                            @Override
-                            public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-                                System.out.println("FlushConsolidationHandler readMg:" + msg);
-                                super.channelRead(ctx, msg);
-                            }
-                        }, // 合并发送, 每5次之后再进行一次真正的网络发发送
+                        new FlushConsolidationHandler(5, true), // 合并发送, 每5次之后再进行一次真正的网络发发送
                         new IdleStateChecker(timer, 5, 5, 60),
                         new AcceptorIdleTriggerHandler(),
                         new ProtocolDecoder(),
@@ -105,7 +101,7 @@ public class NettyAcceptor implements Acceptor{
             }
         });
 
-        System.out.println("bind port to: " + address.port() + " success!!!");
+        log.info("bind port to: " + address.port() + " success!!!");
         ChannelFuture bindFuture = bootstrap.bind(localAddress()).sync();
 
         // 直到关闭

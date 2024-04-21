@@ -218,7 +218,6 @@ class ReconnectTask implements TimerTask {
         @Override 
         public void run(Timeout timeout) throws Exception { 
             if (!reconnect) { 
-                System.out.println("do not need reconnect"); 
                 return; 
             } 
             final ChannelFuture future; 

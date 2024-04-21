@@ -21,6 +21,9 @@ import io.netty.channel.*;
 import io.netty.util.Timeout;
 import io.netty.util.Timer;
 import io.netty.util.TimerTask;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.SocketAddress;
 import java.util.Random;
@@ -32,6 +35,8 @@ import java.util.concurrent.TimeUnit;
  * @author tony-is-coding
  * @date 2021/12/15 21:16
  */
+@Slf4j
+@ChannelHandler.Sharable
 public class ConnectionWatchDog extends ChannelInboundHandlerAdapter {
 
     private static final long BASIC_DELAY_MS = 2 << 4;
@@ -55,10 +60,10 @@ public class ConnectionWatchDog extends ChannelInboundHandlerAdapter {
         return new ChannelHandler[0];
     }
 
-
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("连接开始活跃:" + JSON.toJSONString(ctx.channel().remoteAddress()));
+        log.info("连接开始活跃:" + JSON.toJSONString(ctx.channel().remoteAddress()));
+
         attempts = 0;
         super.channelActive(ctx);
     }
@@ -89,7 +94,7 @@ public class ConnectionWatchDog extends ChannelInboundHandlerAdapter {
         @Override
         public void run(Timeout timeout) throws Exception {
             if (!reconnect) {
-                System.out.println("do not need reconnect");
+                log.info("do not need reconnect");
                 return;
             }
             final ChannelFuture future;

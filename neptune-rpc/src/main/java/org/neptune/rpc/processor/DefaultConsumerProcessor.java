@@ -16,6 +16,7 @@
 package org.neptune.rpc.processor;
 
 import com.alibaba.fastjson2.JSON;
+import lombok.extern.slf4j.Slf4j;
 import org.neptune.rpc.DefaultInvokeFuture;
 import org.neptune.rpc.RequestBody;
 import org.neptune.rpc.Response;
@@ -37,6 +38,7 @@ import java.util.concurrent.TimeUnit;
  * @author tony-is-coding
  * @date 2021/12/20 19:09
  */
+@Slf4j
 public class DefaultConsumerProcessor implements ConsumerProcessor {
     private final ThreadPoolExecutor executor;
 
@@ -53,7 +55,6 @@ public class DefaultConsumerProcessor implements ConsumerProcessor {
     public void handlerResponse(Channel channel, ResponsePayload responsePayload) throws Exception {
         Serializer serializer = SerializerFactory.getSerializer(Serializer.SerializerType.parse(responsePayload.getSerialTypeCode()));
         ResponseBody responseBody = serializer.readObject(responsePayload.getBytes(), 0 ,responsePayload.getBytes().length , ResponseBody.class);
-        System.out.println("收到了回复:" + responseBody.getResult());
         Response response = new Response(responsePayload.getXid(), responseBody);
         DefaultInvokeFuture.received(channel, response);
     }
