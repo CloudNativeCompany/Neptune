@@ -43,7 +43,7 @@ public class SimpleClient {
                     .newInstance();
             for (int i = 0; i < 500; i++) {
                 long start = System.currentTimeMillis();
-                service.call("hello world");
+                service.call("hello world" + i);
                 System.out.println("第" + i + "次调度, 耗时" + (System.currentTimeMillis() - start));
             }
         }
