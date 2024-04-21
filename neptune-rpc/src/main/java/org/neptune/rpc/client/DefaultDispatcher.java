@@ -15,8 +15,9 @@
  */
 package org.neptune.rpc.client;
 
+import org.neptune.common.UnresolvedAddress;
+import org.neptune.common.UnresolvedSocketAddress;
 import org.neptune.registry.ServiceMeta;
-import org.neptune.transport.RpcChannelGroup;
 import org.neptune.rpc.*;
 import org.neptune.rpc.client.lb.LoadBalancer;
 import org.neptune.rpc.client.lb.LoadBalancerFactory;
@@ -61,9 +62,10 @@ public class DefaultDispatcher implements Dispatcher {
 
     // 匹配一个目标连接来
     private Channel select(ServiceMeta serviceMeta) {
-        RpcChannelGroup group = new RpcChannelGroup(); // TODO: 组化管理
-        Channel channel = loadBalancer.select(group);
-        return channel;
+        //TODO: load balance 是基于registry 的结果做的
+        //TODO: 这一层的抽象还是需要再看看
+        UnresolvedAddress address = loadBalancer.select(client.serviceSubscriber().serviceList(serviceMeta));
+        return client.getConnector().getAddressConnects(address).next().channel();
     }
 
 
@@ -73,7 +75,7 @@ public class DefaultDispatcher implements Dispatcher {
         // 对象序列化
         RequestPayload payload = new RequestPayload(invokeId);
         payload.setBytes(serializer.writeObject(request.getBody()));
-        Channel ch = select(null);
+        Channel ch = select(request.getBody().getMetadata());
 
         DefaultInvokeFuture<T> future = new DefaultInvokeFuture<>(ch, invokeId, returnType);
         ch.writeAndFlush(payload).addListener(

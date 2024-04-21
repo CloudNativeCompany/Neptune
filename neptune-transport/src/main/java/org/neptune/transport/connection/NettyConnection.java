@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.transport;
+package org.neptune.transport.connection;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
-import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 
 import java.net.SocketAddress;
 
 /**
  * org.neptune.rpc.transportLayer - NettyConnection
- *
+ *   NettyConnection
  * @author tony-is-coding
  * @date 2021/12/16 17:04
  */
@@ -36,20 +35,11 @@ public class NettyConnection implements Connection {
     protected ChannelFuture future;
     protected SocketAddress remoteAddress;
 
+    private ConnectFuture connectFuture;
+
     private boolean reconnect;
     private Channel channel;
     private boolean attacked = false;
-
-
-    private void attackTo(Channel channel) {
-        if (!attacked) {
-            attacked = true;
-            this.channel = channel;
-            channel.attr(NETTY_CONNECTION_KEY).set(this);
-        } else {
-            // todo: log this error of not needed?
-        }
-    }
 
     public NettyConnection(ChannelFuture future, SocketAddress remoteAddress) {
         this(future, remoteAddress, true);
@@ -83,20 +73,40 @@ public class NettyConnection implements Connection {
         this.reconnect = reconnect;
     }
 
-    @Override
-    public void disconnect() {
-        // todo: disconnect
+
+    private void attackTo(Channel channel) {
+        System.out.println("connect succeed");
+        // 考虑这个 attack是在两个场景 1. 首次连接 2.重新连接
+        if (!attacked) {
+            attacked = true;
+            this.channel = channel;
+            // 双向管理 -- 方便在 channel handler 阶段反向
+            //这里考虑GC 是否有压力的问题
+            channel.attr(NETTY_CONNECTION_KEY).set(this);
+        } else {
+            // todo: log this error of not needed?
+        }
     }
 
     @Override
-    public void onConnectCompleted(ChannelFutureListener listener) {
-        if (!future.isSuccess()) {
-            future.addListener(listener);
-        }
+    public void disconnect() {
+        // todo: disconnect
+        attacked = false;
+        connectFuture.onConnectClosed();
+    }
+
+    @Override
+    public void addConnectFuture(ConnectFuture connectFuture) {
+        this. connectFuture = connectFuture;
     }
 
     @Override
     public Channel channel() {
         return channel;
+    }
+
+    @Override
+    public void setChannel(Channel channel) {
+        this.channel = channel;
     }
 }

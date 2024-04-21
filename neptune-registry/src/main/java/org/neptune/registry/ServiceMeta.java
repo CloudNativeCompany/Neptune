@@ -21,6 +21,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * org.neptune.rpc.core - ServiceMeta
@@ -29,12 +30,12 @@ import java.io.Serializable;
  * @author tony-is-coding
  * @date 2021/12/17 16:11
  */
-@EqualsAndHashCode
 @ToString
 @Getter
 @Setter
 public class ServiceMeta implements Serializable {
 
+    private transient String flatStringCache = null;
     private static final long serialVersionUID = -8908295634641380163L;
 
     protected String group;     // 这个设计是为了 环境隔离
@@ -48,5 +49,36 @@ public class ServiceMeta implements Serializable {
         this.appName = appName;
         this.appVersion = appVersion;
         this.group = group;
+    }
+
+    public String toFlatString(){
+        if (flatStringCache != null) {
+            return flatStringCache;
+        }
+        StringBuilder buf = new StringBuilder();
+        buf.append(getGroup())
+                .append('-')
+                .append(appName)
+                .append('-')
+                .append(appVersion);
+        flatStringCache = buf.toString();
+        return flatStringCache.intern();
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ServiceMeta that = (ServiceMeta) o;
+        return
+                Objects.equals(group, that.group) &&
+                Objects.equals(appName, that.appName) &&
+                Objects.equals(appVersion, that.appVersion);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(group, appName, appVersion);
     }
 }

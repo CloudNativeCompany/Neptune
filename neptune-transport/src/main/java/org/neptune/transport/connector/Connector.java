@@ -16,8 +16,9 @@
 package org.neptune.transport.connector;
 
 
-import org.neptune.transport.Connection;
+import org.neptune.transport.connection.Connection;
 import org.neptune.common.UnresolvedAddress;
+import org.neptune.transport.connection.ConnectionGroup;
 import org.neptune.transport.processor.ConsumerProcessor;
 
 /**
@@ -35,4 +36,12 @@ public interface Connector {
 
     void shutdownGracefully();
 
+    /**
+     * no return null
+     * @param address
+     * @return
+     */
+    ConnectionGroup getAddressConnects(UnresolvedAddress address);
+
+    void removeAddressConnects(UnresolvedAddress address);
 }

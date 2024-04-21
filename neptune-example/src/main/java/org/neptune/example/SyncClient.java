@@ -18,7 +18,7 @@ package org.neptune.example;
 import org.neptune.registry.nacos.NacosServiceSubscriber;
 import org.neptune.rpc.client.Client;
 import org.neptune.rpc.client.DefaultClient;
-import org.neptune.transport.connector.NettyTcpConnector;
+import org.neptune.transport.connector.NettyConnector;
 import org.neptune.transport.processor.DefaultConsumerProcessor;
 
 /**
@@ -33,8 +33,9 @@ public class SyncClient {
         Client client = DefaultClient.builder()
                 .clientAppName("hello-client")
                 .serviceSubscriber(new NacosServiceSubscriber("127.0.0.1", "8848"))
-                .connector(new NettyTcpConnector(new DefaultConsumerProcessor()))
+                .connector(new NettyConnector(new DefaultConsumerProcessor()))
                 .build();
+
 
 
 

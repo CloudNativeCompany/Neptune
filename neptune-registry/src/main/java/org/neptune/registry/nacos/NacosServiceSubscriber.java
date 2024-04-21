@@ -69,6 +69,7 @@ public class NacosServiceSubscriber extends AbstractServiceSubscriber {
                     meta.setServiceMeta(sm);
 
                     registeredMetas.add(meta);
+                    notifier.notify(meta, RegistryNotifier.EventType.SERVICE_ADDED);
                 }
                 updateServiceList(serviceMeta, registeredMetas);
             });
