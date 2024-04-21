@@ -16,6 +16,7 @@
 package org.neptune.rpc;
 
 
+import com.alibaba.fastjson2.JSON;
 import io.netty.channel.Channel;
 
 import java.util.concurrent.CompletableFuture;
@@ -31,7 +32,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class DefaultInvokeFuture<V> extends CompletableFuture<V> implements InvokeFuture<V> {
 
-    private static final ConcurrentHashMap<Long, DefaultInvokeFuture<?>> FUTURE_HOLDER = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Long, DefaultInvokeFuture<?>> FUTURE_HOLDER = new ConcurrentHashMap<>(16);
     private static final byte SEND_FAILURE = -1;
     private static final byte SEND_SUCCESS = 1;
     private static final byte SENDING = 0;
@@ -57,13 +58,9 @@ public class DefaultInvokeFuture<V> extends CompletableFuture<V> implements Invo
         sendState = SEND_FAILURE;
     }
 
-    public static Long getInvokeFutureLock(long invokeId) {
-        return invokeId;
-    }
-
     @Override
-    public V getResult() throws Throwable {
-        return get(10, TimeUnit.NANOSECONDS);
+    public V result() throws Throwable {
+        return get(1000, TimeUnit.NANOSECONDS);
     }
 
 
@@ -71,15 +68,19 @@ public class DefaultInvokeFuture<V> extends CompletableFuture<V> implements Invo
     private void doReceived(Response response) {
         final Object result = response.getResult();
         complete((V) result); // 完成
+        System.out.println("invoke future is:" + this);
     }
 
     public static void received(Channel ch, Response response) {
         final long invokeId = response.getInvokeId();
+        System.out.println("invoke id:" + invokeId);
         DefaultInvokeFuture<?> invokeFuture = FUTURE_HOLDER.remove(invokeId);
-
+        System.out.println("invoke future is: " + invokeFuture);
         if (invokeFuture == null) {
+            System.out.println("invoke future 为空???");
             return;
         }
+        // 进行异步通知
         invokeFuture.doReceived(response);
     }
 

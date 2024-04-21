@@ -1,5 +1,6 @@
 package org.neptune.registry.nacos;
 
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
@@ -47,20 +48,20 @@ public class NacosServiceSubscriber extends AbstractServiceSubscriber {
 
     @Override
     public void subscribe(ServiceMeta serviceMeta, RegistryNotifier notifier) {
-        String serviceName = serviceMeta.getAppName();
+        String serviceName = serviceMeta.getServerName();
         try{
             namingService.subscribe(serviceName, event -> {
 
                 NamingEvent namedEvent = (NamingEvent) event;
-                System.out.println("event trigger: " + event);
+                System.out.println("event trigger: " + JSON.toJSONString(event));
                 List<RegistryMeta> registeredMetas = new LinkedList<>();
                 for (Instance instance : namedEvent.getInstances()) {
                     RegistryMeta meta = new RegistryMeta();
 
                     ServiceMeta sm = new ServiceMeta();
                     sm.setGroup(instance.getMetadata().get("group"));
-                    sm.setAppVersion(instance.getMetadata().get("version"));
-                    sm.setAppName(instance.getMetadata().get("appName"));
+                    sm.setServerVersion(instance.getMetadata().get("version"));
+                    sm.setServerName(instance.getMetadata().get("appName"));
 
                     UnresolvedAddress addr = new UnresolvedSocketAddress(instance.getIp(), instance.getPort());
 
@@ -70,6 +71,7 @@ public class NacosServiceSubscriber extends AbstractServiceSubscriber {
 
                     registeredMetas.add(meta);
                     notifier.notify(meta, RegistryNotifier.EventType.SERVICE_ADDED);
+                    System.out.println("subscribe succeed , send notify");
                 }
                 updateServiceList(serviceMeta, registeredMetas);
             });

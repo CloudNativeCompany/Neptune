@@ -91,7 +91,7 @@ public class ProtocolHeader implements Serializable {
         this.msgType = (byte) (sign & 0x0f);
     }
     public static byte toSign(byte serialTypeCode, byte msgType) {
-        return (byte) 0;
+        return (byte) (serialTypeCode << 4 | (0x0f & msgType));
     }
 
 

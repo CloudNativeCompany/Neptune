@@ -15,8 +15,8 @@ public class NacosServiceSubscriberTest {
 
         NacosServiceSubscriber serviceSubscriber = new NacosServiceSubscriber("127.0.0.1", "8848");
         ServiceMeta serviceMeta = new ServiceMeta();
-        serviceMeta.setAppVersion("1.0.0");
-        serviceMeta.setAppName("demo-service");
+        serviceMeta.setServerVersion("1.0.0");
+        serviceMeta.setServerName("demo-service");
         serviceMeta.setGroup("default");
         serviceSubscriber.subscribe(serviceMeta, null);
         System.out.println("完成订阅操作");

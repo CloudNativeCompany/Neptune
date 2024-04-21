@@ -134,11 +134,11 @@ public class DefaultClient implements Client {
                         if (eventType == EventType.SERVICE_ADDED) {
                             ConnectionGroup group = connector.getAddressConnects(address);
                             group.addConnect(() -> connector.connect(address, false));
+                            System.out.println("成功加入连接");
                         } else if (eventType == EventType.SERVICE_REMOVED) {
                             connector.removeAddressConnects(address);
                         }
                         // 创建连接后, 将连接放到 连接池管理中
-                        System.out.println("成功加入连接");
                     }
                 });
             }

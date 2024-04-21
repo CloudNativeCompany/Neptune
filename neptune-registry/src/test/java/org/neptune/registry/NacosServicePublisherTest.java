@@ -15,8 +15,8 @@ class NacosServicePublisherTest {
         );
 
         ServiceMeta serviceMeta = new ServiceMeta();
-        serviceMeta.setAppVersion("1.0.0");
-        serviceMeta.setAppName("demo-service");
+        serviceMeta.setServerVersion("1.0.0");
+        serviceMeta.setServerName("demo-service");
         serviceMeta.setGroup("default");
 
         UnresolvedAddress address = new UnresolvedSocketAddress("127.0.0.1",8001);

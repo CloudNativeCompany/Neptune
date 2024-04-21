@@ -34,19 +34,20 @@ public class ResponseHandler extends ChannelInboundHandlerAdapter {
 
     private ConsumerProcessor processor;
 
+    public ResponseHandler(ConsumerProcessor processor) {
+        this.processor = processor;
+    }
+
     // 最后一个channelRead 需要进行显示的 buffer 池化与释放操作
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        System.out.println("ResponseHandler收到响应结果并开始处理：" + msg);
         final Channel channel = ctx.channel();
         if (msg instanceof ResponsePayload) {
             processor.handlerResponse(channel, (ResponsePayload) msg);
         } else {
             ReferenceCountUtil.release(msg);
         }
-    }
-
-    public void withProcess(ConsumerProcessor processor) {
-        this.processor = processor;
     }
 
     public ConsumerProcessor processor() {

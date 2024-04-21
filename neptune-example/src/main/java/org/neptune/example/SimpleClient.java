@@ -19,7 +19,7 @@ import org.neptune.registry.nacos.NacosServiceSubscriber;
 import org.neptune.rpc.client.Client;
 import org.neptune.rpc.client.DefaultClient;
 import org.neptune.transport.connector.NettyConnector;
-import org.neptune.transport.processor.DefaultConsumerProcessor;
+import org.neptune.rpc.processor.DefaultConsumerProcessor;
 
 /**
  * org.neptune.example - AutoClient
@@ -27,7 +27,7 @@ import org.neptune.transport.processor.DefaultConsumerProcessor;
  * @author tony-is-coding
  * @date 2021/12/17 20:26
  */
-public class SyncClient {
+public class SimpleClient {
     public static void main(String[] args) {
 
         Client client = DefaultClient.builder()

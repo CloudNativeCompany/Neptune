@@ -15,6 +15,7 @@
  */
 package org.neptune.transport.protocol;
 
+import com.alibaba.fastjson2.JSON;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -38,6 +39,7 @@ public class ProtocolEncoder extends MessageToByteEncoder<Object> {
      */
     @Override
     protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
+        System.out.println("消息编码:" + JSON.toJSONString(msg));
         if (msg instanceof RequestPayload) {
             doEncodeRequest((RequestPayload) msg, out);
         } else if (msg instanceof ResponsePayload) {
@@ -68,7 +70,7 @@ public class ProtocolEncoder extends MessageToByteEncoder<Object> {
 
         out.writeShort(ProtocolHeader.MAGIC_WORD)
                 .writeByte(sign)
-                .writeByte(0x00)
+                .writeByte(0x00) // 请求状态默认为 0
                 .writeLong(invokeId)
                 .writeInt(length)
                 .writeBytes(body);

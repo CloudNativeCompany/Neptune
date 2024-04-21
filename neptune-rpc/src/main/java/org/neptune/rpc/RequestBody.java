@@ -30,7 +30,7 @@ public class RequestBody implements Serializable {
     private static final long serialVersionUID = 1009813828866652852L;
 
     private String appName;                 // 当前应用 - 应用名称
-    private final ServiceMeta metadata; // 目标服务元数据
+    private final ServiceMeta metadata;     // 目标服务元数据
     private String methodName;              // 目标方法名称
     private Object[] args;                  // 目标方法参数
 

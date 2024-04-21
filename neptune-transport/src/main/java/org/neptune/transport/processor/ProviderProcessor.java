@@ -15,7 +15,10 @@
  */
 package org.neptune.transport.processor;
 
-import java.nio.channels.Channel;
+import io.netty.channel.Channel;
+import org.neptune.transport.RequestPayload;
+import org.neptune.transport.Status;
+import org.neptune.transport.connection.Connection;
 
 /**
  * org.neptune.rpc.transportLayer - ProviderProcessor
@@ -24,5 +27,12 @@ import java.nio.channels.Channel;
  * @date 2021/12/16 1:10
  */
 public interface ProviderProcessor extends Processor {
-    void handleRequest(Channel channel, Object request) throws Exception;
+
+    void handleRequest(Channel channel, RequestPayload request) throws Exception;
+
+    /**
+     * 处理异常
+     */
+    void handleException(Channel channel, RequestPayload request, Status status, Throwable cause);
+
 }

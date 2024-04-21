@@ -24,5 +24,5 @@ import java.util.concurrent.CompletionStage;
  * @date 2021/12/20 16:45
  */
 public interface InvokeFuture<V> extends CompletionStage<V> {
-    V getResult() throws Throwable;
+    V result() throws Throwable;
 }

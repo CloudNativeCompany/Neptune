@@ -15,7 +15,6 @@
  */
 package org.neptune.registry;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -39,15 +38,15 @@ public class ServiceMeta implements Serializable {
     private static final long serialVersionUID = -8908295634641380163L;
 
     protected String group;     // 这个设计是为了 环境隔离
-    protected String appName;   // 应用名称 appid之类的东西
-    protected String appVersion;   // 服务版本
+    protected String serverName;   // 应用名称 appid之类的东西
+    protected String serverVersion;   // 服务版本
 
     public ServiceMeta() {
     }
 
-    public ServiceMeta(String appName, String appVersion, String group) {
-        this.appName = appName;
-        this.appVersion = appVersion;
+    public ServiceMeta(String serverName, String serverVersion, String group) {
+        this.serverName = serverName;
+        this.serverVersion = serverVersion;
         this.group = group;
     }
 
@@ -58,9 +57,9 @@ public class ServiceMeta implements Serializable {
         StringBuilder buf = new StringBuilder();
         buf.append(getGroup())
                 .append('-')
-                .append(appName)
+                .append(serverName)
                 .append('-')
-                .append(appVersion);
+                .append(serverVersion);
         flatStringCache = buf.toString();
         return flatStringCache.intern();
     }
@@ -73,12 +72,12 @@ public class ServiceMeta implements Serializable {
         ServiceMeta that = (ServiceMeta) o;
         return
                 Objects.equals(group, that.group) &&
-                Objects.equals(appName, that.appName) &&
-                Objects.equals(appVersion, that.appVersion);
+                Objects.equals(serverName, that.serverName) &&
+                Objects.equals(serverVersion, that.serverVersion);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(group, appName, appVersion);
+        return Objects.hash(group, serverName, serverVersion);
     }
 }

@@ -111,13 +111,14 @@ public class NettyConnector implements Connector {
             @Override
             public ChannelHandler[] handlers() {
                 return new ChannelHandler[]{
+                        // 入站看门狗
                         this, // in-1
-                        // 这里只需要进行写超时检查
+                        // 这里只需要进行 读/写 超时检查
                         new IdleStateChecker(timer, 0, 30, 0), // in - 2
                         new ConnectorIdleTriggerHandler(), // in - 3
                         new ProtocolEncoder(), // out - 1
                         new ProtocolDecoder(), // in - 4
-                        new ResponseHandler() // in - 5
+                        new ResponseHandler(processor) // in - 5
                 };
             }
         };
