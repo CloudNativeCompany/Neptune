@@ -9,26 +9,27 @@ import com.alibaba.nacos.api.naming.pojo.Instance;
 import lombok.extern.slf4j.Slf4j;
 import org.neptune.common.UnresolvedAddress;
 import org.neptune.common.UnresolvedSocketAddress;
-import org.neptune.registry.AbstractServiceSubscriber;
+import org.neptune.common.util.ConcurrentSet;
+import org.neptune.registry.AbstractRegistry;
 import org.neptune.registry.RegistryMeta;
 import org.neptune.registry.ServiceMeta;
+import org.neptune.registry.ServiceSubscriber;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @desc TODO
+ * @desc
  *
  * @author tony
- * @createDate 2024/4/19 12:15 下午
+ * @createDate 2024/4/19 11:34 上午
  */
 @Slf4j
-public class NacosServiceSubscriber extends AbstractServiceSubscriber {
+public class NacosRegistry extends AbstractRegistry {
 
-    NamingService namingService;
+    private final NamingService namingService;
 
-    public NacosServiceSubscriber(String addr, String port) {
+    public NacosRegistry(String addr, String port) {
         Properties properties = new Properties();
         properties.put("serverAddr", addr + ":"+port); // Nacos 服务器地址
         properties.put("namespace", "public"); // 如有需要，指定命名空间
@@ -40,16 +41,12 @@ public class NacosServiceSubscriber extends AbstractServiceSubscriber {
     }
 
     @Override
-    public void shutdownGracefully() {
-        try {
-            namingService.shutDown();
-        } catch (NacosException e) {
-            e.printStackTrace();
-        }
+    protected void actionAfterRegister() {
+
     }
 
     @Override
-    public void subscribe(ServiceMeta serviceMeta, RegistryNotifier notifier) {
+    protected void actionAfterSubscribe(ServiceMeta serviceMeta, ServiceSubscriber.RegistryNotifier notifier) {
         String serviceName = serviceMeta.getServerName();
         try{
             namingService.subscribe(serviceName, event -> {
@@ -72,7 +69,7 @@ public class NacosServiceSubscriber extends AbstractServiceSubscriber {
 
                     registeredMetas.add(meta);
                     // todo: 如何计算是节点的什么事件
-                    notifier.notify(meta, RegistryNotifier.EventType.SERVICE_ADDED);
+                    notifier.notify(meta, ServiceSubscriber.RegistryNotifier.EventType.SERVICE_ADDED);
                 }
                 updateServiceList(serviceMeta, registeredMetas);
             });
@@ -82,7 +79,11 @@ public class NacosServiceSubscriber extends AbstractServiceSubscriber {
     }
 
     @Override
-    public void unsubscribe(ServiceMeta serviceMeta) {
-
+    public void shutdownGracefully() {
+        try{
+            namingService.shutDown();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

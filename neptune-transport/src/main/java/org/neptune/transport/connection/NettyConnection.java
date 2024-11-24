@@ -22,6 +22,7 @@ import io.netty.util.AttributeKey;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.SocketAddress;
+import java.util.Objects;
 
 /**
  * org.neptune.rpc.transportLayer - NettyConnection
@@ -110,5 +111,12 @@ public class NettyConnection implements Connection {
     @Override
     public void setChannel(Channel channel) {
         this.channel = channel;
+    }
+
+    @Override
+    public void close() {
+        if(Objects.nonNull(future)){
+            future.channel().close().syncUninterruptibly();
+        }
     }
 }

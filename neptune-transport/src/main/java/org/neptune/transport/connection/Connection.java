@@ -44,4 +44,6 @@ public interface Connection{
     Channel channel();
 
     void setChannel(Channel channel);
+
+    void close();
 }

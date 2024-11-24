@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
  * @author tony-is-coding
  * @date 2021/12/16 0:11
  */
-public interface ServiceSubscriber extends Registry{
+public interface ServiceSubscriber{
 
     /**
      * List all consumer's info.
@@ -71,4 +71,5 @@ public interface ServiceSubscriber extends Registry{
         void waitForAvailable(long timeout, TimeUnit timeUnit);
     }
 
+    void shutdownGracefully();
 }

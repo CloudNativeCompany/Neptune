@@ -40,7 +40,7 @@ public class SimpleServer {
         Server server = null;
         try {
 
-            NacosServicePublisher nacosServicePublisher = new NacosServicePublisher(
+            NacosServicePublisher nacosRegistry = new NacosServicePublisher(
                     "127.0.0.1", "8848"
             );
             server = DefaultServer.builder()
@@ -48,7 +48,7 @@ public class SimpleServer {
                     .version("1.0.0")
                     .group("test")
                     .port(8001)
-                    .servicePublisher(nacosServicePublisher)
+                    .servicePublisher(nacosRegistry)
                     .build();
             server.start();
         } catch (Exception e) {

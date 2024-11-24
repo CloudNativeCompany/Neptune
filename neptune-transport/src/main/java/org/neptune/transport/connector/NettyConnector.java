@@ -107,7 +107,7 @@ public class NettyConnector implements Connector {
         final Bootstrap bs = bootstrap();
 
         // 连接看门狗 -- 断线重连
-        final ConnectionWatchDog watchDog = new ConnectionWatchDog(bs, timer, socketAddress) {
+        final ConnectionWatchDog watchDog = new ConnectionWatchDog(bs,timer, socketAddress) {
             @Override
             public ChannelHandler[] handlers() {
                 return new ChannelHandler[]{

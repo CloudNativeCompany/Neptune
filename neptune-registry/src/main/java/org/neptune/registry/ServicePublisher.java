@@ -21,7 +21,7 @@ package org.neptune.registry;
  * @author tony-is-coding
  * @date 2021/12/16 0:07
  */
-public interface ServicePublisher  extends Registry{
+public interface ServicePublisher{
 
     void register(RegistryMeta meta, RegisterListener listener);
 
@@ -36,4 +36,5 @@ public interface ServicePublisher  extends Registry{
 
         void onFailure();
     }
+    void shutdownGracefully();
 }

@@ -16,7 +16,7 @@
 package org.neptune.example;
 
 import lombok.extern.slf4j.Slf4j;
-import org.neptune.registry.nacos.NacosServiceSubscriber;
+import org.neptune.registry.nacos.NacosRegistry;
 import org.neptune.rpc.client.Client;
 import org.neptune.rpc.client.DefaultClient;
 import org.neptune.transport.connector.NettyConnector;
@@ -31,10 +31,9 @@ import org.neptune.rpc.processor.DefaultConsumerProcessor;
 @Slf4j
 public class SimpleClient {
     public static void main(String[] args) {
-
         Client client = DefaultClient.builder()
                 .clientAppName("hello-client")
-                .serviceSubscriber(new NacosServiceSubscriber("127.0.0.1", "8848"))
+                .serviceSubscriber(null)
                 .connector(new NettyConnector(new DefaultConsumerProcessor()))
                 .build();
         try{

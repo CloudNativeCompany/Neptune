@@ -22,9 +22,10 @@ package org.neptune.registry;
  * @author tony-is-coding
  * @date 2021/12/16 0:07
  */
-public interface Registry {
+public interface Registry{
 
     void shutdownGracefully();
+
 
     enum RegistryType {
         DEFAULT("default"),
