@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import org.neptune.rpc.client.cluster.ClusterInvoker;
 import org.neptune.rpc.client.lb.LoadBalancer;
-import org.neptune.rpc.seialize.Serializer;
+import org.neptune.transport.seialize.Serializer;
 
 /**
  * @desc TODO

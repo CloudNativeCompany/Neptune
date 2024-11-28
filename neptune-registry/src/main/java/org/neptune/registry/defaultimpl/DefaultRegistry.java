@@ -47,15 +47,36 @@ public class DefaultRegistry extends AbstractRegistry {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultRegistry.class);
 
-    private final ServerBootstrap bootstrap;
+    private ChannelFuture channelFuture;
+    private final String addr;
+    private final int port;
 
-    public DefaultRegistry(String addr, int port) throws InterruptedException {
+    public DefaultRegistry(String addr, int port){
+        this.addr = addr;
+        this.port = port;
+    }
+
+    @Override
+    protected void actionAfterRegister() {
+    }
+
+    @Override
+    protected void actionAfterSubscribe(ServiceMeta serviceMeta, ServiceSubscriber.RegistryNotifier notifier) {
+    }
+
+    @Override
+    public void shutdownGracefully() throws InterruptedException {
+        this.channelFuture.channel().close().sync();
+    }
+
+    @Override
+    public void startServer() throws InterruptedException {
         UnresolvedSocketAddress socketAddress =  new UnresolvedSocketAddress(addr, port);
         InetSocketAddress inetSocketAddress = new InetSocketAddress(port);
 
         NioEventLoopGroup boss = new NioEventLoopGroup(4, new DefaultThreadFactory("neptune-acceptor-boss", Thread.MAX_PRIORITY));
         NioEventLoopGroup worker = new NioEventLoopGroup(12, new DefaultThreadFactory("neptune-acceptor-worker", Thread.MAX_PRIORITY));
-         this.bootstrap = new ServerBootstrap()
+        ServerBootstrap bootstrap = new ServerBootstrap()
                 .channel(NioServerSocketChannel.class)
                 .group(boss, worker)
                 .option(ChannelOption.SO_BACKLOG, 128)          // 设置TCP缓冲区
@@ -73,25 +94,19 @@ public class DefaultRegistry extends AbstractRegistry {
                                 new ProtocolEncoder(),
                                 new ChannelInboundHandlerAdapter(){
                                     // todo: handler action messages
+                                    @Override
+                                    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+                                        log.info("received a message:{}", msg);
+                                        super.channelRead(ctx, msg);
+                                    }
                                 }
                         );
-
                     }
                 });
-
         log.info("bind port to: {} success!!!", socketAddress.port());
-        ChannelFuture bindFuture = bootstrap.bind(inetSocketAddress).sync();
-    }
-
-    @Override
-    protected void actionAfterRegister() {
-    }
-
-    @Override
-    protected void actionAfterSubscribe(ServiceMeta serviceMeta, ServiceSubscriber.RegistryNotifier notifier) {
-    }
-
-    @Override
-    public void shutdownGracefully() {
+        this.channelFuture = bootstrap.bind(inetSocketAddress).sync();
+        channelFuture.channel().closeFuture().addListeners((ChannelFutureListener) cf -> {
+            log.warn("registry server closing.... ");
+        });
     }
 }

@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.rpc.exec;
+package org.neptune.transport.seialize;
 
 /**
- * org.neptune.rpc.exec - SerializerException
+ * org.neptune.rpc.seialize - AbstractSerializer
  *
  * @author tony-is-coding
- * @date 2021/12/24 14:39
+ * @date 2021/12/24 14:40
  */
-public class SerializerException extends RuntimeException {
-    public SerializerException(String message) {
-        super(message);
-    }
+public abstract class AbstractSerializer implements Serializer {
 }

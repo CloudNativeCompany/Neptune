@@ -24,8 +24,10 @@ package org.neptune.registry;
  */
 public interface Registry{
 
-    void shutdownGracefully();
+    void shutdownGracefully() throws InterruptedException;
 
+
+    void startServer() throws InterruptedException;
 
     enum RegistryType {
         DEFAULT("default"),

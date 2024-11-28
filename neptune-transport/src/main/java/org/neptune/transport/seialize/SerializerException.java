@@ -13,23 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.rpc.factories;
-
-import org.neptune.rpc.seialize.KryoSerializer;
-import org.neptune.rpc.seialize.Serializer;
+package org.neptune.transport.seialize;
 
 /**
- * org.neptune.rpc.factories - SerializerFactory
+ * org.neptune.rpc.exec - SerializerException
  *
  * @author tony-is-coding
- * @date 2021/12/26 15:38
+ * @date 2021/12/24 14:39
  */
-public class SerializerFactory {
-    static {
-
-    }
-
-    public static Serializer getSerializer(Serializer.SerializerType type) {
-        return new KryoSerializer();
+public class SerializerException extends RuntimeException {
+    public SerializerException(String message) {
+        super(message);
     }
 }

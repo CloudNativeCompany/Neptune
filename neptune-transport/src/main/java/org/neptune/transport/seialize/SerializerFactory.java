@@ -13,13 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.rpc.seialize;
+package org.neptune.transport.seialize;
+
+import org.neptune.transport.seialize.KryoSerializer;
+import org.neptune.transport.seialize.Serializer;
 
 /**
- * org.neptune.rpc.seialize - AbstractSerializer
+ * org.neptune.rpc.factories - SerializerFactory
  *
  * @author tony-is-coding
- * @date 2021/12/24 14:40
+ * @date 2021/12/26 15:38
  */
-public abstract class AbstractSerializer implements Serializer {
+public class SerializerFactory {
+    static {
+
+    }
+    public static Serializer getSerializer(Serializer.SerializerType type) {
+        return new KryoSerializer();
+    }
 }

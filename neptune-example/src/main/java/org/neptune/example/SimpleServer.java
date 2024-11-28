@@ -15,6 +15,7 @@
  */
 package org.neptune.example;
 
+import org.neptune.registry.defaultimpl.DefaultPublisher;
 import org.neptune.registry.nacos.NacosRegistry;
 import org.neptune.rpc.server.DefaultServer;
 import org.neptune.rpc.server.Server;
@@ -30,15 +31,15 @@ public class SimpleServer {
         Server server = null;
         try {
 
-            NacosRegistry nacosRegistry = new NacosRegistry(
-                    "127.0.0.1", "8848"
+            DefaultPublisher defaultPublisher = new DefaultPublisher(
+                    "127.0.0.1", 8001
             );
             server = DefaultServer.builder()
                     .serverName("demo-service")
                     .version("1.0.0")
                     .group("test")
                     .port(8001)
-                    .servicePublisher(nacosRegistry)
+                    .servicePublisher(defaultPublisher)
                     .build();
             server.start();
         } catch (Exception e) {

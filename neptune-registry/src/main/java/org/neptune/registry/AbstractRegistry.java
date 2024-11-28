@@ -24,6 +24,11 @@ public abstract class AbstractRegistry implements Registry {
         }
     }
 
+    @Override
+    public void startServer() throws InterruptedException {
+
+    }
+
     abstract protected void actionAfterRegister();
 
     abstract protected void actionAfterSubscribe(ServiceMeta serviceMeta, ServiceSubscriber.RegistryNotifier notifier);
