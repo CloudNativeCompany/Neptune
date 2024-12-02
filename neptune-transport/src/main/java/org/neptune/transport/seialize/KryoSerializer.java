@@ -15,8 +15,6 @@
  */
 package org.neptune.transport.seialize;
 
-import org.neptune.rpc.exec.DeserializerException;
-import org.neptune.rpc.exec.SerializerException;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;

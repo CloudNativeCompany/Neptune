@@ -20,11 +20,7 @@ public class TestDefaultSubscriber {
                 "1.0.0",
                 "fi"
         );
-
-
-
         Serializer serializer = new KryoSerializer();
-
         defaultPublisher.subscribe(serviceMeta, new ServiceSubscriber.RegistryNotifier() {
             @Override
             public void notify(RegistryMeta registryMeta, EventType eventType) {

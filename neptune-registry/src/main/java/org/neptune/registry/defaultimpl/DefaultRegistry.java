@@ -15,6 +15,8 @@
  */
 package org.neptune.registry.defaultimpl;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.nacos.common.utils.ExceptionUtil;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -23,16 +25,20 @@ import io.netty.handler.flush.FlushConsolidationHandler;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import org.neptune.common.UnresolvedSocketAddress;
-import org.neptune.registry.AbstractRegistry;
-import org.neptune.registry.ServiceMeta;
-import org.neptune.registry.ServiceSubscriber;
+import org.neptune.registry.*;
+import org.neptune.transport.RequestPayload;
+import org.neptune.transport.Status;
 import org.neptune.transport.handler.*;
+import org.neptune.transport.processor.AcceptProcessor;
 import org.neptune.transport.protocol.ProtocolDecoder;
 import org.neptune.transport.protocol.ProtocolEncoder;
+import org.neptune.transport.seialize.Serializer;
+import org.neptune.transport.seialize.SerializerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 
 /**
  * org.neptune.rpc.core - DefaultServiceSubscriber
@@ -76,6 +82,45 @@ public class DefaultRegistry extends AbstractRegistry {
 
         NioEventLoopGroup boss = new NioEventLoopGroup(4, new DefaultThreadFactory("neptune-acceptor-boss", Thread.MAX_PRIORITY));
         NioEventLoopGroup worker = new NioEventLoopGroup(12, new DefaultThreadFactory("neptune-acceptor-worker", Thread.MAX_PRIORITY));
+        AcceptProcessor processor = new AcceptProcessor() {
+            @Override
+            public void handleRequest(Channel channel, RequestPayload request) throws Exception {
+                log.info("receive a message from remote: " + channel.remoteAddress());
+                Serializer serializer = SerializerFactory.getSerializer(Serializer.SerializerType.parse(request.getSerialTypeCode()));
+                SubscribeRequest subscribeRequest = serializer.readObject(request.getBytes(), 0
+                        ,request.getBytes().length , SubscribeRequest.class);
+                log.info("subscribeMessage_info:{}",JSON.toJSONString(subscribeRequest));
+                // TODO: 2024/12/2  handler registry
+
+                RequestPayload payload = new RequestPayload(request.getXid());
+                payload.setSerialTypeCode(request.getSerialTypeCode());
+                SubscribeResponse response = new SubscribeResponse();
+                response.setCode(1);
+                payload.setBytes(serializer.writeObject(response));
+
+                channel.writeAndFlush(payload).addListener(
+                        // TODO:加入发送超时监控, writeAndFlush
+                        (ChannelFutureListener) cf -> {
+                            if (cf.isSuccess()) { // success
+                                log.info("subscribe response succeed...");
+                            } else { // fail
+                                log.info("subscribe response failure...");
+                            }
+                        });
+            }
+
+            @Override
+            public void handleException(Channel channel, RequestPayload request, Status status, Throwable cause) {
+                log.error("handleException:" + ExceptionUtil.getStackTrace(cause));
+            }
+
+            @Override
+            public void shutdownGracefully() {
+
+            }
+        };
+
+
         ServerBootstrap bootstrap = new ServerBootstrap()
                 .channel(NioServerSocketChannel.class)
                 .group(boss, worker)
@@ -87,6 +132,12 @@ public class DefaultRegistry extends AbstractRegistry {
                     @Override
                     protected void initChannel(Channel ch) throws Exception {
                         ch.pipeline().addLast(
+                                new ChannelOutboundHandlerAdapter(){
+                                    @Override
+                                    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+                                        log.error("exceptionCaught:" + ExceptionUtil.getStackTrace(cause));
+                                    }
+                                },
                                 new FlushConsolidationHandler(5, true), // 合并发送, 每5次之后再进行一次真正的网络发发送
                                 new IdleStateChecker(timer, 5, 5, 60),
                                 new AcceptorIdleTriggerHandler(),
@@ -96,8 +147,13 @@ public class DefaultRegistry extends AbstractRegistry {
                                     // todo: handler action messages
                                     @Override
                                     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-                                        log.info("received a message:{}", msg);
-                                        super.channelRead(ctx, msg);
+                                        RequestPayload request = (RequestPayload) msg;
+                                        processor.handleRequest(ctx.channel(), request);
+                                    }
+
+                                    @Override
+                                    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+                                        log.error("exceptionCaught:" + ExceptionUtil.getStackTrace(cause));
                                     }
                                 }
                         );

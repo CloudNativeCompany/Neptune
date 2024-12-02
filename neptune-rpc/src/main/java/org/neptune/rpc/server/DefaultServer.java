@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.neptune.registry.RegistryMeta;
 import org.neptune.registry.ServiceMeta;
 import org.neptune.registry.ServicePublisher;
-import org.neptune.rpc.processor.DefaultProviderProcessor;
+import org.neptune.rpc.processor.DefaultAcceptProcessor;
 import org.neptune.transport.acceptor.Acceptor;
 import org.neptune.transport.acceptor.NettyAcceptor;
 
@@ -146,7 +146,7 @@ public class DefaultServer implements Server {
 
         public DefaultServer build() {
             innerServer.acceptor = new NettyAcceptor(innerServer.port);
-            innerServer.acceptor.withProcessor(new DefaultProviderProcessor());
+            innerServer.acceptor.withProcessor(new DefaultAcceptProcessor());
             return innerServer;
         }
     }

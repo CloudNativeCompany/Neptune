@@ -17,7 +17,7 @@ import org.neptune.transport.handler.ConnectionWatchDog;
 import org.neptune.transport.handler.ConnectorIdleTriggerHandler;
 import org.neptune.transport.handler.IdleStateChecker;
 import org.neptune.transport.handler.ResponseHandler;
-import org.neptune.transport.processor.ConsumerProcessor;
+import org.neptune.transport.processor.ConnectProcessor;
 import org.neptune.transport.protocol.ProtocolDecoder;
 import org.neptune.transport.protocol.ProtocolEncoder;
 import org.slf4j.Logger;
@@ -53,7 +53,7 @@ public class DefaultPublisher implements ServicePublisher {
                         new ConnectorIdleTriggerHandler(), // in - 3
                         new ProtocolEncoder(), // out - 1
                         new ProtocolDecoder(), // in - 4
-                        new ResponseHandler(new ConsumerProcessor() {
+                        new ResponseHandler(new ConnectProcessor() {
                             @Override
                             public void handlerResponse(Channel channel, ResponsePayload response) throws Exception {
                                 System.out.println("response ");

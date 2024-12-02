@@ -26,8 +26,6 @@ import org.neptune.common.UnresolvedAddress;
  * @date 2021/12/22 12:40
  */
 @ToString
-@Getter
-@Setter
 public class RegistryMeta {
     protected ServiceMeta serviceMeta;
     protected UnresolvedAddress address;

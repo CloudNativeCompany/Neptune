@@ -15,7 +15,7 @@ import org.neptune.common.UnresolvedSocketAddress;
 import org.neptune.transport.handler.AcceptorHandler;
 import org.neptune.transport.handler.AcceptorIdleTriggerHandler;
 import org.neptune.transport.handler.IdleStateChecker;
-import org.neptune.transport.processor.ProviderProcessor;
+import org.neptune.transport.processor.AcceptProcessor;
 import org.neptune.transport.protocol.ProtocolDecoder;
 import org.neptune.transport.protocol.ProtocolEncoder;
 
@@ -41,7 +41,7 @@ public class NettyAcceptor implements Acceptor{
 
     private final UnresolvedAddress address;
     private final SocketAddress socketAddress;
-    private ProviderProcessor providerProcessor = null;
+    private AcceptProcessor acceptorProcessor = null;
 
     private final int nBosses;
     private final int nWorkers;
@@ -63,8 +63,8 @@ public class NettyAcceptor implements Acceptor{
         init();
     }
 
-    public void withProcessor(ProviderProcessor processor){
-        this.providerProcessor = processor;
+    public void withProcessor(AcceptProcessor processor){
+        this.acceptorProcessor = processor;
     }
 
     @Override
@@ -95,7 +95,7 @@ public class NettyAcceptor implements Acceptor{
                         new AcceptorIdleTriggerHandler(),
                         new ProtocolDecoder(),
                         new ProtocolEncoder(),
-                        new AcceptorHandler(providerProcessor)
+                        new AcceptorHandler(acceptorProcessor)
                 );
 
             }

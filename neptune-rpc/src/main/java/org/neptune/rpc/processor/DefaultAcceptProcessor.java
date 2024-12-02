@@ -24,7 +24,7 @@ import org.neptune.transport.seialize.Serializer;
 import org.neptune.transport.RequestPayload;
 import org.neptune.transport.ResponsePayload;
 import org.neptune.transport.Status;
-import org.neptune.transport.processor.ProviderProcessor;
+import org.neptune.transport.processor.AcceptProcessor;
 
 /**
  * org.neptune.rpc.core - DefaultProviderProcessor
@@ -33,7 +33,7 @@ import org.neptune.transport.processor.ProviderProcessor;
  * @date 2021/12/24 16:07
  */
 @Slf4j
-public class DefaultProviderProcessor implements ProviderProcessor {
+public class DefaultAcceptProcessor implements AcceptProcessor {
 
     @Override
     public void shutdownGracefully() {

@@ -25,6 +25,6 @@ import org.neptune.transport.ResponsePayload;
  * @author tony-is-coding
  * @date 2021/12/16 1:05
  */
-public interface ConsumerProcessor extends Processor {
+public interface ConnectProcessor extends Processor {
     void handlerResponse(Channel channel, ResponsePayload response) throws Exception;
 }

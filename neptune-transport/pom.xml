@@ -12,6 +12,11 @@
     <artifactId>neptune-transport</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+            <version>5.0.4</version>
+        </dependency>
 
         <dependency>
             <groupId>io.netty</groupId>

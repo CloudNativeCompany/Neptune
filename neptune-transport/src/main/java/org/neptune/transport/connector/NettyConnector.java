@@ -19,7 +19,6 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.HashedWheelTimer;
-import io.netty.util.Timer;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import org.neptune.common.UnresolvedAddress;
 import org.neptune.transport.SocketChannelFactoryProvider;
@@ -27,15 +26,13 @@ import org.neptune.transport.connection.Connection;
 import org.neptune.transport.connection.ConnectionGroup;
 import org.neptune.transport.connection.NettyConnection;
 import org.neptune.transport.handler.ConnectionWatchDog;
-import org.neptune.transport.handler.ConnectorIdleTriggerHandler;
-import org.neptune.transport.handler.IdleStateChecker;
-import org.neptune.transport.handler.ResponseHandler;
-import org.neptune.transport.processor.ConsumerProcessor;
-import org.neptune.transport.protocol.ProtocolDecoder;
-import org.neptune.transport.protocol.ProtocolEncoder;
+import org.neptune.transport.processor.ConnectProcessor;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadFactory;
 
@@ -65,20 +62,16 @@ public class NettyConnector implements Connector {
     private final EventLoopGroup workers;
     private final SocketType socketType;
 
-    private ConsumerProcessor processor;
+    private final ChannelHandler[] channelHandlers;
     private static final int DEFAULT_CONNECTOR_WORKER_NUM = 4;
 
     private final ConcurrentHashMap<UnresolvedAddress, ConnectionGroup> serviceConnectGroup = new ConcurrentHashMap<>(16);
 
-    public NettyConnector(ConsumerProcessor processor) {
-        this(DEFAULT_CONNECTOR_WORKER_NUM, false);
-        this.processor =  processor;
-    }
-
-    protected NettyConnector(int workerNum, boolean isNative) {
-        this.socketType = SocketChannelFactoryProvider.socketType(isNative);
-        workers = createEventLoopGroup(workerNum, new DefaultThreadFactory("rpc.connect"));
-        bootstrap = new Bootstrap().group(workers);
+    public NettyConnector(ChannelHandler[] channelHandlers) {
+        this.channelHandlers = channelHandlers;
+        this.socketType = SocketChannelFactoryProvider.socketType(false);
+        this.workers = createEventLoopGroup(DEFAULT_CONNECTOR_WORKER_NUM, new DefaultThreadFactory("rpc.connect"));
+        this.bootstrap = new Bootstrap().group(workers);
         doInit();
     }
 
@@ -95,11 +88,6 @@ public class NettyConnector implements Connector {
         return connect0(remoteSocketAddress, true);
     }
 
-    @Override
-    public ConsumerProcessor process() {
-        return processor;
-    }
-
     public Connection connect0(final UnresolvedAddress address, boolean async) {
         setOptions();
 
@@ -110,16 +98,10 @@ public class NettyConnector implements Connector {
         final ConnectionWatchDog watchDog = new ConnectionWatchDog(bs,timer, socketAddress) {
             @Override
             public ChannelHandler[] handlers() {
-                return new ChannelHandler[]{
-                        // 入站看门狗
-                        this, // in-1
-                        // 这里只需要进行 读/写 超时检查
-                        new IdleStateChecker(timer, 0, 30, 0), // in - 2
-                        new ConnectorIdleTriggerHandler(), // in - 3
-                        new ProtocolEncoder(), // out - 1
-                        new ProtocolDecoder(), // in - 4
-                        new ResponseHandler(processor) // in - 5
-                };
+                List<ChannelHandler> handlers = new LinkedList<>();
+                handlers.add(this);
+                handlers.addAll(Arrays.asList(channelHandlers));
+                return handlers.toArray(new ChannelHandler[0]);
             }
         };
         ChannelFuture future;
@@ -140,8 +122,10 @@ public class NettyConnector implements Connector {
             throw new RuntimeException("connect error");
         }
 
-        // 这里要将 channel 包装成一个Connection, 目的是为了实现连接的异步创建, 和一些自定义的 观测监控行为
+        // TODO: 2024/12/2 这里要将 channel 包装成一个Connection, 目的是为了实现连接的异步创建, 和一些自定义的 观测监控行为
         return new NettyConnection(future, socketAddress) {
+
+            // TODO: 2024/12/2  控制是否需要重连
             @Override
             public void setReconnect(boolean reconnect) {
                 watchDog.setReconnect(reconnect); // 看门狗代理 reconnect
@@ -152,7 +136,6 @@ public class NettyConnector implements Connector {
     @Override
     public void shutdownGracefully() {
         workers.shutdownGracefully();
-        processor.shutdownGracefully();
     }
 
     @Override

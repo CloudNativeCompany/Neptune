@@ -22,7 +22,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.neptune.transport.ResponsePayload;
-import org.neptune.transport.processor.ConsumerProcessor;
+import org.neptune.transport.processor.ConnectProcessor;
 
 /**
  * org.neptune.rpc.transportLayer - ResponseHandler
@@ -34,9 +34,9 @@ import org.neptune.transport.processor.ConsumerProcessor;
 @ChannelHandler.Sharable
 public class ResponseHandler extends ChannelInboundHandlerAdapter {
 
-    private ConsumerProcessor processor;
+    private ConnectProcessor processor;
 
-    public ResponseHandler(ConsumerProcessor processor) {
+    public ResponseHandler(ConnectProcessor processor) {
         this.processor = processor;
     }
 
@@ -51,7 +51,7 @@ public class ResponseHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-    public ConsumerProcessor processor() {
+    public ConnectProcessor processor() {
         return processor;
     }
 

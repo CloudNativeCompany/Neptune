@@ -29,17 +29,12 @@
             <artifactId>protostuff-runtime</artifactId>
             <version>1.0.12</version>
         </dependency>
-        <dependency>
-            <groupId>com.esotericsoftware</groupId>
-            <artifactId>kryo</artifactId>
-            <version>5.0.4</version>
-        </dependency>
+
         <dependency>
             <groupId>org.objenesis</groupId>
             <artifactId>objenesis</artifactId>
             <version>3.1</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.apache.curator</groupId>

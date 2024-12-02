@@ -51,7 +51,7 @@ public class IdleStateChecker extends ChannelDuplexHandler {
             - 写空闲, 代表一段时间内未向远端(一般是server端)写入数据, 这时候需要发送心跳消息避免连接被kill
             心跳消息由客户端发起, 这样能一定程度上减少 server 端的压力(但是这并非完美的, 考虑 server - client 的数量持平, 每个client都连接了n个server)
      */
-    private static final long MIN_TIMEOUT_MILLIS = 1;
+    private static final long MIN_TIMEOUT_MILLIS = 1000;
 
     // do not create a new ChannelFutureListener per write operation to reduce GC pressure.
     private final ChannelFutureListener writeListener = new ChannelFutureListener() {
@@ -171,7 +171,6 @@ public class IdleStateChecker extends ChannelDuplexHandler {
         // This method will be invoked only if this handler was added
         // before channelActive() event is fired.  If a user adds this handler
         // after the channelActive() event, initialize() will be called by beforeAdd().
-
         // channel 创建时进行初始化
         initialize(ctx);
         super.channelActive(ctx);

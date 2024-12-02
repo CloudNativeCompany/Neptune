@@ -15,13 +15,12 @@
  */
 package org.neptune.transport.handler;
 
-import com.alibaba.fastjson2.JSON;
 import io.netty.channel.*;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.neptune.transport.RequestPayload;
 import org.neptune.transport.Status;
-import org.neptune.transport.processor.ProviderProcessor;
+import org.neptune.transport.processor.AcceptProcessor;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -37,9 +36,9 @@ public class AcceptorHandler extends ChannelInboundHandlerAdapter {
 
     private static final AtomicInteger channelCounter = new AtomicInteger(0);
 
-    private ProviderProcessor processor;
+    private AcceptProcessor processor;
 
-    public AcceptorHandler(ProviderProcessor processor) {
+    public AcceptorHandler(AcceptProcessor processor) {
         this.processor = processor;
     }
 
@@ -94,7 +93,7 @@ public class AcceptorHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-    public ProviderProcessor processor() {
+    public AcceptProcessor processor() {
         return processor;
     }
 }

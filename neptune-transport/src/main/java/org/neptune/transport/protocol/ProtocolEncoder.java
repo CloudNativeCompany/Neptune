@@ -24,6 +24,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.neptune.transport.RequestPayload;
 import org.neptune.transport.ResponsePayload;
 
+import java.util.logging.Logger;
+
 /**
  * org.neptune.rpc.transportLayer - ProtocolEncoder
  *
@@ -40,12 +42,13 @@ public class ProtocolEncoder extends MessageToByteEncoder<Object> {
      */
     @Override
     protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
+        log.info("start encode message 。。。" + JSON.toJSONString(msg));
         if (msg instanceof RequestPayload) {
             doEncodeRequest((RequestPayload) msg, out);
         } else if (msg instanceof ResponsePayload) {
             doEncodeResponse((ResponsePayload) msg, out);
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("un-know message type:" + msg.getClass());
         }
     }
 

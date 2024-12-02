@@ -33,7 +33,7 @@ public class AcceptorIdleTriggerHandler extends ChannelInboundHandlerAdapter {
         if (evt instanceof IdleStateEvent) {
             IdleState state = ((IdleStateEvent) evt).state();
             if (state == IdleState.READER_IDLE) {
-                throw Signal.valueOf("客户端连接超时...");
+                throw Signal.valueOf("客户端：" + ctx.channel().remoteAddress() + "连续空虚超过最大空闲时间....");
             }
         } else {
             super.userEventTriggered(ctx, evt);

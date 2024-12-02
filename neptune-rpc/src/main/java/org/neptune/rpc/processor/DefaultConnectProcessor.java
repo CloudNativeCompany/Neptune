@@ -23,7 +23,7 @@ import org.neptune.transport.seialize.SerializerFactory;
 import org.neptune.transport.seialize.Serializer;
 import org.neptune.transport.ResponsePayload;
 import io.netty.channel.Channel;
-import org.neptune.transport.processor.ConsumerProcessor;
+import org.neptune.transport.processor.ConnectProcessor;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -37,10 +37,10 @@ import java.util.concurrent.TimeUnit;
  * @date 2021/12/20 19:09
  */
 @Slf4j
-public class DefaultConsumerProcessor implements ConsumerProcessor {
+public class DefaultConnectProcessor implements ConnectProcessor {
     private final ThreadPoolExecutor executor;
 
-    public DefaultConsumerProcessor() {
+    public DefaultConnectProcessor() {
         this.executor = new ThreadPoolExecutor(2,2,60, TimeUnit.SECONDS,new ArrayBlockingQueue<>(500));
     }
 

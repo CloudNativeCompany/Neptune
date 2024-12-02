@@ -16,7 +16,7 @@
 package org.neptune.transport.acceptor;
 
 import org.neptune.common.UnresolvedAddress;
-import org.neptune.transport.processor.ProviderProcessor;
+import org.neptune.transport.processor.AcceptProcessor;
 
 import java.net.SocketAddress;
 
@@ -42,5 +42,5 @@ public interface Acceptor {
 
     void shutdownGracefully();
 
-    void withProcessor(ProviderProcessor processor);
+    void withProcessor(AcceptProcessor processor);
 }
