@@ -5,6 +5,7 @@ import io.netty.util.HashedWheelTimer;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import org.neptune.common.UnresolvedAddress;
 import org.neptune.common.UnresolvedSocketAddress;
+import org.neptune.common.util.LongSequence;
 import org.neptune.registry.RegistryMeta;
 import org.neptune.registry.ServiceMeta;
 import org.neptune.registry.ServiceSubscriber;
@@ -39,7 +40,7 @@ public class DefaultSubscriber implements ServiceSubscriber {
 
         HashedWheelTimer timer = new HashedWheelTimer(new DefaultThreadFactory("connector.timer", true));
         ChannelHandler[] channelHandlers = {
-                new IdleStateChecker(timer, 0, 30, 0), // in - 2
+                new IdleStateChecker(timer, 0, 10, 0), // in - 2
                 new ConnectorIdleTriggerHandler(), // in - 3
                 new ProtocolEncoder(), // out - 1
                 new ProtocolDecoder(), // in - 4
@@ -67,7 +68,8 @@ public class DefaultSubscriber implements ServiceSubscriber {
 
     @Override
     public void subscribe(ServiceMeta serviceMeta, RegistryNotifier notifier) {
-        RequestPayload payload = new RequestPayload(100000000L);
+        LongSequence longSequence = new LongSequence();
+        RequestPayload payload = new RequestPayload(longSequence.next());
         payload.setSerialTypeCode(messageSerializer.typeCode());
         // 发起订阅消息
         SubscribeRequest subscribeRequest = new SubscribeRequest();

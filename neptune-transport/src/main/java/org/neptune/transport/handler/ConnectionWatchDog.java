@@ -37,19 +37,22 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @ChannelHandler.Sharable
-public class ConnectionWatchDog extends ChannelInboundHandlerAdapter {
+public class ConnectionWatchDog extends ChannelInboundHandlerAdapter{
 
     private static final long BASIC_DELAY_MS = 2 << 4;
     private static final int MAX_RETRY = 2 << 3;
     private final Random random = new Random();
-
     private final ReconnectTask task = new ReconnectTask();
     private final Bootstrap bootstrap;
     private final Timer timer;
     private final SocketAddress remoteAddress;
-
     private int attempts;
 
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        log.info("receive a message from remote:{} : {}" , ctx.channel().remoteAddress(), msg);
+        super.channelRead(ctx, msg);
+    }
     public ConnectionWatchDog(Bootstrap bootstrap, Timer timer, SocketAddress remoteAddress) {
         this.bootstrap = bootstrap;
         this.timer = timer;
@@ -63,7 +66,6 @@ public class ConnectionWatchDog extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         log.info("连接开始活跃:" + JSON.toJSONString(ctx.channel().remoteAddress()));
-
         attempts = 0;
         super.channelActive(ctx);
     }

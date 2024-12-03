@@ -21,8 +21,10 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import lombok.extern.slf4j.Slf4j;
+import org.neptune.transport.HeartBeatPayload;
 import org.neptune.transport.RequestPayload;
 import org.neptune.transport.ResponsePayload;
+import org.neptune.transport.Status;
 
 import java.util.logging.Logger;
 
@@ -38,20 +40,21 @@ public class ProtocolEncoder extends MessageToByteEncoder<Object> {
         TODO: 这个Handler需要兼容
             1. 请求出去的时候
             2. 响应出去的时候
-            所以从本质上, 请求响应必须是一样的, 最好到这一层处理的已经是 byte[]了, 讲序列化的过程在业务线程做完
+            所以从本质上, 请求响应必须是一样的, 最好到这一层处理的已经是 byte[]了, 将序列化的过程在业务线程做完
      */
     @Override
     protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
-        log.info("start encode message 。。。" + JSON.toJSONString(msg));
+        log.info("start encode message 。。。" + msg);
         if (msg instanceof RequestPayload) {
             doEncodeRequest((RequestPayload) msg, out);
         } else if (msg instanceof ResponsePayload) {
             doEncodeResponse((ResponsePayload) msg, out);
+        }else if (msg instanceof HeartBeatPayload){
+            doEncodeHeartBeat((HeartBeatPayload) msg, out);
         } else {
             throw new IllegalArgumentException("un-know message type:" + msg.getClass());
         }
     }
-
 
     // 预分配buffer大小限制, 按照已知的头大小预分配, body大小此时尚未确认
     // 针对心跳类无消息体消息这样更节省空间
@@ -73,7 +76,7 @@ public class ProtocolEncoder extends MessageToByteEncoder<Object> {
 
         out.writeShort(ProtocolHeader.MAGIC_WORD)
                 .writeByte(sign)
-                .writeByte(0x00) // 请求状态默认为 0
+                .writeByte(Status.DEFAULT.value()) // 请求状态默认为 0
                 .writeLong(invokeId)
                 .writeInt(length)
                 .writeBytes(body);
@@ -89,6 +92,20 @@ public class ProtocolEncoder extends MessageToByteEncoder<Object> {
         out.writeShort(ProtocolHeader.MAGIC_WORD)
                 .writeByte(sign)
                 .writeByte(status)
+                .writeLong(invokeId)
+                .writeInt(length)
+                .writeBytes(body);
+    }
+
+    private void doEncodeHeartBeat(HeartBeatPayload payload, ByteBuf out) {
+        byte sign = ProtocolHeader.toSign(payload.getSerialTypeCode(), ProtocolHeader.HEARTBEAT);
+        long invokeId = payload.getXid();
+        byte[] body = payload.getBytes();
+        int length = body.length;
+
+        out.writeShort(ProtocolHeader.MAGIC_WORD)
+                .writeByte(sign)
+                .writeByte(Status.DEFAULT.value()) // 请求状态默认为 0
                 .writeLong(invokeId)
                 .writeInt(length)
                 .writeBytes(body);

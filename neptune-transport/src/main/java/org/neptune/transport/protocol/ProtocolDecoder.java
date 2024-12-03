@@ -15,13 +15,12 @@
  */
 package org.neptune.transport.protocol;
 
-import com.alibaba.fastjson2.JSON;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ReplayingDecoder;
 import io.netty.util.Signal;
 import lombok.extern.slf4j.Slf4j;
+import org.neptune.transport.HeartBeatPayload;
 import org.neptune.transport.RequestPayload;
 import org.neptune.transport.ResponsePayload;
 
@@ -45,6 +44,12 @@ public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
         super(State.MAGIC);
     }
 
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        log.info("receive a message from remote:{} : {}" , ctx.channel().remoteAddress(), msg);
+        super.channelRead(ctx, msg);
+    }
+
     /**
      * 协议头解析, 通过 ReplayingDecoder进行便捷检查 + buffer优化
      *
@@ -56,6 +61,7 @@ public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
     @Override
     // out 列表 内的数据会被分多次调用fireChannelRead() 往下一个 inbound传递
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+        log.info("start decode message from:{}", ctx.channel().remoteAddress() );
         switch (state()) {
             case MAGIC:
                 ProtocolHeader.checkMagic(in.readShort());         // MAGIC
@@ -99,6 +105,11 @@ public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
                         break;
                     }
                     case ProtocolHeader.HEARTBEAT:
+                        int length = checkBodySize(header.getBodySize());
+                        byte[] bytes = new byte[length];
+                        in.readBytes(bytes);
+                        HeartBeatPayload payload = new HeartBeatPayload(header.getInvokeId());
+                        out.add(payload);
                         break;
                     default:
                         throw Signal.valueOf("illegal message type");

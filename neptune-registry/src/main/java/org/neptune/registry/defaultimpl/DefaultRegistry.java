@@ -25,9 +25,13 @@ import io.netty.handler.flush.FlushConsolidationHandler;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import org.neptune.common.UnresolvedSocketAddress;
+import org.neptune.common.util.ConcurrentSet;
 import org.neptune.registry.*;
+import org.neptune.transport.HeartBeatPayload;
 import org.neptune.transport.RequestPayload;
+import org.neptune.transport.ResponsePayload;
 import org.neptune.transport.Status;
+import org.neptune.transport.connection.Connection;
 import org.neptune.transport.handler.*;
 import org.neptune.transport.processor.AcceptProcessor;
 import org.neptune.transport.protocol.ProtocolDecoder;
@@ -39,6 +43,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * org.neptune.rpc.core - DefaultServiceSubscriber
@@ -48,6 +53,13 @@ import java.net.SocketAddress;
  * @date 2021/12/16 0:16
  */
 public class DefaultRegistry extends AbstractRegistry {
+
+    /*
+        Map
+        RegistryMeta =>  SubscribeList<Connection> connection
+     */
+
+    ConcurrentHashMap<RegistryMeta, ConcurrentSet<Connection>> listener = new ConcurrentHashMap<>();
 
     private final HashedWheelTimer timer = new HashedWheelTimer(new DefaultThreadFactory("connector.timer", true));
 
@@ -92,7 +104,8 @@ public class DefaultRegistry extends AbstractRegistry {
                 log.info("subscribeMessage_info:{}",JSON.toJSONString(subscribeRequest));
                 // TODO: 2024/12/2  handler registry
 
-                RequestPayload payload = new RequestPayload(request.getXid());
+                ResponsePayload payload = new ResponsePayload(request.getXid());
+                payload.setStatus(Status.OK.value());
                 payload.setSerialTypeCode(request.getSerialTypeCode());
                 SubscribeResponse response = new SubscribeResponse();
                 response.setCode(1);
@@ -104,7 +117,7 @@ public class DefaultRegistry extends AbstractRegistry {
                             if (cf.isSuccess()) { // success
                                 log.info("subscribe response succeed...");
                             } else { // fail
-                                log.info("subscribe response failure...");
+                                log.info("subscribe response comm failure...");
                             }
                         });
             }
@@ -147,8 +160,13 @@ public class DefaultRegistry extends AbstractRegistry {
                                     // todo: handler action messages
                                     @Override
                                     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-                                        RequestPayload request = (RequestPayload) msg;
-                                        processor.handleRequest(ctx.channel(), request);
+                                        if(msg instanceof RequestPayload){
+                                            RequestPayload request = (RequestPayload) msg;
+                                            processor.handleRequest(ctx.channel(), request);
+                                        }else if(msg instanceof HeartBeatPayload){
+                                            HeartBeatPayload heartBeat = (HeartBeatPayload) msg;
+                                            log.info("receive a heartbeat from remote:{}", ctx.channel().remoteAddress());
+                                        }
                                     }
 
                                     @Override

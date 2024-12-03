@@ -19,6 +19,12 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
+import org.neptune.transport.HeartBeatPayload;
+import org.neptune.transport.RequestPayload;
+import org.neptune.transport.seialize.Serializer;
+import org.neptune.transport.seialize.SerializerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * org.neptune.rpc.transportLayer - ConnectorIdleTriggerHandler
@@ -27,13 +33,22 @@ import io.netty.handler.timeout.IdleStateEvent;
  * @date 2021/12/24 18:30
  */
 public class ConnectorIdleTriggerHandler extends ChannelInboundHandlerAdapter {
+    private static final Logger logger = LoggerFactory.getLogger(ConnectorIdleTriggerHandler.class);
+
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        logger.info("userEventTriggered:{}", evt);
         if (evt instanceof IdleStateEvent) {
             IdleState state = ((IdleStateEvent) evt).state();
             if (state == IdleState.WRITER_IDLE) {
+
                 // write heartbeat to server
-                ctx.writeAndFlush("xxxx");  // TODO:发送心跳信息到server端
+                Serializer serializer = SerializerFactory.getSerializer(Serializer.SerializerType.KRYO);
+                HeartBeatPayload heartBeatPayload = new HeartBeatPayload(10001L);
+                heartBeatPayload.setSerialTypeCode(serializer.typeCode());
+                heartBeatPayload.setBytes(serializer.writeObject("ping"));
+
+                ctx.channel().writeAndFlush(heartBeatPayload);
             }
         } else {
             super.userEventTriggered(ctx, evt);

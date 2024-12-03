@@ -23,6 +23,7 @@ package org.neptune.transport;
  */
 public enum Status {
 
+    DEFAULT                     ((byte) 0x00, "DEFAULT"),                   // 默认 - 无意义
     OK                          ((byte) 0x20, "OK"),                        // 正常 - 请求已完成
     CLIENT_ERROR                ((byte) 0x30, "CLIENT_ERROR"),              // 内部错误 — 因为意外情况, 客户端不能发送请求
     CLIENT_TIMEOUT              ((byte) 0x31, "CLIENT_TIMEOUT"),            // 超时 - 客户端超时
