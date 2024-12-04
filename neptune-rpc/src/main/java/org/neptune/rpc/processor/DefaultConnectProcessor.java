@@ -51,7 +51,7 @@ public class DefaultConnectProcessor implements ConnectProcessor {
 
     @Override
     public void handlerResponse(Channel channel, ResponsePayload responsePayload) throws Exception {
-        Serializer serializer = SerializerFactory.getSerializer(Serializer.SerializerType.parse(responsePayload.getSerialTypeCode()));
+        Serializer serializer = SerializerFactory.getSerializer(responsePayload.getSerialTypeCode());
         ResponseBody responseBody = serializer.readObject(responsePayload.getBytes(), 0 ,responsePayload.getBytes().length , ResponseBody.class);
         Response response = new Response(responsePayload.getXid(), responseBody);
         DefaultInvokeFuture.received(channel, response);

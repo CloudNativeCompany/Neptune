@@ -19,7 +19,7 @@ import io.netty.channel.*;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.neptune.transport.RequestPayload;
-import org.neptune.transport.Status;
+import org.neptune.transport.TransportStatus;
 import org.neptune.transport.processor.AcceptProcessor;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -50,7 +50,7 @@ public class AcceptorHandler extends ChannelInboundHandlerAdapter {
             try {
                 processor.handleRequest(channel, (RequestPayload) msg);
             } catch (Throwable t) {
-                processor.handleException(channel, (RequestPayload) msg, Status.SERVER_ERROR, t);
+                processor.handleException(channel, (RequestPayload) msg, TransportStatus.SERVER_ERROR, t);
             }
         } else {
             ReferenceCountUtil.release(msg);

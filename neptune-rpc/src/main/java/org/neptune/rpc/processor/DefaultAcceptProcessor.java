@@ -23,7 +23,7 @@ import org.neptune.transport.seialize.SerializerFactory;
 import org.neptune.transport.seialize.Serializer;
 import org.neptune.transport.RequestPayload;
 import org.neptune.transport.ResponsePayload;
-import org.neptune.transport.Status;
+import org.neptune.transport.TransportStatus;
 import org.neptune.transport.processor.AcceptProcessor;
 
 /**
@@ -41,13 +41,13 @@ public class DefaultAcceptProcessor implements AcceptProcessor {
 
     @Override
     public void handleRequest(Channel channel, RequestPayload request) throws Exception {
-        Serializer serializer = SerializerFactory.getSerializer(Serializer.SerializerType.parse(request.getSerialTypeCode()));
+        Serializer serializer = SerializerFactory.getSerializer(request.getSerialTypeCode());
         // 直接pong 回去
         ResponseBody responseBody = new ResponseBody();
         responseBody.setResult("this is an result from remote sever!! good day");
 
         ResponsePayload payload = new ResponsePayload(request.getXid());
-        payload.setStatus(Status.OK.value());
+        payload.setStatus(TransportStatus.OK.value());
         payload.setSerialTypeCode(request.getSerialTypeCode());
         payload.setBytes(serializer.writeObject(responseBody));
 
@@ -56,7 +56,7 @@ public class DefaultAcceptProcessor implements AcceptProcessor {
     }
 
     @Override
-    public void handleException(Channel channel, RequestPayload request, Status status, Throwable cause) {
+    public void handleException(Channel channel, RequestPayload request, TransportStatus transportStatus, Throwable cause) {
         log.info("错误发生");
     }
 }

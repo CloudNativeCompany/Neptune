@@ -15,18 +15,14 @@
  */
 package org.neptune.transport.protocol;
 
-import com.alibaba.fastjson2.JSON;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import lombok.extern.slf4j.Slf4j;
 import org.neptune.transport.HeartBeatPayload;
 import org.neptune.transport.RequestPayload;
 import org.neptune.transport.ResponsePayload;
-import org.neptune.transport.Status;
-
-import java.util.logging.Logger;
+import org.neptune.transport.TransportStatus;
 
 /**
  * org.neptune.rpc.transportLayer - ProtocolEncoder
@@ -76,7 +72,7 @@ public class ProtocolEncoder extends MessageToByteEncoder<Object> {
 
         out.writeShort(ProtocolHeader.MAGIC_WORD)
                 .writeByte(sign)
-                .writeByte(Status.DEFAULT.value()) // 请求状态默认为 0
+                .writeByte(TransportStatus.DEFAULT.value()) // 请求状态默认为 0
                 .writeLong(invokeId)
                 .writeInt(length)
                 .writeBytes(body);
@@ -105,7 +101,7 @@ public class ProtocolEncoder extends MessageToByteEncoder<Object> {
 
         out.writeShort(ProtocolHeader.MAGIC_WORD)
                 .writeByte(sign)
-                .writeByte(Status.DEFAULT.value()) // 请求状态默认为 0
+                .writeByte(TransportStatus.DEFAULT.value()) // 请求状态默认为 0
                 .writeLong(invokeId)
                 .writeInt(length)
                 .writeBytes(body);

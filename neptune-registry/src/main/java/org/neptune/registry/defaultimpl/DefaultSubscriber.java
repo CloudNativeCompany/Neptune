@@ -6,10 +6,7 @@ import io.netty.util.concurrent.DefaultThreadFactory;
 import org.neptune.common.UnresolvedAddress;
 import org.neptune.common.UnresolvedSocketAddress;
 import org.neptune.common.util.LongSequence;
-import org.neptune.registry.RegistryMeta;
-import org.neptune.registry.ServiceMeta;
-import org.neptune.registry.ServiceSubscriber;
-import org.neptune.registry.SubscribeRequest;
+import org.neptune.registry.*;
 import org.neptune.transport.RequestPayload;
 import org.neptune.transport.ResponsePayload;
 import org.neptune.transport.connection.Connection;
@@ -35,6 +32,7 @@ public class DefaultSubscriber implements ServiceSubscriber {
     private final Connection connection;
     private static final Logger log = LoggerFactory.getLogger(DefaultSubscriber.class);
     private final Serializer messageSerializer;
+
     public DefaultSubscriber(String addr, int port) {
         messageSerializer = new KryoSerializer();
 
@@ -72,8 +70,9 @@ public class DefaultSubscriber implements ServiceSubscriber {
         RequestPayload payload = new RequestPayload(longSequence.next());
         payload.setSerialTypeCode(messageSerializer.typeCode());
         // 发起订阅消息
-        SubscribeRequest subscribeRequest = new SubscribeRequest();
-        subscribeRequest.setServiceMeta(serviceMeta);
+        RegistryRequest subscribeRequest = new RegistryRequest();
+        subscribeRequest.setBody(serviceMeta);
+        subscribeRequest.setType(MessageTye.SubscribeRequest.getCode());
         payload.setBytes(messageSerializer.writeObject(subscribeRequest));
         connection.channel().writeAndFlush(payload).addListener(
                 // TODO:加入发送超时监控, writeAndFlush

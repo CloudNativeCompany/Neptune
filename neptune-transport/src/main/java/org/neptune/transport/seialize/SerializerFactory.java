@@ -31,4 +31,8 @@ public class SerializerFactory {
     public static Serializer getSerializer(Serializer.SerializerType type) {
         return new KryoSerializer();
     }
+    public static Serializer getSerializer(byte code) {
+        return getSerializer(Serializer.SerializerType.parse(code));
+    }
+
 }

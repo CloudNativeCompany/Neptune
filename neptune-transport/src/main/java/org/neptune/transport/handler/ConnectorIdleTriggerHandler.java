@@ -41,7 +41,6 @@ public class ConnectorIdleTriggerHandler extends ChannelInboundHandlerAdapter {
         if (evt instanceof IdleStateEvent) {
             IdleState state = ((IdleStateEvent) evt).state();
             if (state == IdleState.WRITER_IDLE) {
-
                 // write heartbeat to server
                 Serializer serializer = SerializerFactory.getSerializer(Serializer.SerializerType.KRYO);
                 HeartBeatPayload heartBeatPayload = new HeartBeatPayload(10001L);

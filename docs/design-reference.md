@@ -11,10 +11,10 @@
 以上流程对方法调用者是透明的, 一切看起来就像本地调用一样
 
 - 远程调用客户端图解 
-![](https://cdn.nlark.com/yuque/0/2022/png/22746802/1650244593193-7268a718-b5b0-4424-aec1-9c93d17603c4.png#clientId=u3dec0670-37bf-4&crop=0&crop=0&crop=1&crop=1&from=paste&id=ud83374fb&margin=%5Bobject%20Object%5D&originHeight=433&originWidth=927&originalType=url&ratio=1&rotation=0&showTitle=false&status=done&style=none&taskId=u4baecccd-4a46-4fac-a177-443141cb52a&title=)
+![](https://cdn.nlark.com/yuque/0/2022/png/22746802/1650244593193-7268a718-b5b0-4424-aec1-9c93d17603c4.png#clientId=u3dec0670-37bf-4&crop=0&crop=0&crop=1&crop=1&from=paste&id=ud83374fb&margin=%5Bobject%20Object%5D&originHeight=433&originWidth=927&originalType=url&ratio=1&rotation=0&showTitle=false&transportStatus=done&style=none&taskId=u4baecccd-4a46-4fac-a177-443141cb52a&title=)
 若是netty4.x的线程模型, IO Thread(worker) —> Map<InvokeId, Future>代替全局Map能更好的避免线程竞争 
 - 远程调用服务端图解
-![](https://cdn.nlark.com/yuque/0/2022/png/22746802/1650244593181-0b503a54-fd23-42e9-81ff-306c17bebf39.png#clientId=u3dec0670-37bf-4&crop=0&crop=0&crop=1&crop=1&from=paste&id=u1bd522cb&margin=%5Bobject%20Object%5D&originHeight=408&originWidth=981&originalType=url&ratio=1&rotation=0&showTitle=false&status=done&style=none&taskId=u37583fe6-aea3-401e-a550-0857e483f13&title=)
+![](https://cdn.nlark.com/yuque/0/2022/png/22746802/1650244593181-0b503a54-fd23-42e9-81ff-306c17bebf39.png#clientId=u3dec0670-37bf-4&crop=0&crop=0&crop=1&crop=1&from=paste&id=u1bd522cb&margin=%5Bobject%20Object%5D&originHeight=408&originWidth=981&originalType=url&ratio=1&rotation=0&showTitle=false&transportStatus=done&style=none&taskId=u37583fe6-aea3-401e-a550-0857e483f13&title=)
 重要概念: RPC三元组 <ID, Request, Response> 
 
 
@@ -69,7 +69,7 @@
    - 默认hash表只有4个桶, 使用不要太任性 
 
 #### 传输层调用图解 
-![](https://cdn.nlark.com/yuque/0/2022/png/22746802/1650244593182-6af187fb-8f7f-4bfa-8857-e7bbc1e87099.png#clientId=u3dec0670-37bf-4&crop=0&crop=0&crop=1&crop=1&from=paste&id=u174e4b3e&margin=%5Bobject%20Object%5D&originHeight=674&originWidth=1108&originalType=url&ratio=1&rotation=0&showTitle=false&status=done&style=none&taskId=ufd7fbfc4-2043-4b61-9e2f-2c2bd191aef&title=)
+![](https://cdn.nlark.com/yuque/0/2022/png/22746802/1650244593182-6af187fb-8f7f-4bfa-8857-e7bbc1e87099.png#clientId=u3dec0670-37bf-4&crop=0&crop=0&crop=1&crop=1&from=paste&id=u174e4b3e&margin=%5Bobject%20Object%5D&originHeight=674&originWidth=1108&originalType=url&ratio=1&rotation=0&showTitle=false&transportStatus=done&style=none&taskId=ufd7fbfc4-2043-4b61-9e2f-2c2bd191aef&title=)
 
 ### 3. 传输层协议设计
 #### 协议头设计
@@ -87,7 +87,7 @@
 消息头16个字节定长 
 magic:     (short) 0xbabe 
 sign:      消息标志位, 低地址4位用来表示消息类型request/response/heartbeat等, 高地址4位用来表示序列化类型 
-status:    状态位, 设置请求响应状态 
+transportStatus:    状态位, 设置请求响应状态 
 invokeId:  消息 id, long 类型, 未来可能将id限制在48位, 留出高地址的16位作为扩展字段 
 bodySize:  消息体 body 长度, int 类型 
  

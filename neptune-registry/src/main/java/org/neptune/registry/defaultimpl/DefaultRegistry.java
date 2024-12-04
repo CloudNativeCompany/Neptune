@@ -19,6 +19,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.nacos.common.utils.ExceptionUtil;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
+import io.netty.channel.Channel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.flush.FlushConsolidationHandler;
@@ -27,11 +28,7 @@ import io.netty.util.concurrent.DefaultThreadFactory;
 import org.neptune.common.UnresolvedSocketAddress;
 import org.neptune.common.util.ConcurrentSet;
 import org.neptune.registry.*;
-import org.neptune.transport.HeartBeatPayload;
-import org.neptune.transport.RequestPayload;
-import org.neptune.transport.ResponsePayload;
-import org.neptune.transport.Status;
-import org.neptune.transport.connection.Connection;
+import org.neptune.transport.*;
 import org.neptune.transport.handler.*;
 import org.neptune.transport.processor.AcceptProcessor;
 import org.neptune.transport.protocol.ProtocolDecoder;
@@ -42,8 +39,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
+import java.security.InvalidParameterException;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 /**
  * org.neptune.rpc.core - DefaultServiceSubscriber
@@ -55,11 +55,17 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DefaultRegistry extends AbstractRegistry {
 
     /*
-        Map
-        RegistryMeta =>  SubscribeList<Connection> connection
+        一个服务多个监听者
      */
+    ConcurrentHashMap<ServiceMeta, ConcurrentSet<Channel>> listener = new ConcurrentHashMap<>();
+    /*
+       一个服务多个地址(注册地址)
+     */
+    ConcurrentHashMap<ServiceMeta, ConcurrentSet<Channel>> services = new ConcurrentHashMap<>();
 
-    ConcurrentHashMap<RegistryMeta, ConcurrentSet<Connection>> listener = new ConcurrentHashMap<>();
+    ReentrantLock  LISTENER_LOCK= new ReentrantLock();
+
+    ReentrantLock  SERVICES_LOCK= new ReentrantLock();
 
     private final HashedWheelTimer timer = new HashedWheelTimer(new DefaultThreadFactory("connector.timer", true));
 
@@ -98,20 +104,24 @@ public class DefaultRegistry extends AbstractRegistry {
             @Override
             public void handleRequest(Channel channel, RequestPayload request) throws Exception {
                 log.info("receive a message from remote: " + channel.remoteAddress());
-                Serializer serializer = SerializerFactory.getSerializer(Serializer.SerializerType.parse(request.getSerialTypeCode()));
-                SubscribeRequest subscribeRequest = serializer.readObject(request.getBytes(), 0
-                        ,request.getBytes().length , SubscribeRequest.class);
-                log.info("subscribeMessage_info:{}",JSON.toJSONString(subscribeRequest));
-                // TODO: 2024/12/2  handler registry
-
-                ResponsePayload payload = new ResponsePayload(request.getXid());
-                payload.setStatus(Status.OK.value());
-                payload.setSerialTypeCode(request.getSerialTypeCode());
-                SubscribeResponse response = new SubscribeResponse();
-                response.setCode(1);
-                payload.setBytes(serializer.writeObject(response));
-
-                channel.writeAndFlush(payload).addListener(
+                Serializer serializer = SerializerFactory.getSerializer(request.getSerialTypeCode());
+                RegistryRequest registryRequest = serializer.readObject(request.getBytes(), 0
+                        ,request.getBytes().length , RegistryRequest.class);
+                MessageTye messageTye = MessageTye.codeOf(registryRequest.getType());
+                ResponsePayload response = new ResponsePayload(request.getXid());
+                response.setSerialTypeCode(request.getSerialTypeCode());
+                log.info("subscribeMessage_info:{}",JSON.toJSONString(registryRequest));
+                switch (messageTye){
+                    case PublishRequest:
+                        response.setBytes(serializer.writeObject(doHandlerSubscribeRequest(channel, registryRequest)));
+                        break;
+                    case SubscribeRequest:
+                        response.setBytes(serializer.writeObject(doHandlePublishRequest(channel, registryRequest)));
+                    default:
+                        throw new InvalidParameterException("invalid message type:" + messageTye);
+                }
+                response.setStatus(TransportStatus.OK.value());
+                channel.writeAndFlush(response).addListener(
                         // TODO:加入发送超时监控, writeAndFlush
                         (ChannelFutureListener) cf -> {
                             if (cf.isSuccess()) { // success
@@ -119,11 +129,12 @@ public class DefaultRegistry extends AbstractRegistry {
                             } else { // fail
                                 log.info("subscribe response comm failure...");
                             }
-                        });
+                        }
+                );
             }
 
             @Override
-            public void handleException(Channel channel, RequestPayload request, Status status, Throwable cause) {
+            public void handleException(Channel channel, RequestPayload request, TransportStatus status, Throwable cause) {
                 log.error("handleException:" + ExceptionUtil.getStackTrace(cause));
             }
 
@@ -132,7 +143,6 @@ public class DefaultRegistry extends AbstractRegistry {
 
             }
         };
-
 
         ServerBootstrap bootstrap = new ServerBootstrap()
                 .channel(NioServerSocketChannel.class)
@@ -168,7 +178,6 @@ public class DefaultRegistry extends AbstractRegistry {
                                             log.info("receive a heartbeat from remote:{}", ctx.channel().remoteAddress());
                                         }
                                     }
-
                                     @Override
                                     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
                                         log.error("exceptionCaught:" + ExceptionUtil.getStackTrace(cause));
@@ -182,5 +191,76 @@ public class DefaultRegistry extends AbstractRegistry {
         channelFuture.channel().closeFuture().addListeners((ChannelFutureListener) cf -> {
             log.warn("registry server closing.... ");
         });
+
+        Thread monitorThread = new Thread(() -> {
+            while(true){
+                try{
+                    Thread.sleep(5000);
+                    doPrintServices();
+                }catch (Exception e){}
+            }
+        });
+        monitorThread.setDaemon(true);
+        monitorThread.setName("RegistryMonitorThread");
+        monitorThread.start();
     }
+
+    private void doPrintServices(){
+
+        System.out.println("===============================================================");
+        System.out.println("开始打印服务信息...");
+        services.forEach((k,v) -> {
+            System.out.println("ServiceName" + k.toFlatString());
+            System.out.println( "InstanceList: " + v.stream().map(Channel::remoteAddress).collect(Collectors.toList()));
+        });
+        System.out.println("\n");
+        System.out.println("开始打印订阅信息...");
+        listener.forEach((k,v) -> {
+            System.out.println("ServiceName" + k.toFlatString());
+            System.out.println( "SubscribeList: " + v.stream().map(Channel::remoteAddress).collect(Collectors.toList()));
+        });
+        System.out.println("===============================================================");
+    }
+
+
+    private RegistryResponse doHandlerSubscribeRequest(Channel channel,RegistryRequest registryRequest){
+        ServiceMeta serviceMeta = (ServiceMeta) registryRequest.getBody();
+        RegistryResponse response = new RegistryResponse();
+        if(!services.containsKey(serviceMeta)){
+            // 不存在服务
+            response.setCode(RegistryStatus.SERVICE_NOT_FOUND.value());
+        }else{
+            try{
+                // 极限情况下 === 如果这个时候, 正在进行注册 -- 降级为失败
+                LISTENER_LOCK.lock();
+                services.get(serviceMeta).add(channel);
+            }catch (Exception e){
+                if(LISTENER_LOCK.isHeldByCurrentThread()){
+                    LISTENER_LOCK.unlock();
+                }
+            }
+            response.setCode(RegistryStatus.SUCCESS.value());
+        }
+        return response;
+    }
+
+    private RegistryResponse doHandlePublishRequest(Channel channel,RegistryRequest registryRequest){
+        RegistryMeta registryMeta = (RegistryMeta) registryRequest.getBody();
+        ServiceMeta serviceMeta = registryMeta.getServiceMeta();
+        RegistryResponse response = new RegistryResponse();
+        try{
+            SERVICES_LOCK.lock();
+            if(!services.containsKey(serviceMeta)){
+                services.put(serviceMeta,new ConcurrentSet<>());
+            }else{
+
+            }
+        }catch (Exception e){
+            if(SERVICES_LOCK.isHeldByCurrentThread()){
+               SERVICES_LOCK.unlock();
+            }
+        }
+        return response;
+    }
+
 }

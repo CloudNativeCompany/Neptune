@@ -17,7 +17,7 @@ package org.neptune.transport.processor;
 
 import io.netty.channel.Channel;
 import org.neptune.transport.RequestPayload;
-import org.neptune.transport.Status;
+import org.neptune.transport.TransportStatus;
 
 /**
  * org.neptune.rpc.transportLayer - ProviderProcessor
@@ -32,6 +32,6 @@ public interface AcceptProcessor extends Processor {
     /**
      * 处理异常
      */
-    void handleException(Channel channel, RequestPayload request, Status status, Throwable cause);
+    void handleException(Channel channel, RequestPayload request, TransportStatus transportStatus, Throwable cause);
 
 }
