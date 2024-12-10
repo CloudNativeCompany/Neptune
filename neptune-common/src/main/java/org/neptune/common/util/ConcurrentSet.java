@@ -33,6 +33,10 @@ public final class ConcurrentSet<E> extends AbstractSet<E> implements Serializab
     public ConcurrentSet() {
     }
 
+    public ConcurrentSet(E entry) {
+        set.add(entry);
+    }
+
     @Override
     public int size() {
         return set.size();
@@ -46,6 +50,11 @@ public final class ConcurrentSet<E> extends AbstractSet<E> implements Serializab
     @Override
     public boolean add(E o) {
         return set.add(o);
+    }
+
+    public synchronized void addOrUpdate(E e){
+        set.remove(e);
+        set.add(e);
     }
 
     @Override

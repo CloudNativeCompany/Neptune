@@ -18,6 +18,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.neptune.common.UnresolvedAddress;
+import org.neptune.common.UnresolvedSocketAddress;
+
+import java.util.Objects;
 
 /**
  * org.neptune.rpc.registry - RegistryMeta
@@ -59,5 +62,19 @@ public class RegistryMeta {
 
     public String toUniqueInstanceId(){
         return "default";
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(serviceMeta,address);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RegistryMeta that = (RegistryMeta) o;
+        return Objects.equals(serviceMeta, that.serviceMeta) &&
+                        Objects.equals(address, that.address);
     }
 }

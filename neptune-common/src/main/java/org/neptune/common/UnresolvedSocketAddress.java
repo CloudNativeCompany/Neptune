@@ -73,4 +73,13 @@ public final class UnresolvedSocketAddress implements UnresolvedAddress {
     public String toString() {
         return host + ':' + port;
     }
+
+
+    public int getPort() {
+        return port;
+    }
+
+    public String getHost() {
+        return host;
+    }
 }

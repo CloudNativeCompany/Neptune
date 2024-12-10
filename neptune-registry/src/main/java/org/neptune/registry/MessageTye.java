@@ -8,6 +8,8 @@ public enum MessageTye {
     PublishResponse   ((byte) 0x02),
     SubscribeRequest  ((byte) 0x03),
     SubscribeResponse ((byte) 0x04),
+    fetchServiceInstance ((byte) 0x05),
+    noticeServiceInstanceAdded ((byte) 0x06),
     ;
     private final byte code;
 

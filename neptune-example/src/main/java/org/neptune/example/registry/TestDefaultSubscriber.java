@@ -14,19 +14,20 @@ public class TestDefaultSubscriber {
 
     private static final Logger logger = LoggerFactory.getLogger(TestDefaultSubscriber.class.getName());
     public static void main(String[] args) {
-        DefaultSubscriber defaultPublisher = new DefaultSubscriber("127.0.0.1", 8001);
+        DefaultSubscriber defaultSubscriber = new DefaultSubscriber("127.0.0.1", 8001);
         ServiceMeta serviceMeta = new ServiceMeta(
                 "fgptas",
                 "1.0.0",
                 "fi"
         );
-        Serializer serializer = new KryoSerializer();
-        defaultPublisher.subscribe(serviceMeta, new ServiceSubscriber.RegistryNotifier() {
+        defaultSubscriber.subscribe(serviceMeta, new ServiceSubscriber.RegistryNotifier() {
             @Override
             public void notify(RegistryMeta registryMeta, EventType eventType) {
                 logger.info("收到服务端推送的通知{} : {}", registryMeta.toUniqueInstanceId(), eventType);
             }
         });
+
+        defaultSubscriber.consumers();
 
     }
 }

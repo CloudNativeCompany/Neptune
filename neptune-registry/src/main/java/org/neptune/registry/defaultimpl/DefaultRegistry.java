@@ -17,6 +17,7 @@ package org.neptune.registry.defaultimpl;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.nacos.common.utils.ExceptionUtil;
+import com.sun.xml.internal.ws.addressing.model.ActionNotSupportedException;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.Channel;
@@ -29,6 +30,7 @@ import org.neptune.common.UnresolvedSocketAddress;
 import org.neptune.common.util.ConcurrentSet;
 import org.neptune.registry.*;
 import org.neptune.transport.*;
+import org.neptune.transport.connection.Connection;
 import org.neptune.transport.handler.*;
 import org.neptune.transport.processor.AcceptProcessor;
 import org.neptune.transport.protocol.ProtocolDecoder;
@@ -39,8 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
-import java.security.InvalidParameterException;
-import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
@@ -61,7 +62,7 @@ public class DefaultRegistry extends AbstractRegistry {
     /*
        一个服务多个地址(注册地址)
      */
-    ConcurrentHashMap<ServiceMeta, ConcurrentSet<Channel>> services = new ConcurrentHashMap<>();
+    ConcurrentHashMap<ServiceMeta, ConcurrentSet<ServiceInstance>> services = new ConcurrentHashMap<>();
 
     ReentrantLock  LISTENER_LOCK= new ReentrantLock();
 
@@ -103,7 +104,6 @@ public class DefaultRegistry extends AbstractRegistry {
         AcceptProcessor processor = new AcceptProcessor() {
             @Override
             public void handleRequest(Channel channel, RequestPayload request) throws Exception {
-                log.info("receive a message from remote: " + channel.remoteAddress());
                 Serializer serializer = SerializerFactory.getSerializer(request.getSerialTypeCode());
                 RegistryRequest registryRequest = serializer.readObject(request.getBytes(), 0
                         ,request.getBytes().length , RegistryRequest.class);
@@ -113,21 +113,22 @@ public class DefaultRegistry extends AbstractRegistry {
                 log.info("subscribeMessage_info:{}",JSON.toJSONString(registryRequest));
                 switch (messageTye){
                     case PublishRequest:
-                        response.setBytes(serializer.writeObject(doHandlerSubscribeRequest(channel, registryRequest)));
+                        response.setBytes(serializer.writeObject(doHandlePublishRequest(channel, registryRequest)));
                         break;
                     case SubscribeRequest:
-                        response.setBytes(serializer.writeObject(doHandlePublishRequest(channel, registryRequest)));
+                        response.setBytes(serializer.writeObject(doHandlerSubscribeRequest(channel, registryRequest)));
+                    case fetchServiceInstance:
+                        response.setBytes(serializer.writeObject(doHandleFetchServiceInstances(channel, registryRequest)));
                     default:
-                        throw new InvalidParameterException("invalid message type:" + messageTye);
+                        throw new ActionNotSupportedException("invalid message type:" + messageTye);
                 }
                 response.setStatus(TransportStatus.OK.value());
                 channel.writeAndFlush(response).addListener(
-                        // TODO:加入发送超时监控, writeAndFlush
                         (ChannelFutureListener) cf -> {
                             if (cf.isSuccess()) { // success
-                                log.info("subscribe response succeed...");
+                                log.info("registry_response succeed...");
                             } else { // fail
-                                log.info("subscribe response comm failure...");
+                                log.info("subscribe_response failure...");
                             }
                         }
                 );
@@ -207,33 +208,35 @@ public class DefaultRegistry extends AbstractRegistry {
 
     private void doPrintServices(){
 
-        System.out.println("===============================================================");
-        System.out.println("开始打印服务信息...");
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n");
+        sb.append("开始打印服务信息...");
         services.forEach((k,v) -> {
-            System.out.println("ServiceName" + k.toFlatString());
-            System.out.println( "InstanceList: " + v.stream().map(Channel::remoteAddress).collect(Collectors.toList()));
+            sb.append("ServiceName").append(k.toFlatString()).append("\n")
+                    .append("InstanceList: ").append(v.stream().map(
+                            e -> e
+                    ).collect(Collectors.toList()));
         });
-        System.out.println("\n");
         System.out.println("开始打印订阅信息...");
         listener.forEach((k,v) -> {
-            System.out.println("ServiceName" + k.toFlatString());
-            System.out.println( "SubscribeList: " + v.stream().map(Channel::remoteAddress).collect(Collectors.toList()));
+            sb.append("ServiceName").append(k.toFlatString()).append("\n")
+                    .append("InstanceList: ").append(v.stream().map(e -> e).collect(Collectors.toList()));
         });
-        System.out.println("===============================================================");
+        log.info(sb.toString());
     }
 
 
     private RegistryResponse doHandlerSubscribeRequest(Channel channel,RegistryRequest registryRequest){
         ServiceMeta serviceMeta = (ServiceMeta) registryRequest.getBody();
         RegistryResponse response = new RegistryResponse();
-        if(!services.containsKey(serviceMeta)){
+        if(!listener.containsKey(serviceMeta)){
             // 不存在服务
             response.setCode(RegistryStatus.SERVICE_NOT_FOUND.value());
         }else{
             try{
                 // 极限情况下 === 如果这个时候, 正在进行注册 -- 降级为失败
                 LISTENER_LOCK.lock();
-                services.get(serviceMeta).add(channel);
+                listener.get(serviceMeta).add(channel);
             }catch (Exception e){
                 if(LISTENER_LOCK.isHeldByCurrentThread()){
                     LISTENER_LOCK.unlock();
@@ -248,19 +251,44 @@ public class DefaultRegistry extends AbstractRegistry {
         RegistryMeta registryMeta = (RegistryMeta) registryRequest.getBody();
         ServiceMeta serviceMeta = registryMeta.getServiceMeta();
         RegistryResponse response = new RegistryResponse();
+
+        ServiceInstance instance = new ServiceInstance();
+        instance.setWight(registryMeta.getWight());
+        instance.setAddress(registryMeta.getAddress());
+        instance.setChannel(channel);
+        instance.setServiceMeta(serviceMeta);
+
         try{
             SERVICES_LOCK.lock();
             if(!services.containsKey(serviceMeta)){
-                services.put(serviceMeta,new ConcurrentSet<>());
+                services.put(serviceMeta,new ConcurrentSet<>(instance));
             }else{
-
+                services.get(serviceMeta).addOrUpdate(instance);
             }
         }catch (Exception e){
             if(SERVICES_LOCK.isHeldByCurrentThread()){
                SERVICES_LOCK.unlock();
             }
         }
+
+        response.setCode(RegistryStatus.SUCCESS.value());
         return response;
     }
 
+
+    private RegistryResponse doHandleFetchServiceInstances(Channel channel, RegistryRequest registryRequest){
+        ServiceMeta serviceMeta = (ServiceMeta) registryRequest.getBody();
+
+        List<InstanceMeta> instances = services.get(serviceMeta).stream().map(e -> {
+            InstanceMeta meta = new InstanceMeta();
+            meta.setAddress(e.getAddress());
+            meta.setWight(e.getWight());
+            return meta;
+        }).collect(Collectors.toList());
+
+        RegistryResponse response = new RegistryResponse();
+        response.setCode(RegistryStatus.SUCCESS.value());
+        response.setBody(instances);
+        return response;
+    }
 }
