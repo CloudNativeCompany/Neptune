@@ -37,11 +37,11 @@ public interface ServiceSubscriber{
     /**
      * Subscribe a service from registry server.
      */
-    void subscribe(ServiceMeta serviceMeta, RegistryNotifier notifier);
+    void subscribe(ServiceMeta serviceMeta, RegistryNotifier notifier) throws Throwable;
 
-    void unsubscribe(ServiceMeta serviceMeta);
+    void unsubscribe(ServiceMeta serviceMeta) throws Throwable;
 
-    Set<RegistryMeta> serviceList(ServiceMeta serviceMeta);
+    Set<RegistryMeta> serviceList(ServiceMeta serviceMeta) throws Throwable;
 
     enum RegisterState {
         PREPARE,

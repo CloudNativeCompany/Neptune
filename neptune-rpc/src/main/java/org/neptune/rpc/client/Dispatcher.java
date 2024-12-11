@@ -15,7 +15,7 @@
  */
 package org.neptune.rpc.client;
 
-import org.neptune.rpc.InvokeFuture;
+import org.neptune.transport.RequestFuture;
 import org.neptune.rpc.Request;
 
 /**
@@ -25,5 +25,5 @@ import org.neptune.rpc.Request;
  * @date 2021/12/26 15:08
  */
 public interface Dispatcher {
-    <T> InvokeFuture<T> dispatch(Request request, Class<T> returnType);
+    <T> RequestFuture<T> dispatch(Request request, Class<T> returnType);
 }

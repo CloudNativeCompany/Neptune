@@ -1,5 +1,6 @@
 package org.neptune.example.registry;
 
+import com.alibaba.fastjson2.JSON;
 import org.neptune.registry.RegistryMeta;
 import org.neptune.registry.ServiceMeta;
 import org.neptune.registry.ServiceSubscriber;
@@ -9,11 +10,13 @@ import org.neptune.transport.seialize.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Set;
+
 
 public class TestDefaultSubscriber {
 
     private static final Logger logger = LoggerFactory.getLogger(TestDefaultSubscriber.class.getName());
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Throwable {
         DefaultSubscriber defaultSubscriber = new DefaultSubscriber("127.0.0.1", 8001);
         ServiceMeta serviceMeta = new ServiceMeta(
                 "fgptas",
@@ -27,7 +30,7 @@ public class TestDefaultSubscriber {
             }
         });
 
-        defaultSubscriber.consumers();
-
+        Set<RegistryMeta> registryMetas = defaultSubscriber.serviceList(serviceMeta);
+        System.out.println(JSON.toJSONString(registryMetas));
     }
 }

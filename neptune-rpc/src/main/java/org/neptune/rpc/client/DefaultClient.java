@@ -128,23 +128,27 @@ public class DefaultClient implements Client {
         ServiceSubscriber.Watcher watcher = new ServiceSubscriber.Watcher() {
             @Override
             public void start() {
-                serviceSubscriber.subscribe(serviceMeta, new ServiceSubscriber.RegistryNotifier() {
-                    @Override
-                    public void notify(RegistryMeta registryMeta, EventType eventType) {
-                        final UnresolvedAddress address = registryMeta.getAddress();
-                        if (eventType == EventType.SERVICE_ADDED) {
-                            ConnectionGroup group = connector.getAddressConnects(address);
-                            group.addConnect(() -> connector.connect(address, false));
-                        } else if (eventType == EventType.SERVICE_REMOVED) {
-                            connector.removeAddressConnects(address);
+                try {
+                    serviceSubscriber.subscribe(serviceMeta, new ServiceSubscriber.RegistryNotifier() {
+                        @Override
+                        public void notify(RegistryMeta registryMeta, EventType eventType) {
+                            final UnresolvedAddress address = registryMeta.getAddress();
+                            if (eventType == EventType.SERVICE_ADDED) {
+                                ConnectionGroup group = connector.getAddressConnects(address);
+                                group.addConnect(() -> connector.connect(address, false));
+                            } else if (eventType == EventType.SERVICE_REMOVED) {
+                                connector.removeAddressConnects(address);
+                            }
                         }
-                    }
-                });
+                    });
+                } catch (Throwable e) {
+                    throw new RuntimeException(e);
+                }
             }
 
             @Override
             public void waitForAvailable() {
-                serviceSubscriber.serviceList(serviceMeta);
+//                serviceSubscriber.serviceList(serviceMeta);
             }
 
             @Override

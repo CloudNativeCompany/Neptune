@@ -43,7 +43,6 @@ public class ResponseHandler extends ChannelInboundHandlerAdapter {
     // 最后一个channelRead 需要进行显示的 buffer 池化与释放操作
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        log.info("receive a message from remote:{} : {}" , ctx.channel().remoteAddress(), msg);
         final Channel channel = ctx.channel();
         if (msg instanceof ResponsePayload) {
             processor.handlerResponse(channel, (ResponsePayload) msg);

@@ -50,7 +50,6 @@ public class ConnectionWatchDog extends ChannelInboundHandlerAdapter{
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        log.info("receive a message from remote:{} : {}" , ctx.channel().remoteAddress(), msg);
         super.channelRead(ctx, msg);
     }
     public ConnectionWatchDog(Bootstrap bootstrap, Timer timer, SocketAddress remoteAddress) {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.rpc;
+package org.neptune.transport;
 
 import java.util.concurrent.CompletionStage;
 
@@ -23,6 +23,10 @@ import java.util.concurrent.CompletionStage;
  * @author tony-is-coding
  * @date 2021/12/20 16:45
  */
-public interface InvokeFuture<V> extends CompletionStage<V> {
-    V result() throws Throwable;
+public interface RequestFuture<V> extends CompletionStage<V> {
+    V response() throws Throwable;
+
+    void onSentSuccess();
+
+    void onSentFailure();
 }

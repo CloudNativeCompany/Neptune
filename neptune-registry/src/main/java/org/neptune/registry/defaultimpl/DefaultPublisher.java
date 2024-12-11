@@ -69,8 +69,8 @@ public class DefaultPublisher implements ServicePublisher {
 
     @Override
     public void register(RegistryMeta meta) throws Exception {
-        LongSequence longSequence = new LongSequence();
-        RequestPayload payload = new RequestPayload(longSequence.next());
+
+        RequestPayload payload = new RequestPayload(IdGenerator.newId());
         payload.setSerialTypeCode(messageSerializer.typeCode());
         // 发起订阅消息
         RegistryRequest request = new RegistryRequest();

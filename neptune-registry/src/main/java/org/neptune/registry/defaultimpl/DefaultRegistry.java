@@ -30,7 +30,6 @@ import org.neptune.common.UnresolvedSocketAddress;
 import org.neptune.common.util.ConcurrentSet;
 import org.neptune.registry.*;
 import org.neptune.transport.*;
-import org.neptune.transport.connection.Connection;
 import org.neptune.transport.handler.*;
 import org.neptune.transport.processor.AcceptProcessor;
 import org.neptune.transport.protocol.ProtocolDecoder;
@@ -117,8 +116,10 @@ public class DefaultRegistry extends AbstractRegistry {
                         break;
                     case SubscribeRequest:
                         response.setBytes(serializer.writeObject(doHandlerSubscribeRequest(channel, registryRequest)));
-                    case fetchServiceInstance:
+                        break;
+                    case FetchServiceInstance:
                         response.setBytes(serializer.writeObject(doHandleFetchServiceInstances(channel, registryRequest)));
+                        break;
                     default:
                         throw new ActionNotSupportedException("invalid message type:" + messageTye);
                 }
@@ -206,27 +207,8 @@ public class DefaultRegistry extends AbstractRegistry {
         monitorThread.start();
     }
 
-    private void doPrintServices(){
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("\n");
-        sb.append("开始打印服务信息...");
-        services.forEach((k,v) -> {
-            sb.append("ServiceName").append(k.toFlatString()).append("\n")
-                    .append("InstanceList: ").append(v.stream().map(
-                            e -> e
-                    ).collect(Collectors.toList()));
-        });
-        System.out.println("开始打印订阅信息...");
-        listener.forEach((k,v) -> {
-            sb.append("ServiceName").append(k.toFlatString()).append("\n")
-                    .append("InstanceList: ").append(v.stream().map(e -> e).collect(Collectors.toList()));
-        });
-        log.info(sb.toString());
-    }
-
-
     private RegistryResponse doHandlerSubscribeRequest(Channel channel,RegistryRequest registryRequest){
+        log.info("doHandlerSubscribeRequest: {}", JSON.toJSONString(registryRequest));
         ServiceMeta serviceMeta = (ServiceMeta) registryRequest.getBody();
         RegistryResponse response = new RegistryResponse();
         if(!listener.containsKey(serviceMeta)){
@@ -248,6 +230,7 @@ public class DefaultRegistry extends AbstractRegistry {
     }
 
     private RegistryResponse doHandlePublishRequest(Channel channel,RegistryRequest registryRequest){
+        log.info("doHandlePublishRequest: {}", JSON.toJSONString(registryRequest));
         RegistryMeta registryMeta = (RegistryMeta) registryRequest.getBody();
         ServiceMeta serviceMeta = registryMeta.getServiceMeta();
         RegistryResponse response = new RegistryResponse();
@@ -277,6 +260,7 @@ public class DefaultRegistry extends AbstractRegistry {
 
 
     private RegistryResponse doHandleFetchServiceInstances(Channel channel, RegistryRequest registryRequest){
+        log.info("doHandleFetchServiceInstances: {}", JSON.toJSONString(registryRequest));
         ServiceMeta serviceMeta = (ServiceMeta) registryRequest.getBody();
 
         List<InstanceMeta> instances = services.get(serviceMeta).stream().map(e -> {
@@ -291,4 +275,25 @@ public class DefaultRegistry extends AbstractRegistry {
         response.setBody(instances);
         return response;
     }
+
+
+    private void doPrintServices(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n");
+        sb.append("开始打印服务信息...");
+        services.forEach((k,v) -> {
+            sb.append("ServiceName").append(k.toFlatString()).append("\n")
+                    .append("InstanceList: ").append(v.stream().map(
+                            e -> e
+                    ).collect(Collectors.toList()));
+        });
+        System.out.println("开始打印订阅信息...");
+        listener.forEach((k,v) -> {
+            sb.append("ServiceName").append(k.toFlatString()).append("\n")
+                    .append("InstanceList: ").append(v.stream().map(e -> e).collect(Collectors.toList()));
+        });
+        log.info(sb.toString());
+    }
+
+
 }

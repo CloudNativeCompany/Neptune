@@ -3,7 +3,6 @@ package org.neptune.registry;
 import java.io.Serializable;
 
 public class RegistryResponse implements Serializable {
-    private byte   type;
 
     private byte code;
 
@@ -12,12 +11,6 @@ public class RegistryResponse implements Serializable {
     private Object body;
 
     public RegistryResponse() {
-    }
-    public byte getType() {
-        return type;
-    }
-    public void setType(byte type) {
-        this.type = type;
     }
 
     public Object getBody() {

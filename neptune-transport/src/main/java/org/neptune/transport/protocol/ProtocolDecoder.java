@@ -46,7 +46,6 @@ public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        log.info("receive a message from remote:{} : {}" , ctx.channel().remoteAddress(), msg);
         super.channelRead(ctx, msg);
     }
 
@@ -61,7 +60,6 @@ public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
     @Override
     // out 列表 内的数据会被分多次调用fireChannelRead() 往下一个 inbound传递
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        log.info("start decode message from:{}", ctx.channel().remoteAddress() );
         switch (state()) {
             case MAGIC:
                 ProtocolHeader.checkMagic(in.readShort());         // MAGIC

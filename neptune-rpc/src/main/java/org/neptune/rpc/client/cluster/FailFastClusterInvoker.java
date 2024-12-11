@@ -16,7 +16,7 @@
 package org.neptune.rpc.client.cluster;
 
 
-import org.neptune.rpc.InvokeFuture;
+import org.neptune.transport.RequestFuture;
 import org.neptune.rpc.client.Dispatcher;
 import org.neptune.rpc.Request;
 
@@ -33,7 +33,7 @@ public class FailFastClusterInvoker extends AbstractClusterInvoker {
     }
 
     @Override
-    public <T> InvokeFuture<T> invoke(Dispatcher dispatcher, Request request, Class<T> returnType) throws Throwable {
+    public <T> RequestFuture<T> invoke(Dispatcher dispatcher, Request request, Class<T> returnType) throws Throwable {
         return invoke0(dispatcher,request, returnType); // 快速失败
     }
 

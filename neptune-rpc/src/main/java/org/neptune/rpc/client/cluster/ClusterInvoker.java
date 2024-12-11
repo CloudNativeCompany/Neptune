@@ -15,7 +15,7 @@
  */
 package org.neptune.rpc.client.cluster;
 
-import org.neptune.rpc.InvokeFuture;
+import org.neptune.transport.RequestFuture;
 import org.neptune.rpc.Request;
 import org.neptune.rpc.client.Dispatcher;
 
@@ -28,7 +28,7 @@ import org.neptune.rpc.client.Dispatcher;
  */
 public interface ClusterInvoker {
 
-    <T> InvokeFuture<T> invoke(Dispatcher dispatcher, Request request, Class<T> returnType) throws Throwable;
+    <T> RequestFuture<T> invoke(Dispatcher dispatcher, Request request, Class<T> returnType) throws Throwable;
 
     enum ClusterStrategy {
         FAIL_FAST,  // 快速失败

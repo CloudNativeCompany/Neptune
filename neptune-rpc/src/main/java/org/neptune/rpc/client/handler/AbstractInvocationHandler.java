@@ -21,6 +21,7 @@ import org.neptune.rpc.client.Client;
 import org.neptune.rpc.client.Dispatcher;
 import org.neptune.rpc.client.cluster.ClusterInvoker;
 import org.neptune.registry.ServiceMeta;
+import org.neptune.transport.RequestFuture;
 
 /**
  * org.neptune.rpc.consumer - RpcInvoker
@@ -42,9 +43,9 @@ public abstract class AbstractInvocationHandler {
     protected Object doInvoke(String methodName, Object[] args, Class<?> returnType) throws Throwable {
         Request request = createRequest(methodName, args);
         //执行上下文, 用来在多个执行流中传递
-        InvokeFuture<?> resultFuture = clusterInvoker.invoke(dispatcher, request, returnType);
+        RequestFuture<?> resultFuture = clusterInvoker.invoke(dispatcher, request, returnType);
         if (!invokeAsync) {
-            return resultFuture.result();
+            return resultFuture.response();
         }
         return resultFuture;
     }

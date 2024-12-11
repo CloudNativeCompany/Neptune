@@ -40,7 +40,6 @@ public class ProtocolEncoder extends MessageToByteEncoder<Object> {
      */
     @Override
     protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
-        log.info("start encode message 。。。" + msg);
         if (msg instanceof RequestPayload) {
             doEncodeRequest((RequestPayload) msg, out);
         } else if (msg instanceof ResponsePayload) {

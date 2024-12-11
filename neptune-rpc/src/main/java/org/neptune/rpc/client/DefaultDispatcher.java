@@ -21,12 +21,12 @@ import org.neptune.registry.ServiceMeta;
 import org.neptune.rpc.*;
 import org.neptune.rpc.client.lb.LoadBalancer;
 import org.neptune.rpc.client.lb.LoadBalancerFactory;
+import org.neptune.transport.RequestFuture;
 import org.neptune.transport.seialize.SerializerFactory;
 import org.neptune.transport.seialize.Serializer;
 
 import org.neptune.transport.RequestPayload;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFutureListener;
 
 /**
  * org.neptune.rpc.consumer - DefaultDispatcher
@@ -57,12 +57,16 @@ public class DefaultDispatcher implements Dispatcher {
     }
 
     @Override
-    public <T> InvokeFuture<T> dispatch(Request request, Class<T> returnType) {
-        return send(request, returnType);
+    public <T> RequestFuture<T> dispatch(Request request, Class<T> returnType) {
+        try {
+            return send(request, returnType);
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // 匹配一个目标连接来
-    private Channel select(ServiceMeta serviceMeta) {
+    private Channel select(ServiceMeta serviceMeta) throws Throwable {
         //TODO: load balance 是基于registry 的结果做的
         //TODO: 这一层的抽象还是需要再看看
         UnresolvedAddress address = loadBalancer.select(client.serviceSubscriber().serviceList(serviceMeta));
@@ -70,7 +74,7 @@ public class DefaultDispatcher implements Dispatcher {
     }
 
 
-    private <T> InvokeFuture<T> send(Request request, Class<T> returnType) {
+    private <T> RequestFuture<T> send(Request request, Class<T> returnType) throws Throwable {
         final long invokeId = request.getInvokeId();
 
         // 对象序列化
@@ -79,17 +83,18 @@ public class DefaultDispatcher implements Dispatcher {
         payload.setBytes(serializer.writeObject(request.getBody()));
         Channel ch = select(request.getBody().getMetadata());
 
-        DefaultInvokeFuture<T> invokeFuture = new DefaultInvokeFuture<>(ch, invokeId, returnType);
-        ch.writeAndFlush(payload).addListener(
-                // TODO:加入发送超时监控, writeAndFlush
-                (ChannelFutureListener) cf -> {
-                    if (cf.isSuccess()) { // success
-                        invokeFuture.sentSuccess();
-                    } else { // fail
-                        invokeFuture.sentFailure();
-                    }
-                });
-        return invokeFuture;
+//        DefaultRequestFuture<T> invokeFuture = new DefaultRequestFuture<>(ch, invokeId, returnType);
+//        ch.writeAndFlush(payload).addListener(
+//                // TODO:加入发送超时监控, writeAndFlush
+//                (ChannelFutureListener) cf -> {
+//                    if (cf.isSuccess()) { // success
+//                        invokeFuture.sentSuccess();
+//                    } else { // fail
+//                        invokeFuture.sentFailure();
+//                    }
+//                });
+//        return invokeFuture;
+        return null;
     }
 
 }

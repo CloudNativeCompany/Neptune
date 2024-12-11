@@ -16,7 +16,6 @@
 package org.neptune.rpc.processor;
 
 import lombok.extern.slf4j.Slf4j;
-import org.neptune.rpc.DefaultInvokeFuture;
 import org.neptune.rpc.Response;
 import org.neptune.rpc.ResponseBody;
 import org.neptune.transport.seialize.SerializerFactory;
@@ -54,7 +53,7 @@ public class DefaultConnectProcessor implements ConnectProcessor {
         Serializer serializer = SerializerFactory.getSerializer(responsePayload.getSerialTypeCode());
         ResponseBody responseBody = serializer.readObject(responsePayload.getBytes(), 0 ,responsePayload.getBytes().length , ResponseBody.class);
         Response response = new Response(responsePayload.getXid(), responseBody);
-        DefaultInvokeFuture.received(channel, response);
+//        DefaultRequestFuture.received(channel, response);
     }
 
 }

@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.rpc;
+package org.neptune.registry;
 
 
-import com.alibaba.fastjson2.JSON;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
+import org.neptune.transport.RequestFuture;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * org.neptune.rpc.core - DefaultInvokeFuture
@@ -33,23 +32,21 @@ import java.util.concurrent.TimeoutException;
  * @date 2021/12/20 17:56
  */
 @Slf4j
-public class DefaultInvokeFuture<V> extends CompletableFuture<V> implements InvokeFuture<V> {
+public class RegistryRequestFuture extends CompletableFuture<RegistryResponse> implements RequestFuture<RegistryResponse> {
 
-    private static final ConcurrentHashMap<Long, DefaultInvokeFuture<?>> FUTURE_HOLDER = new ConcurrentHashMap<>(16);
+    private static final ConcurrentHashMap<Long, RegistryRequestFuture> FUTURE_HOLDER = new ConcurrentHashMap<>(16);
     private static final byte SEND_FAILURE = -1;
     private static final byte SEND_SUCCESS = 1;
     private static final byte SENDING = 0;
 
     private final Channel channel;
     private final long invokeId;
-    private final Class<V> returnType;
 
     private byte sendState = SENDING;
 
-    public DefaultInvokeFuture(Channel channel, long invokeId, Class<V> returnType) {
+    public RegistryRequestFuture(Channel channel, long invokeId) {
         this.channel = channel;
         this.invokeId = invokeId;
-        this.returnType = returnType;
         FUTURE_HOLDER.put(invokeId, this);
     }
 
@@ -62,24 +59,27 @@ public class DefaultInvokeFuture<V> extends CompletableFuture<V> implements Invo
     }
 
     @Override
-    public V result() throws Throwable {
+    public RegistryResponse response() throws Exception {
         return get(1000, TimeUnit.MILLISECONDS);
     }
 
-    @SuppressWarnings("unchecked")
-    private void doReceived(Response response) {
-        final Object result = response.getResult();
-        complete((V) result); // 完成
+    @Override
+    public void onSentSuccess() {
+
     }
 
-    public static void received(Channel ch, Response response) {
-        final long invokeId = response.getInvokeId();
-        DefaultInvokeFuture<?> invokeFuture = FUTURE_HOLDER.remove(invokeId);
+    @Override
+    public void onSentFailure() {
+
+    }
+
+    public static void received(Channel ch, long xid, RegistryResponse response) {
+        RegistryRequestFuture invokeFuture = FUTURE_HOLDER.remove(xid);
         if (invokeFuture == null) {
             return;
         }
         // 进行异步通知
-        invokeFuture.doReceived(response);
+        invokeFuture.complete(response);
     }
 
 }
