@@ -30,7 +30,10 @@ public class TestDefaultSubscriber {
             }
         });
 
-        Set<RegistryMeta> registryMetas = defaultSubscriber.serviceList(serviceMeta);
-        System.out.println(JSON.toJSONString(registryMetas));
+        while (true){
+            Thread.sleep(3000);
+            Set<RegistryMeta> registryMetas = defaultSubscriber.serviceList(serviceMeta);
+            System.out.println(JSON.toJSONString(registryMetas));
+        }
     }
 }

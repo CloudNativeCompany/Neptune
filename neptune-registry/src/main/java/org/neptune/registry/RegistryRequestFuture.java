@@ -60,7 +60,7 @@ public class RegistryRequestFuture extends CompletableFuture<RegistryResponse> i
 
     @Override
     public RegistryResponse response() throws Exception {
-        return get(1000, TimeUnit.MILLISECONDS);
+        return get(2000, TimeUnit.MILLISECONDS);
     }
 
     @Override

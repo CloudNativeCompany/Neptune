@@ -40,6 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
@@ -109,7 +110,6 @@ public class DefaultRegistry extends AbstractRegistry {
                 MessageTye messageTye = MessageTye.codeOf(registryRequest.getType());
                 ResponsePayload response = new ResponsePayload(request.getXid());
                 response.setSerialTypeCode(request.getSerialTypeCode());
-                log.info("subscribeMessage_info:{}",JSON.toJSONString(registryRequest));
                 switch (messageTye){
                     case PublishRequest:
                         response.setBytes(serializer.writeObject(doHandlePublishRequest(channel, registryRequest)));
@@ -249,11 +249,13 @@ public class DefaultRegistry extends AbstractRegistry {
                 services.get(serviceMeta).addOrUpdate(instance);
             }
         }catch (Exception e){
+            log.error("doHandlePublishRequest_LOCK_EXC:{}", ExceptionUtil.getStackTrace(e));
+        }finally {
             if(SERVICES_LOCK.isHeldByCurrentThread()){
-               SERVICES_LOCK.unlock();
+                SERVICES_LOCK.unlock();
             }
         }
-
+        log.info("doHandlePublishRequest_addServiceMetaSuccess:{}", JSON.toJSONString(registryMeta));
         response.setCode(RegistryStatus.SUCCESS.value());
         return response;
     }
@@ -263,7 +265,8 @@ public class DefaultRegistry extends AbstractRegistry {
         log.info("doHandleFetchServiceInstances: {}", JSON.toJSONString(registryRequest));
         ServiceMeta serviceMeta = (ServiceMeta) registryRequest.getBody();
 
-        List<InstanceMeta> instances = services.get(serviceMeta).stream().map(e -> {
+        //TODO(谭志勇) 2024/12/12: 优化new concurrent
+        List<InstanceMeta> instances = services.getOrDefault(serviceMeta,new ConcurrentSet<>()).stream().map(e -> {
             InstanceMeta meta = new InstanceMeta();
             meta.setAddress(e.getAddress());
             meta.setWight(e.getWight());
@@ -280,18 +283,19 @@ public class DefaultRegistry extends AbstractRegistry {
     private void doPrintServices(){
         StringBuilder sb = new StringBuilder();
         sb.append("\n");
-        sb.append("开始打印服务信息...");
+        sb.append("开始打印服务信息...").append("\n");
         services.forEach((k,v) -> {
             sb.append("ServiceName").append(k.toFlatString()).append("\n")
                     .append("InstanceList: ").append(v.stream().map(
-                            e -> e
+                           e -> ((UnresolvedSocketAddress)e.getAddress()).toString()
                     ).collect(Collectors.toList()));
         });
-        System.out.println("开始打印订阅信息...");
+        System.out.println("开始打印订阅信息...\n");
         listener.forEach((k,v) -> {
             sb.append("ServiceName").append(k.toFlatString()).append("\n")
-                    .append("InstanceList: ").append(v.stream().map(e -> e).collect(Collectors.toList()));
+                    .append("ListenerList: ").append(v.stream().map(Channel::remoteAddress).collect(Collectors.toList()));
         });
+        sb.append("\n");
         log.info(sb.toString());
     }
 

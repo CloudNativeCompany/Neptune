@@ -1,12 +1,12 @@
 [
   {
     "address": {
-      "host": "127.0.0.1",
+      "host": "127.0.0.2",
       "port": 8000
     },
     "serviceMeta": {
       "group": "group",
-      "serverName": "name1",
+      "serverName": "name",
       "serverVersion": "version"
     },
     "wight": 100
@@ -34,53 +34,5 @@
       "serverVersion": "version"
     },
     "wight": 100
-  },
-  {
-    "address": {
-      "host": "127.0.0.2",
-      "port": 8000
-    },
-    "serviceMeta": {
-      "group": "group",
-      "serverName": "name",
-      "serverVersion": "version"
-    },
-    "wight": 100
-  },
-  {
-    "address": {
-      "host": "127.0.0.1",
-      "port": 8000
-    },
-    "serviceMeta": {
-      "group": "group1",
-      "serverName": "name",
-      "serverVersion": "version"
-    },
-    "wight": 100
-  },
-  {
-    "address": {
-      "host": "127.0.0.1",
-      "port": 8000
-    },
-    "serviceMeta": {
-      "group": "group",
-      "serverName": "name",
-      "serverVersion": "version1"
-    },
-    "wight": 100
-  },
-  {
-    "address": {
-      "host": "127.0.0.1",
-      "port": 8000
-    },
-    "serviceMeta": {
-      "group": "group",
-      "serverName": "name",
-      "serverVersion": "version"
-    },
-    "wight": 101
   }
 ]

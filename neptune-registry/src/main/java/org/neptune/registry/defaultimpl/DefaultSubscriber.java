@@ -24,6 +24,7 @@ import org.neptune.transport.seialize.Serializer;
 import org.neptune.transport.seialize.SerializerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import java.util.Collections;
 import java.util.List;
@@ -49,7 +50,7 @@ public class DefaultSubscriber implements ServiceSubscriber {
                 new ResponseHandler(new ConnectProcessor() {
                     @Override
                     public void handlerResponse(Channel channel, ResponsePayload responsePayload) throws Exception {
-                        log.info("receive message from registry: " + channel.remoteAddress().toString());
+                        log.info("receive message from registry: {}, xid:{}" , channel.remoteAddress().toString(), responsePayload.getXid());
                         Serializer serializer = SerializerFactory.getSerializer(responsePayload.getSerialTypeCode());
                         RegistryResponse response = serializer.readObject(responsePayload.getBytes(), 0 ,
                                 responsePayload.getBytes().length , RegistryResponse.class);
@@ -108,6 +109,7 @@ public class DefaultSubscriber implements ServiceSubscriber {
         subscribeRequest.setType(MessageTye.FetchServiceInstance.getCode());
         payload.setBytes(messageSerializer.writeObject(subscribeRequest));
 
+        log.info("trace_Xid_start:{}", xId);
         RegistryRequestFuture requestFuture = new RegistryRequestFuture(connection.channel(), xId);
         connection.channel().writeAndFlush(payload).addListener(
                 (ChannelFutureListener) cf -> {
