@@ -33,7 +33,7 @@ import java.util.Objects;
 @Slf4j
 public class NettyConnection implements Connection {
 
-    private static final AttributeKey<NettyConnection> NETTY_CONNECTION_KEY = AttributeKey.valueOf("netty_connection");
+    public static final AttributeKey<NettyConnection> NETTY_CONNECTION_KEY = AttributeKey.valueOf("netty_connection");
 
     protected ChannelFuture future;
     protected SocketAddress remoteAddress;

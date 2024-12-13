@@ -12,8 +12,9 @@ import org.neptune.transport.Status;
 public enum RegistryStatus implements Status {
 
     SUCCESS                  ((byte) 0x00, "SUCCESS"),
-    SERVICE_NOT_FOUND        ((byte) 0x10, "SERVICE_NOT_FOUND"),
-    PUBLISH_FAIL             ((byte) 0x20, "PUBLISH_FAIL"),
+    INTERNAL_ERROR           ((byte) 0x10, "INTERNAL_ERROR"),
+    SERVICE_NOT_FOUND        ((byte) 0x20, "SERVICE_NOT_FOUND"),
+    PUBLISH_FAIL             ((byte) 0x30, "PUBLISH_FAIL"),
 
 
     ;      // 客户端反序列化错误

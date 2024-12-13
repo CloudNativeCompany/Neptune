@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.neptune.registry.defaultimpl;
+package org.neptune.registry.reistrycenter;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.nacos.common.utils.ExceptionUtil;
@@ -25,6 +25,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.flush.FlushConsolidationHandler;
 import io.netty.util.HashedWheelTimer;
+import io.netty.util.Signal;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import org.neptune.common.UnresolvedSocketAddress;
 import org.neptune.common.util.ConcurrentSet;
@@ -40,7 +41,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
@@ -160,11 +160,11 @@ public class DefaultRegistry extends AbstractRegistry {
                                 new ChannelOutboundHandlerAdapter(){
                                     @Override
                                     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-                                        log.error("exceptionCaught:" + ExceptionUtil.getStackTrace(cause));
+                                        log.error("ChannelOutboundHandlerAdapter_exceptionCaught:" + ExceptionUtil.getStackTrace(cause));
                                     }
                                 },
                                 new FlushConsolidationHandler(5, true), // 合并发送, 每5次之后再进行一次真正的网络发发送
-                                new IdleStateChecker(timer, 5, 5, 60),
+                                new IdleStateChecker(timer, 30, 5, 60),
                                 new AcceptorIdleTriggerHandler(),
                                 new ProtocolDecoder(),
                                 new ProtocolEncoder(),
@@ -182,7 +182,13 @@ public class DefaultRegistry extends AbstractRegistry {
                                     }
                                     @Override
                                     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-                                        log.error("exceptionCaught:" + ExceptionUtil.getStackTrace(cause));
+                                        log.error("ChannelInboundHandlerAdapter_exceptionCaught:" + ExceptionUtil.getStackTrace(cause));
+                                        if(cause instanceof Signal){
+                                            if(ConstantSignal.ReadIdle.equals((Signal) cause)){
+                                                // TODO: 2024/12/13 读空闲, 每个读空闲,发送一次服务端心跳, 如果3次失败, channel close , 并移除对应的客户、服务 列表
+
+                                            }
+                                        }
                                     }
                                 }
                         );

@@ -16,6 +16,8 @@
 package org.neptune.registry;
 
 
+import io.netty.channel.Channel;
+
 /**
  * org.neptune.rpc.core - Registry
  *

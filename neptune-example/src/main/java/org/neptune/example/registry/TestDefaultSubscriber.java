@@ -5,8 +5,6 @@ import org.neptune.registry.RegistryMeta;
 import org.neptune.registry.ServiceMeta;
 import org.neptune.registry.ServiceSubscriber;
 import org.neptune.registry.defaultimpl.DefaultSubscriber;
-import org.neptune.transport.seialize.KryoSerializer;
-import org.neptune.transport.seialize.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

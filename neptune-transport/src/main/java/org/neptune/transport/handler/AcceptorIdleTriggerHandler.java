@@ -20,6 +20,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.Signal;
+import org.neptune.transport.ConstantSignal;
 
 /**
  * org.neptune.rpc.transportLayer - AcceptorIdleTriggerHandler
@@ -32,8 +33,11 @@ public class AcceptorIdleTriggerHandler extends ChannelInboundHandlerAdapter {
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent) {
             IdleState state = ((IdleStateEvent) evt).state();
-            if (state == IdleState.READER_IDLE) {
-                throw Signal.valueOf("客户端：" + ctx.channel().remoteAddress() + "连续空虚超过最大空闲时间....");
+            switch (state){
+                case READER_IDLE:
+                    throw ConstantSignal.ReadIdle;
+                case WRITER_IDLE:
+                    throw ConstantSignal.WriteIdle;
             }
         } else {
             super.userEventTriggered(ctx, evt);

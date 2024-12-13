@@ -1,11 +1,8 @@
 package org.neptune.example.registry;
 
-import org.neptune.registry.defaultimpl.DefaultRegistry;
+import org.neptune.registry.reistrycenter.DefaultRegistry;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;;import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import org.slf4j.LoggerFactory;;
 
 public class TestDefaultRegistry {
         private static final Logger logger = LoggerFactory.getLogger(TestDefaultRegistry.class.getName());
