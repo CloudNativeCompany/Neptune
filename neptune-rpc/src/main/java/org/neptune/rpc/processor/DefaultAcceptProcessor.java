@@ -18,7 +18,7 @@ package org.neptune.rpc.processor;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import lombok.extern.slf4j.Slf4j;
-import org.neptune.rpc.ResponseBody;
+import org.neptune.rpc.RpcResponse;
 import org.neptune.transport.seialize.SerializerFactory;
 import org.neptune.transport.seialize.Serializer;
 import org.neptune.transport.RequestPayload;
@@ -43,13 +43,13 @@ public class DefaultAcceptProcessor implements AcceptProcessor {
     public void handleRequest(Channel channel, RequestPayload request) throws Exception {
         Serializer serializer = SerializerFactory.getSerializer(request.getSerialTypeCode());
         // 直接pong 回去
-        ResponseBody responseBody = new ResponseBody();
-        responseBody.setResult("this is an result from remote sever!! good day");
+        RpcResponse rpcResponse = new RpcResponse();
+        rpcResponse.setResult("this is an result from remote sever!! good day");
 
         ResponsePayload payload = new ResponsePayload(request.getXid());
         payload.setStatus(TransportStatus.OK.value());
         payload.setSerialTypeCode(request.getSerialTypeCode());
-        payload.setBytes(serializer.writeObject(responseBody));
+        payload.setBytes(serializer.writeObject(rpcResponse));
 
         channel.writeAndFlush(payload).addListener(
                 (ChannelFutureListener) cf -> {});

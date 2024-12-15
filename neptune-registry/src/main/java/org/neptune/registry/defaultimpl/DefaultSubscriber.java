@@ -5,9 +5,8 @@ import io.netty.util.HashedWheelTimer;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import org.neptune.common.UnresolvedAddress;
 import org.neptune.common.UnresolvedSocketAddress;
-import org.neptune.common.util.LongSequence;
+import org.neptune.common.util.IdGenerator;
 import org.neptune.registry.*;
-import org.neptune.transport.RequestFuture;
 import org.neptune.transport.RequestPayload;
 import org.neptune.transport.ResponsePayload;
 import org.neptune.transport.connection.Connection;
@@ -24,7 +23,6 @@ import org.neptune.transport.seialize.Serializer;
 import org.neptune.transport.seialize.SerializerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 import java.util.Collections;
 import java.util.List;

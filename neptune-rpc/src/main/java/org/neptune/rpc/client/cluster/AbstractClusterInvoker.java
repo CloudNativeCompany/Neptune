@@ -15,8 +15,8 @@
  */
 package org.neptune.rpc.client.cluster;
 
+import org.neptune.rpc.RpcRequest;
 import org.neptune.transport.RequestFuture;
-import org.neptune.rpc.Request;
 import org.neptune.rpc.client.Dispatcher;
 
 
@@ -29,7 +29,7 @@ import org.neptune.rpc.client.Dispatcher;
 public abstract class AbstractClusterInvoker implements ClusterInvoker {
 
 
-    protected <T> RequestFuture<T> invoke0(Dispatcher dispatcher, Request request, Class<T> returnType) throws Throwable {
+    protected <T> RequestFuture<T> invoke0(Dispatcher dispatcher, RpcRequest request, Class<T> returnType) throws Throwable {
         return dispatcher.dispatch(request,returnType);
     }
 }

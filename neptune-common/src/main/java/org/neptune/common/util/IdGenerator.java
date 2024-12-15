@@ -1,6 +1,4 @@
-package org.neptune.registry;
-
-import org.neptune.common.util.LongSequence;
+package org.neptune.common.util;
 
 public class IdGenerator {
 

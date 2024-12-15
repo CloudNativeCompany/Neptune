@@ -25,7 +25,7 @@ import java.io.Serializable;
  * @author tony-is-coding
  * @date 2021/12/24 14:19
  */
-public class RequestBody implements Serializable {
+public class RpcRequest implements Serializable {
 
     private static final long serialVersionUID = 1009813828866652852L;
 
@@ -34,7 +34,7 @@ public class RequestBody implements Serializable {
     private String methodName;              // 目标方法名称
     private Object[] args;                  // 目标方法参数
 
-    public RequestBody(ServiceMeta metadata) {
+    public RpcRequest(ServiceMeta metadata) {
         this.metadata = metadata;
     }
 

@@ -19,7 +19,8 @@ package org.neptune.transport.connector;
 import org.neptune.transport.connection.Connection;
 import org.neptune.common.UnresolvedAddress;
 import org.neptune.transport.connection.ConnectionGroup;
-import org.neptune.transport.processor.ConnectProcessor;
+
+import java.util.function.Supplier;
 
 /**
  * org.neptune.rpc.transportLayer - Connector

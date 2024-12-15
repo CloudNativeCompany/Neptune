@@ -84,6 +84,7 @@ public class NettyAcceptor implements Acceptor{
 
     @Override
     public void start(boolean sync) throws Exception {
+        //TODO(谭志勇) 2024/12/15: optimizer 将 handlers 本身给开放给到 客户端
         bootstrap
                 .childHandler(new ChannelInitializer<Channel>() {
 

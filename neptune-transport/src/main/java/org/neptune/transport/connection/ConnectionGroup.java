@@ -18,7 +18,10 @@ public class ConnectionGroup {
     public static final int CONNECT_NUM = 1;
 
     private final UnresolvedAddress address;
+
+    // 考虑是否需要创建多个 Channel?
     private transient final CopyOnWriteArrayList<Connection> connections = new CopyOnWriteArrayList<>(); // 通过 volatile 来保障 读-写并发问题
+
     final transient ReentrantLock lock = new ReentrantLock();
 
     public ConnectionGroup(UnresolvedAddress address){
@@ -43,11 +46,6 @@ public class ConnectionGroup {
 
     public List<Connection> connections(){
         return connections;
-    }
-
-
-    public UnresolvedAddress address(){
-        return address;
     }
 
     public boolean isAvailable(){

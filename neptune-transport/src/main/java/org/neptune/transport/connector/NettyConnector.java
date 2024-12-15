@@ -35,6 +35,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadFactory;
+import java.util.function.Supplier;
 
 import static org.neptune.transport.SocketChannelFactoryProvider.SocketType;
 
@@ -140,8 +141,7 @@ public class NettyConnector implements Connector {
 
     @Override
     public ConnectionGroup getAddressConnects(UnresolvedAddress address) {
-        //README: 这里存在风险 -- 如果很多group创建但是group最终没有生成实际的connect, 那就是无效内存的浪费
-        // 考虑惰性put
+        //todo: 这里存在风险 -- 如果很多group创建但是group最终没有生成实际的connect, 那就是无效内存的浪费, 考虑惰性put
         if(!serviceConnectGroup.containsKey(address)){
             synchronized (serviceConnectGroup){
                 if(!serviceConnectGroup.containsKey(address)){

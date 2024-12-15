@@ -23,5 +23,4 @@ package org.neptune.transport.connection;
  */
 public interface ConnectFuture {
     void onConnectCompleted();
-    void onConnectClosed();
 }

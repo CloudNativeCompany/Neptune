@@ -16,8 +16,7 @@
 package org.neptune.rpc.processor;
 
 import lombok.extern.slf4j.Slf4j;
-import org.neptune.rpc.Response;
-import org.neptune.rpc.ResponseBody;
+import org.neptune.rpc.RpcResponse;
 import org.neptune.transport.seialize.SerializerFactory;
 import org.neptune.transport.seialize.Serializer;
 import org.neptune.transport.ResponsePayload;
@@ -51,8 +50,7 @@ public class DefaultConnectProcessor implements ConnectProcessor {
     @Override
     public void handlerResponse(Channel channel, ResponsePayload responsePayload) throws Exception {
         Serializer serializer = SerializerFactory.getSerializer(responsePayload.getSerialTypeCode());
-        ResponseBody responseBody = serializer.readObject(responsePayload.getBytes(), 0 ,responsePayload.getBytes().length , ResponseBody.class);
-        Response response = new Response(responsePayload.getXid(), responseBody);
+        RpcResponse rpcResponse = serializer.readObject(responsePayload.getBytes(), 0 ,responsePayload.getBytes().length , RpcResponse.class);
 //        DefaultRequestFuture.received(channel, response);
     }
 

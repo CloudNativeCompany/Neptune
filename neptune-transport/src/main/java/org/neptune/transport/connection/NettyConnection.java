@@ -52,6 +52,18 @@ public class NettyConnection implements Connection {
         this.future = future;
         this.remoteAddress = remoteAddress;
         this.reconnect = reconnect;
+        if(future.isDone()){
+            if (future.isSuccess()){
+                attackTo(future.channel());
+            }
+        }else{
+            future.addListener((ChannelFutureListener) f -> {
+                if(f.isSuccess()){
+                    attackTo(future.channel());
+                }
+            });
+        }
+
         if (future.isSuccess()) {
             attackTo(future.channel());
         } else {
@@ -93,14 +105,23 @@ public class NettyConnection implements Connection {
 
     @Override
     public void disconnect() {
-        // todo: disconnect
         attacked = false;
-        connectFuture.onConnectClosed();
     }
 
     @Override
     public void addConnectFuture(ConnectFuture connectFuture) {
-        this. connectFuture = connectFuture;
+        this.connectFuture = connectFuture;
+        if(future.isDone()){
+            if(future.isSuccess()){
+                connectFuture.onConnectCompleted();
+            }
+        }else{
+            future.addListener((ChannelFutureListener) f -> {
+                if(f.isSuccess()){
+                    connectFuture.onConnectCompleted();
+                }
+            });
+        }
     }
 
     @Override
@@ -118,5 +139,7 @@ public class NettyConnection implements Connection {
         if(Objects.nonNull(future)){
             future.channel().close().syncUninterruptibly();
         }
+        attacked = false;
+
     }
 }

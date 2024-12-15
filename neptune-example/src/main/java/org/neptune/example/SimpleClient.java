@@ -16,8 +16,10 @@
 package org.neptune.example;
 
 import lombok.extern.slf4j.Slf4j;
+import org.neptune.registry.defaultimpl.DefaultSubscriber;
 import org.neptune.rpc.client.Client;
 import org.neptune.rpc.client.DefaultClient;
+import org.neptune.transport.connector.NettyConnector;
 
 /**
  * org.neptune.example - AutoClient
@@ -30,7 +32,7 @@ public class SimpleClient {
     public static void main(String[] args) {
         Client client = DefaultClient.builder()
                 .clientAppName("hello-client")
-                .serviceSubscriber(null)
+                .serviceSubscriber(new DefaultSubscriber("127.0.0.1", 8001))
                 .build();
         try{
             Service service = client
@@ -41,6 +43,8 @@ public class SimpleClient {
                 service.call("hello world" + i);
                 System.out.println("第" + i + "次调度, 耗时" + (System.currentTimeMillis() - start));
             }
+        }catch (Exception e){
+            e.printStackTrace();
         }
         finally {
             client.shutdownGracefully();

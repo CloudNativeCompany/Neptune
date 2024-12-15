@@ -15,8 +15,11 @@
  */
 package org.neptune.rpc.client;
 
+import io.netty.channel.ChannelFutureListener;
 import lombok.extern.slf4j.Slf4j;
 import org.neptune.common.UnresolvedAddress;
+import org.neptune.common.util.IdGenerator;
+import org.neptune.registry.RegistryMeta;
 import org.neptune.registry.ServiceMeta;
 import org.neptune.rpc.*;
 import org.neptune.rpc.client.lb.LoadBalancer;
@@ -27,6 +30,8 @@ import org.neptune.transport.seialize.Serializer;
 
 import org.neptune.transport.RequestPayload;
 import io.netty.channel.Channel;
+
+import java.util.Set;
 
 /**
  * org.neptune.rpc.consumer - DefaultDispatcher
@@ -45,10 +50,9 @@ public class DefaultDispatcher implements Dispatcher {
             3. 业务数据序列化 && send 数据
             4. 超时控制?
      */
-
-    private LoadBalancer loadBalancer;
-    private Serializer serializer;
-    private Client client;
+    private final LoadBalancer loadBalancer;
+    private final Serializer serializer;
+    private final Client client;
 
     public DefaultDispatcher(LoadBalancer.LoadBalancerType loadBalancerType, Serializer.SerializerType serializerType, Client client) {
         this.loadBalancer = LoadBalancerFactory.create(loadBalancerType);
@@ -57,7 +61,7 @@ public class DefaultDispatcher implements Dispatcher {
     }
 
     @Override
-    public <T> RequestFuture<T> dispatch(Request request, Class<T> returnType) {
+    public <T> RequestFuture<T> dispatch(RpcRequest request, Class<T> returnType) {
         try {
             return send(request, returnType);
         } catch (Throwable e) {
@@ -69,32 +73,29 @@ public class DefaultDispatcher implements Dispatcher {
     private Channel select(ServiceMeta serviceMeta) throws Throwable {
         //TODO: load balance 是基于registry 的结果做的
         //TODO: 这一层的抽象还是需要再看看
-        UnresolvedAddress address = loadBalancer.select(client.serviceSubscriber().serviceList(serviceMeta));
+        Set<RegistryMeta> serviceInstance = client.serviceSubscriber().serviceList(serviceMeta);
+        UnresolvedAddress address = loadBalancer.select(serviceInstance);
         return client.getConnector().getAddressConnects(address).next().channel();
     }
 
 
-    private <T> RequestFuture<T> send(Request request, Class<T> returnType) throws Throwable {
-        final long invokeId = request.getInvokeId();
-
+    private <T> RequestFuture<T> send(RpcRequest request, Class<T> returnType) throws Throwable {
+        final long invokeId = IdGenerator.newId();
         // 对象序列化
         RequestPayload payload = new RequestPayload(invokeId);
         payload.setSerialTypeCode(serializer.typeCode());
-        payload.setBytes(serializer.writeObject(request.getBody()));
-        Channel ch = select(request.getBody().getMetadata());
-
-//        DefaultRequestFuture<T> invokeFuture = new DefaultRequestFuture<>(ch, invokeId, returnType);
-//        ch.writeAndFlush(payload).addListener(
-//                // TODO:加入发送超时监控, writeAndFlush
-//                (ChannelFutureListener) cf -> {
-//                    if (cf.isSuccess()) { // success
-//                        invokeFuture.sentSuccess();
-//                    } else { // fail
-//                        invokeFuture.sentFailure();
-//                    }
-//                });
-//        return invokeFuture;
-        return null;
+        payload.setBytes(serializer.writeObject(request));
+        Channel ch = select(request.getMetadata());
+        RequestFuture<T> invokeFuture = new DefaultRequestFuture<>(ch, invokeId,returnType);
+        ch.writeAndFlush(payload).addListener(
+                // TODO:加入发送超时监控, writeAndFlush
+                (ChannelFutureListener) cf -> {
+                    if (cf.isSuccess()) { // success
+                        invokeFuture.onSentSuccess();
+                    } else { // fail
+                        invokeFuture.onSentFailure();
+                    }
+                });
+        return invokeFuture;
     }
-
 }

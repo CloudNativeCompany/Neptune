@@ -38,7 +38,7 @@ public class SimpleServer {
                     .serverName("demo-service")
                     .version("1.0.0")
                     .group("test")
-                    .port(8001)
+                    .port(8002)
                     .servicePublisher(defaultPublisher)
                     .build();
             server.start();

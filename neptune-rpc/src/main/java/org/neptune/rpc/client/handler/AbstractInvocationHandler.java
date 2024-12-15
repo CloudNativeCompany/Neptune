@@ -41,22 +41,20 @@ public abstract class AbstractInvocationHandler {
     protected boolean invokeAsync;
 
     protected Object doInvoke(String methodName, Object[] args, Class<?> returnType) throws Throwable {
-        Request request = createRequest(methodName, args);
+        RpcRequest request = createRequest(methodName, args);
         //执行上下文, 用来在多个执行流中传递
-        RequestFuture<?> resultFuture = clusterInvoker.invoke(dispatcher, request, returnType);
+        RequestFuture<?> resultFuture = clusterInvoker.invoke(dispatcher, rpcRequest, returnType);
         if (!invokeAsync) {
             return resultFuture.response();
         }
         return resultFuture;
     }
 
-    private Request createRequest(String methodName, Object[] args) {
-        RequestBody body = new RequestBody(serviceMeta);
+    private RpcRequest createRequest(String methodName, Object[] args) {
+        RpcRequest body = new RpcRequest(serviceMeta);
         body.setMethodName(methodName);
         body.setArgs(args);
         body.setAppName(client.getClientAppName());
-        Request request = new Request(10100000L); // TODO: distribute unique ID
-        request.setBody(body);
-        return request;
+        return body;
     }
 }

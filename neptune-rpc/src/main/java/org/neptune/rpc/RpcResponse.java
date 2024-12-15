@@ -23,9 +23,9 @@ import java.io.Serializable;
  * @author tony-is-coding
  * @date 2021/12/24 14:24
  */
-public class ResponseBody implements Serializable {
+public class RpcResponse implements Serializable {
     private static final long serialVersionUID = -8908295634641380163L;
-
+    //TODO(谭志勇) 2024/12/15: 考虑 response 状态
     Object result;
 
     public Object getResult() {
