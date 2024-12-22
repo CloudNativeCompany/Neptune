@@ -46,6 +46,7 @@ public class ByteBuddyInvocationHandlerBridge extends AbstractInvocationHandler 
 
     @RuntimeType
     public Object invoke(@Origin Method method, @AllArguments @RuntimeType Object[] args) throws Throwable {
-        return doInvoke(method.getName(), args, method.getReturnType());
+        String[] split = method.getDeclaringClass().getName().split("\\.");
+        return doInvoke(split[split.length - 1] + "#" + method.getName(), args, method.getReturnType());
     }
 }

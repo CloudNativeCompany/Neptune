@@ -43,7 +43,7 @@ public abstract class AbstractInvocationHandler {
     protected Object doInvoke(String methodName, Object[] args, Class<?> returnType) throws Throwable {
         RpcRequest request = createRequest(methodName, args);
         //执行上下文, 用来在多个执行流中传递
-        RequestFuture<?> resultFuture = clusterInvoker.invoke(dispatcher, rpcRequest, returnType);
+        RequestFuture<?> resultFuture = clusterInvoker.invoke(dispatcher, request, returnType);
         if (!invokeAsync) {
             return resultFuture.response();
         }
@@ -54,7 +54,6 @@ public abstract class AbstractInvocationHandler {
         RpcRequest body = new RpcRequest(serviceMeta);
         body.setMethodName(methodName);
         body.setArgs(args);
-        body.setAppName(client.getClientAppName());
         return body;
     }
 }

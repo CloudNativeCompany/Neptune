@@ -20,6 +20,8 @@ import org.neptune.registry.defaultimpl.DefaultSubscriber;
 import org.neptune.rpc.client.Client;
 import org.neptune.rpc.client.DefaultClient;
 import org.neptune.transport.connector.NettyConnector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * org.neptune.example - AutoClient
@@ -29,6 +31,9 @@ import org.neptune.transport.connector.NettyConnector;
  */
 @Slf4j
 public class SimpleClient {
+    private final static Logger logger = LoggerFactory.getLogger(SimpleClient.class);
+
+
     public static void main(String[] args) {
         Client client = DefaultClient.builder()
                 .clientAppName("hello-client")
@@ -40,8 +45,8 @@ public class SimpleClient {
                     .newInstance();
             for (int i = 0; i < 500; i++) {
                 long start = System.currentTimeMillis();
-                service.call("hello world" + i);
-                System.out.println("第" + i + "次调度, 耗时" + (System.currentTimeMillis() - start));
+                String result = service.call("hello world" + i);
+                logger.info("第{}次调度,结果:{}, 耗时 {} ms", i,(System.currentTimeMillis() - start), result );
             }
         }catch (Exception e){
             e.printStackTrace();

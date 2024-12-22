@@ -29,21 +29,12 @@ public class RpcRequest implements Serializable {
 
     private static final long serialVersionUID = 1009813828866652852L;
 
-    private String appName;                 // 当前应用 - 应用名称
     private final ServiceMeta metadata;     // 目标服务元数据
-    private String methodName;              // 目标方法名称
+    private String methodName;              // 目标方法名称  className#method  full name
     private Object[] args;                  // 目标方法参数
 
     public RpcRequest(ServiceMeta metadata) {
         this.metadata = metadata;
-    }
-
-    public String getAppName() {
-        return appName;
-    }
-
-    public void setAppName(String appName) {
-        this.appName = appName;
     }
 
     public ServiceMeta getMetadata() {

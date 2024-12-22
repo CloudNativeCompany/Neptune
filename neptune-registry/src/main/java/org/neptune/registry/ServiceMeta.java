@@ -37,9 +37,22 @@ public class ServiceMeta implements Serializable {
     private transient String flatStringCache = null;
     private static final long serialVersionUID = -8908295634641380163L;
 
-    protected String group;     // 这个设计是为了 环境隔离
-    protected String serverName;   // 应用名称 appid之类的东西
-    protected String serverVersion;   // 服务版本
+    protected String group;             // 这个设计是为了 环境隔离
+    protected String serverName;        // 应用名称 appid之类的东西
+    protected String serverVersion;     // 服务版本
+
+    // 1. 将应用设计为App 级别, 这样粒度更大, 网络带宽更小
+    /*
+        1、 APPID
+        2、 AppGroup
+        3、 APP Version
+
+        4. MethodName
+
+        再通过静态查找技术, 查找到合适的方法, 如果方法未找到合适的，直接提示错误
+
+
+     */
 
     public ServiceMeta() {
     }

@@ -19,9 +19,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.neptune.registry.RegistryMeta;
 import org.neptune.registry.ServiceMeta;
 import org.neptune.registry.ServicePublisher;
+import org.neptune.rpc.annotation.RpcService;
 import org.neptune.rpc.processor.DefaultAcceptProcessor;
 import org.neptune.transport.acceptor.Acceptor;
 import org.neptune.transport.acceptor.NettyAcceptor;
+
+import java.lang.reflect.Method;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -41,6 +45,8 @@ public class DefaultServer implements Server {
     private String group;
     private String serverName;
     private String serverVersion;
+
+    private ConcurrentHashMap<String, Method> methodMap = new ConcurrentHashMap<>();
 
     @Override
     public Acceptor acceptor() {
@@ -95,6 +101,24 @@ public class DefaultServer implements Server {
 
     @Override
     public void addProvider(Class<?> providerClass) {
+        if(providerClass.isInterface()){
+            // 必须是实现类
+            return;
+        }
+        Class<?>[] interfaces = providerClass.getInterfaces();
+
+        // 1. 先判断是否有 RpcServiceImpl 的注解实现在类上
+        // 2. 再判断是否有 RpcService 的注解
+        for (Class<?> itf : interfaces) {
+            RpcService anno = itf.getDeclaredAnnotation(RpcService.class);
+            Method[] methods = itf.getDeclaredMethods();
+            for (Method method : methods) {
+                String[] split = method.getDeclaringClass().getName().split("\\.");
+                String fullName = split[split.length - 1] + "#" + method.getName();
+                // todo: fullName + 参数如何组成唯一
+
+            }
+        }
 
     }
 
